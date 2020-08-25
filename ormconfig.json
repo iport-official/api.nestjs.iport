@@ -1,11 +1,11 @@
 {
     "type": "mysql",
     "host": "localhost",
-    "port": 4000,
+    "port": 3306,
     "username": "root",
     "password": "12345678",
-    "database": "iPort Database",
+    "database": "iport",
     "synchronize": true,
     "logging": true,
-    "entities": ["", ""]
+    "entities": ["'./src/typeorm/entities/user.entity'"]
 }
