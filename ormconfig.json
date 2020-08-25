@@ -1,0 +1,11 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 4000,
+    "username": "root",
+    "password": "12345678",
+    "database": "iPort Database",
+    "synchronize": true,
+    "logging": true,
+    "entities": ["", ""]
+}
