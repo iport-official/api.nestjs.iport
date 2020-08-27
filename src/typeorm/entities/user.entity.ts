@@ -6,7 +6,7 @@ import {
     PrimaryGeneratedColumn
 } from "typeorm";
 
-@Entity('users')
+@Entity('user')
 export default class User {
 
     @PrimaryGeneratedColumn('uuid')
@@ -17,12 +17,6 @@ export default class User {
         unique: true
     })
     username: string
-
-    @Column({
-        length: 100,
-        unique: true
-    })
-    name: string
 
     @Column({
         length: 100,
