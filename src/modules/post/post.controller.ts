@@ -8,6 +8,6 @@ export class PostController {
 
     @Post()
     createPost(@Body() postInterface: PostInteface) {
-        this.postService.createPost(postInterface)
+        return this.postService.createPost(postInterface)
     }
 }

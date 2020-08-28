@@ -8,6 +8,6 @@ export class UserController{
 
     @Post()
     createUser(@Body() userInterface: UserInterface) {
-        this.userService.createUser(userInterface)
+        return this.userService.createUser(userInterface)
     }
 }
