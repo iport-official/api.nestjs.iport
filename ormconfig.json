@@ -7,5 +7,14 @@
     "database": "iport",
     "synchronize": true,
     "logging": true,
-    "entities": ["'./src/typeorm/entities/user.entity'"]
+    "entities": [
+        "dist/typeorm/entities/*.js"
+    ],
+    "migrations": [
+        "dist/typeorm/migrations/*.js"
+    ],
+    "cli": {
+        "migrationsDir": "src/typeorm/migrations",
+        "entitiesDir": "src/typeorm/entities"
+    }
 }

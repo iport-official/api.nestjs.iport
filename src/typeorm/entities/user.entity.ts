@@ -1,19 +1,22 @@
-import { Column, Entity } from 'typeorm'
-import { BaseEntity } from '../../common/base-entity'
+import {
+    Entity,
+    Column
+} from "typeorm";
 
-@Entity('user')
-export class UserEntity extends BaseEntity {
-    @Column({ nullable: false, unique: true })
-    public username: string
+import { BaseEntity } from "src/common/base-entity";
 
-    @Column({ nullable: false })
-    public name: string
+@Entity('users')
+export default class UserEntity extends BaseEntity{
 
-    @Column({ nullable: false })
-    public password: string
+    @Column({
+        length: 100,
+        unique: true
+    })
+    username: string
 
-    constructor(partial: Partial<UserEntity>) {
-        super()
-        Object.assign(this, partial)
-    }
+    @Column({
+        length: 100,
+        unique: true
+    })
+    password: string
 }
