@@ -6,7 +6,7 @@ import {
     PrimaryGeneratedColumn
 } from "typeorm";
 
-@Entity('user')
+@Entity('users')
 export default class User {
 
     @PrimaryGeneratedColumn('uuid')
