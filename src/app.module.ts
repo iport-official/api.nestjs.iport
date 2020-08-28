@@ -7,6 +7,7 @@ import { PostController } from './modules/post/post.controller';
 import { PostService } from './modules/post/post.service';
 import { PostModule } from './modules/post/post.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './modules/auth/auth.module';
 import UserEntity from './typeorm/entities/user.entity';
 import PostEntity from './typeorm/entities/post.entity';
 
@@ -19,6 +20,7 @@ import PostEntity from './typeorm/entities/post.entity';
         TypeOrmModule.forFeature([
             UserEntity,
             PostEntity
-        ]),],
+        ]),
+        AuthModule,],
 })
 export class AppModule { }
