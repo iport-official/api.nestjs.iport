@@ -14,7 +14,7 @@
         "dist/typeorm/migrations/*.js"
     ],
     "cli": {
-        "migrationsDir": "dist/typeorm/migrations",
-        "entitiesDir": "dist/typeorm/entities"
+        "migrationsDir": "src/typeorm/migrations",
+        "entitiesDir": "src/typeorm/entities"
     }
 }
