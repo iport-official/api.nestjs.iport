@@ -8,7 +8,7 @@ const { CREATE, UPDATE } = CrudValidationGroups;
 export class BaseEntity {
 
     @IsOptional({ groups: [CREATE, UPDATE]})
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: number
 
     @IsOptional({ groups: [CREATE, UPDATE] })
