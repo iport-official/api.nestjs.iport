@@ -18,8 +18,4 @@ export class BaseEntity {
     @IsOptional({ groups: [CREATE, UPDATE] })
     @UpdateDateColumn()
     updateAt: Date
-
-    @IsOptional({ groups: [CREATE, UPDATE] })
-    @Column({ default: true })
-    isActive: boolean
 }
