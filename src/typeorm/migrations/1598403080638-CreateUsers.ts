@@ -14,7 +14,7 @@ export class CreateUsers1598403080638 implements MigrationInterface {
                         generationStrategy: 'uuid',
                     },
                     {
-                        name: 'username',
+                        name: 'email',
                         type: 'varchar',
                         isUnique: true,
                         isNullable: false

@@ -12,7 +12,7 @@ export default class UserEntity extends BaseEntity{
         length: 100,
         unique: true
     })
-    username: string
+    email: string
 
     @Column({
         length: 100,
