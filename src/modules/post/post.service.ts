@@ -10,7 +10,7 @@ import { CreatePostDto } from './dto/CreatePostDto';
 export class PostService extends TypeOrmCrudService<PostEntity> {
     constructor(
         @InjectRepository(PostEntity)
-        private repository: Repository<PostEntity>
+        private readonly repository: Repository<PostEntity>
     ) { super(repository) }
 
     public async createPost(post: CreatePostDto) {
