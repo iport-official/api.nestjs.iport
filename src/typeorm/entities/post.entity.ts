@@ -11,18 +11,6 @@ export default class PostEntity extends BaseEntity {
     @Column({ default: "" })
     image01: string
 
-    @Column({ default: "" })
-    image02: string
-
-    @Column({ default: "" })
-    image03: string
-
-    @Column({ default: "" })
-    image04: string
-
-    @Column({ default: "" })
-    image05: string
-
     @Column({
         length: 100,
         nullable: false
@@ -34,4 +22,40 @@ export default class PostEntity extends BaseEntity {
         nullable: false
     })
     description: string
+
+    @Column({
+        length: 12,
+        nullable: false
+    })
+    contact: string
+
+    @Column({
+        nullable: false
+    })
+    salary: number
+
+    @Column({
+        nullable: false
+    })
+    post: string
+
+    @Column({
+        nullable: false
+    })
+    local: string
+
+    @Column({
+        nullable: false
+    })
+    requirements: string
+
+    @Column({
+        nullable: false
+    })
+    experienceLevel: string
+
+    @Column({
+        nullable: false,
+    })
+    vacancyDescription: string
 }
