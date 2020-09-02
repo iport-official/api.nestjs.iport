@@ -8,6 +8,10 @@ export class UserController {
         private authService: AuthService
     ) { }
 
+    /**
+     * Method that can create a new user in the database
+     * @param userInterface stores the user data that will be used to register
+     */
     @Post()
     createUser(@Body() userInterface: UserInterface) {
         return this.authService.register(userInterface)

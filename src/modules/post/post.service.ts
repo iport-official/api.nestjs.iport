@@ -13,9 +13,14 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         private readonly repository: Repository<PostEntity>
     ) { super(repository) }
 
-    public async createPost(post: CreatePostDto) {
+    /**
+     * Method that adds a new post in the database
+     * @param postData stores the post data that will be used to
+     *  create a new post in the database
+     */
+    async createPost(postData: CreatePostDto) {
         try {
-            const response = await this.repository.save(post)
+            const response = await this.repository.save(postData)
             return response;
         } catch (error) {
             return error
