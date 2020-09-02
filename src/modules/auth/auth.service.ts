@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import { hash, compare } from 'bcrypt'
 import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -7,7 +7,7 @@ import { RegisterUserDto } from '../user/dto/registration-data.dto';
 @Injectable()
 export class AuthService {
     constructor(
-        @Inject(forwardRef(() => UserService) )
+        @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly jwtService: JwtService
     ) { }
@@ -20,8 +20,7 @@ export class AuthService {
      * user in the database
     */
     async register(registrationData: RegisterUserDto) {
-        const hashedPassword = await bcrypt.hash(registrationData.password, 10);
-        console.log(hashedPassword)
+        const hashedPassword = await hash(registrationData.password, 10);
         try {
             const createdUser = await this.userService.createUser({
                 email: registrationData.email,
@@ -71,7 +70,7 @@ export class AuthService {
      * @param hashedPassword store the password that is in the database
      */
     async verifyPassword(password: string, hashedPassword: string) {
-        const isPasswordMatching = await bcrypt.compare(
+        const isPasswordMatching = await compare(
             password,
             hashedPassword
         )
