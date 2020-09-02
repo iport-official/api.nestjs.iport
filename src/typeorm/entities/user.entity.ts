@@ -6,7 +6,7 @@ import {
 import { BaseEntity } from "src/common/base-entity";
 
 @Entity('users')
-export default class UserEntity extends BaseEntity{
+export class UserEntity extends BaseEntity{
 
     @Column({
         length: 100,
