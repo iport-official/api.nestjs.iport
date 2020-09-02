@@ -6,7 +6,7 @@ import {
 import { BaseEntity } from "src/common/base-entity";
 
 @Entity('posts')
-export default class PostEntity extends BaseEntity {
+export class PostEntity extends BaseEntity {
 
     @Column({ default: "" })
     image01: string
