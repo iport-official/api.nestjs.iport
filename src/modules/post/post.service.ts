@@ -27,6 +27,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that return all the current posts
+     */
     async getAllPosts() {
         try {
             return await this.repository.find()

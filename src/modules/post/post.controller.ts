@@ -16,6 +16,9 @@ export class PostController {
         return this.postService.createPost(postInterface)
     }
 
+    /**
+     * Method that returns all the posts
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     getAllPosts() {
