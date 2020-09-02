@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
@@ -10,15 +10,19 @@ import { Repository } from 'typeorm';
 export class UserService extends TypeOrmCrudService<UserEntity> {
     constructor(
         @InjectRepository(UserEntity)
-        private repository: Repository<UserEntity>
+        private readonly repository: Repository<UserEntity>
     ) { super(repository) }
 
+    /**
+     * Method that create new users
+     * @param user stores the new user data
+     */
     public async createUser(user: CreateUserDto) {
         try {
             const response = await this.repository.save(user)
             return response;
         } catch (error) {
-            return error;
+            throw new NotFoundException();
         }
     }
 }
