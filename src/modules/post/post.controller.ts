@@ -1,6 +1,7 @@
-import { Controller, Body, Post, Get, UseGuards } from '@nestjs/common';
+import { Controller, Body, Post, UseGuards } from '@nestjs/common';
+
 import { PostService } from './post.service';
-import PostInteface from './interfaces/PostInterface'
+import { CreatePostDto } from './dto/create-post-dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @Controller('posts')
@@ -11,8 +12,9 @@ export class PostController {
      * Method that can create posts
      * @param postInterface stores the post data before creating it
      */
+    @UseGuards(JwtAuthGuard)
     @Post()
-    createPost(@Body() postInterface: PostInteface) {
+    createPost(@Body() postInterface: CreatePostDto) {
         return this.postService.createPost(postInterface)
     }
 }

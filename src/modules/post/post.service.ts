@@ -4,7 +4,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { PostEntity } from 'src/typeorm/entities/post.entity';
-import { CreatePostDto } from './dto/CreatePostDto';
+import { CreatePostDto } from './dto/create-post-dto';
 
 @Injectable()
 export class PostService extends TypeOrmCrudService<PostEntity> {
@@ -18,12 +18,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param postData stores the post data that will be used to
      *  create a new post in the database
      */
-    async createPost(postData: CreatePostDto) {
+    async createPost(postData: CreatePostDto): Promise<CreatePostDto> {
         try {
             const response = await this.repository.save(postData)
-            return {
-
-            };
+            return response
         } catch (error) {
             throw new InternalServerErrorException()
         }

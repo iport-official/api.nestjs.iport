@@ -24,7 +24,7 @@ export class PostEntity extends BaseEntity {
     description: string
 
     @Column({
-        length: 12,
+        length: 100,
         nullable: false
     })
     contact: string
