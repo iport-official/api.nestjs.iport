@@ -7,6 +7,8 @@ import { PostEntity } from 'src/typeorm/entities/post.entity';
 import { PostProxy } from '../models/post.proxy';
 import { CreatePostPayload } from '../models/create-post.payload';
 
+const contentInPage = 5
+
 @Injectable()
 export class PostService extends TypeOrmCrudService<PostEntity> {
     constructor(
@@ -33,8 +35,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async getUniquePost(id: string): Promise<PostProxy> {
         try {
-            const response = await this.repository.findOne(id)
-            return response
+            return await this.repository.findOne(id)
         } catch (error) {
             throw new InternalServerErrorException()
         }
@@ -49,6 +50,8 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             const posts = await this.repository
                 .createQueryBuilder('posts')
                 .orderBy('posts.recomendation', 'DESC')
+                .offset(page * contentInPage)
+                .limit(page * contentInPage + contentInPage)
                 .getMany()
             return posts.map(entity => new PostProxy(entity))
         } catch (error) {
@@ -67,9 +70,11 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .createQueryBuilder('posts')
                 .where({ category })
                 .orderBy('posts.recomendation', 'DESC')
+                .offset(page * contentInPage)
+                .limit(page * contentInPage + contentInPage)
                 .getMany()
             return posts.map(entity => new PostProxy(entity))
-        } catch(error) {
+        } catch (error) {
             throw new InternalServerErrorException()
         }
     }
