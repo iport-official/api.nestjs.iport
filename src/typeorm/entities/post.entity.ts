@@ -8,7 +8,9 @@ import { BaseEntity } from "src/common/base-entity";
 @Entity('posts')
 export class PostEntity extends BaseEntity {
 
-    @Column({ default: "" })
+    @Column({
+        type: "text"
+    })
     image: string
 
     @Column({
