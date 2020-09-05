@@ -7,7 +7,6 @@ import {
     Query,
     UseInterceptors,
     UploadedFile,
-    Param
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -18,7 +17,7 @@ import { PostProxy } from '../models/post.proxy';
 
 @Controller('posts')
 export class PostController {
-    constructor(public postService: PostService) { }
+    constructor(private readonly postService: PostService) { }
 
     /**
      * Method that can create posts
@@ -39,8 +38,12 @@ export class PostController {
         return await this.postService.create(createPostPayload)
     }
 
+    /**
+     * Method that can return an unique post
+     * @param id indicates which post the users wants to get
+     */
     @Get()
-    async getUniquePost(@Query('id') id: string) {
+    async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
         return await this.postService.getUniquePost(id)
     }
 
@@ -53,6 +56,11 @@ export class PostController {
         return await this.postService.getHighlights(page)
     }
 
+    /**
+     * Method that can get the recomendations for each user, based on the category
+     * @param category inidicates which category the user want
+     * @param page indicates which page the user want to get
+     */
     @Get('recomendations')
     async getRecomendations(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
         return await this.postService.getRecomendations(category, page)
