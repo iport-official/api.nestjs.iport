@@ -9,7 +9,7 @@ import { BaseEntity } from "src/common/base-entity";
 export class PostEntity extends BaseEntity {
 
     @Column({ default: "" })
-    image01: string
+    image: string
 
     @Column({
         length: 100,
@@ -27,10 +27,23 @@ export class PostEntity extends BaseEntity {
         length: 100,
         nullable: false
     })
+    category: string
+
+    @Column({
+        type: "integer",
+        default: 0
+    })
+    recomendation: number
+
+    @Column({
+        length: 100,
+        nullable: false
+    })
     contact: string
 
     @Column({
-        nullable: false
+        type: "decimal",
+        default: 0
     })
     salary: number
 
