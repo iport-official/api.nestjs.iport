@@ -1,10 +1,11 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { PostEntity } from 'src/typeorm/entities/post.entity';
-import { CreatePostDto } from './dto/CreatePostDto';
+import { PostProxy } from '../models/post.proxy';
+import { CreatePostPayload } from '../models/create-post.payload';
 
 @Injectable()
 export class PostService extends TypeOrmCrudService<PostEntity> {
@@ -18,23 +19,24 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param postData stores the post data that will be used to
      *  create a new post in the database
      */
-    async createPost(postData: CreatePostDto) {
+    async create(postData: CreatePostPayload): Promise<PostProxy> {
         try {
-            const response = await this.repository.save(postData)
-            return response;
+            return await this.repository.save(postData)
         } catch (error) {
-            return error
+            throw new InternalServerErrorException()
         }
     }
 
-    /**
-     * Method that return all the current posts
-     */
-    async getAllPosts() {
+    async getHighlights(page: number): Promise<PostProxy[]> {
         try {
-            return await this.repository.find()
+            const posts = await this.repository
+                .createQueryBuilder("users")
+                .orderBy('users.recomendation', 'DESC')
+                .getMany()
+
+            return posts.map(entity => new PostProxy(entity))
         } catch (error) {
-            console.log(error)
+            throw new InternalServerErrorException()
         }
     }
 }

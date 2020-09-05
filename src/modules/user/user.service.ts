@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
 import { UserEntity } from 'src/typeorm/entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { RegisterUserDto } from '../auth/dto/register-dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that create new users
      * @param user stores the new user data
      */
-    public async createUser(user: CreateUserDto) {
+    public async createUser(user: RegisterUserDto) {
         try {
             const response = await this.repository.save(user)
             return response;

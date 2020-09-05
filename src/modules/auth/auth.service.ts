@@ -3,7 +3,7 @@ import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nest
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from '../user/user.service';
-import { RegisterUserDto } from '../user/dto/registration-data.dto';
+import { RegisterUserDto } from './dto/register-dto';
 
 @Injectable()
 export class AuthService {
@@ -17,14 +17,14 @@ export class AuthService {
      * Method that register the user in the database
      * It is resposible for encrypting the password before send it to the databse
      * Before return the new created user is changes the password to 'undefined'
-     * @param registrationData store the data that will be used to create the new
+     * @param registerUserDto store the data that will be used to create the new
      * user in the database
     */
-    async register(registrationData: RegisterUserDto) {
-        const hashedPassword = await hash(registrationData.password, 10);
+    async register(registerUserDto: RegisterUserDto) {
+        const hashedPassword = await hash(registerUserDto.password, 10);
         try {
             const createdUser = await this.userService.createUser({
-                email: registrationData.email,
+                email: registerUserDto.email,
                 password: hashedPassword,
             })
             createdUser.password = undefined
@@ -38,7 +38,7 @@ export class AuthService {
      * Method that create a jwt (Json Web Token)
      * @param user store the data that will be used to crete the jwt
      */
-    async login(user: any) {
+    async login(user: { email: string, id: string }): Promise<{ access_token: string }> {
         return {
             access_token: this.jwtService.sign({
                 email: user.email,
@@ -65,6 +65,8 @@ export class AuthService {
         }
     }
 
+    //#region Utils
+
     /**
      * Method that validate the password
      * @param password store the password that is passing in request
@@ -78,4 +80,6 @@ export class AuthService {
         if (!isPasswordMatching)
             throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST)
     }
+
+    //#endregion
 }

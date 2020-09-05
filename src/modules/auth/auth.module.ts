@@ -1,12 +1,13 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { LocalStrategy } from './strategy/local.strategy';
-import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { AuthController } from './auth.controller';
 
 @Module({
     imports: [
@@ -16,6 +17,9 @@ import { JwtStrategy } from './strategy/jwt.strategy';
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '1h' }
         })
+    ],
+    controllers: [
+        AuthController
     ],
     providers: [
         JwtStrategy,

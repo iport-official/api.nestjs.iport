@@ -13,7 +13,7 @@ export class CreatePost1598573661248 implements MigrationInterface {
                         generationStrategy: 'uuid'
                     },
                     {
-                        name: 'image01',
+                        name: 'image',
                         type: 'varchar',
                     },
                     {
@@ -27,6 +27,11 @@ export class CreatePost1598573661248 implements MigrationInterface {
                         isNullable: false
                     },
                     {
+                        name: 'recomendation',
+                        type: 'integer',
+                        default: 0
+                    },
+                    {
                         name: 'contact',
                         type: 'varchar',
                         isNullable: false
@@ -34,7 +39,7 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'salary',
                         type: 'decimal',
-                        isNullable: false
+                        default: 0
                     },
                     {
                         name: 'post',
