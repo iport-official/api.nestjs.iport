@@ -9,7 +9,7 @@ import {
 
 import { PostService } from '../services/post.service';
 import { CreatePostPayload } from '../models/create-post.payload';
-import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard';
 import { PostProxy } from '../models/post.proxy';
 
 @Controller('posts')
