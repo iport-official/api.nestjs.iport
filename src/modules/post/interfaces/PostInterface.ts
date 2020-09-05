@@ -2,6 +2,7 @@ export default interface PostInterface {
     image01: string
     title: string
     description: string
+    category: string
     contact: string
     salary: number
     post: string

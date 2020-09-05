@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -21,9 +21,11 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     async createPost(postData: CreatePostDto) {
         try {
             const response = await this.repository.save(postData)
-            return response;
+            return {
+
+            };
         } catch (error) {
-            return error
+            throw new InternalServerErrorException()
         }
     }
 
