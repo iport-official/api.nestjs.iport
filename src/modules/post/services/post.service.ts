@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -21,12 +21,17 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async create(createPostPayload: CreatePostPayload): Promise<PostProxy> {
         try {
-
-            return await this.repository.save({
-                ...createPostPayload
-            })
+            return await this.repository.save({ ...createPostPayload })
         } catch (error) {
-            console.log(error)
+            throw new InternalServerErrorException()
+        }
+    }
+
+    async getUniquePost(id: string): Promise<PostProxy> {
+        try {
+            const response = await this.repository.findOne(id)
+            return response
+        } catch (error) {
             throw new InternalServerErrorException()
         }
     }
@@ -38,11 +43,24 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     async getHighlights(page: number): Promise<PostProxy[]> {
         try {
             const posts = await this.repository
-                .createQueryBuilder("posts")
+                .createQueryBuilder('posts')
                 .orderBy('posts.recomendation', 'DESC')
                 .getMany()
             return posts.map(entity => new PostProxy(entity))
         } catch (error) {
+            throw new InternalServerErrorException()
+        }
+    }
+
+    async getRecomendations(category: string, page: number): Promise<PostProxy[]> {
+        try {
+            const posts = await this.repository
+                .createQueryBuilder('posts')
+                .where({ category })
+                .orderBy('posts.recomendation', 'DESC')
+                .getMany()
+            return posts.map(entity => new PostProxy(entity))
+        } catch(error) {
             throw new InternalServerErrorException()
         }
     }

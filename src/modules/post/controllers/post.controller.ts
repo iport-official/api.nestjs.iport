@@ -6,7 +6,8 @@ import {
     Get,
     Query,
     UseInterceptors,
-    UploadedFile
+    UploadedFile,
+    Param
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -31,20 +32,29 @@ export class PostController {
         }
     }))
     async create(
-        @UploadedFile() file,
+        @UploadedFile() file: any,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
         createPostPayload.image = file.buffer.toString('base64')
         return await this.postService.create(createPostPayload)
     }
 
+    @Get()
+    async getUniquePost(@Query('id') id: string) {
+        return await this.postService.getUniquePost(id)
+    }
+
     /**
-     * Method that returns the most recommended posts in the app
+     * Method that returns the most recommended posts in the appk
      * @param page indicates which page the user want to laod
      */
-    @UseGuards(JwtAuthGuard)
-    @Get('/highlights')
+    @Get('highlights')
     async getHighlights(@Query('page') page: number): Promise<PostProxy[]> {
         return await this.postService.getHighlights(page)
+    }
+
+    @Get('recomendations')
+    async getRecomendations(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
+        return await this.postService.getRecomendations(category, page)
     }
 }
