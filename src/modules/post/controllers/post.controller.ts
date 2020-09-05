@@ -4,7 +4,6 @@ import {
     Post,
     UseGuards,
     Get,
-    Param,
     Query
 } from '@nestjs/common';
 
@@ -27,6 +26,10 @@ export class PostController {
         return await this.postService.create(postInterface)
     }
 
+    /**
+     * Method that returns the most recommended posts in the app
+     * @param page indicates which page the user want to laod
+     */
     @UseGuards(JwtAuthGuard)
     @Get('/highlights')
     async getHighlights(@Query('page') page: number): Promise<PostProxy[]> {

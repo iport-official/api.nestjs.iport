@@ -27,6 +27,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that returns the most recommended posts in the app
+     * @param page indicates which page the user want to laod
+     */
     async getHighlights(page: number): Promise<PostProxy[]> {
         try {
             const posts = await this.repository
