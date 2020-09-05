@@ -2,7 +2,7 @@ import { hash, compare } from 'bcrypt'
 import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 import { RegisterUserDto } from './dto/register-dto';
 
 @Injectable()

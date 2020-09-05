@@ -27,6 +27,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that can return an unique post
+     * @param id indicates which post the users wants to get
+     */
     async getUniquePost(id: string): Promise<PostProxy> {
         try {
             const response = await this.repository.findOne(id)
@@ -52,6 +56,11 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that can get the recomendations for each user, based on the category
+     * @param category inidicates which category the user want
+     * @param page indicates which page the user want to get
+     */
     async getRecomendations(category: string, page: number): Promise<PostProxy[]> {
         try {
             const posts = await this.repository
