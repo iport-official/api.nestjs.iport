@@ -6,7 +6,7 @@ import {
     Get,
     Query,
     UseInterceptors,
-    UploadedFile
+    UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -17,7 +17,7 @@ import { PostProxy } from '../models/post.proxy';
 
 @Controller('posts')
 export class PostController {
-    constructor(public postService: PostService) { }
+    constructor(private readonly postService: PostService) { }
 
     /**
      * Method that can create posts
@@ -31,7 +31,7 @@ export class PostController {
         }
     }))
     async create(
-        @UploadedFile() file,
+        @UploadedFile() file: any,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
         createPostPayload.image = file.buffer.toString('base64')
@@ -39,12 +39,30 @@ export class PostController {
     }
 
     /**
-     * Method that returns the most recommended posts in the app
+     * Method that can return an unique post
+     * @param id indicates which post the users wants to get
+     */
+    @Get()
+    async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
+        return await this.postService.getUniquePost(id)
+    }
+
+    /**
+     * Method that returns the most recommended posts in the appk
      * @param page indicates which page the user want to laod
      */
-    @UseGuards(JwtAuthGuard)
-    @Get('/highlights')
+    @Get('highlights')
     async getHighlights(@Query('page') page: number): Promise<PostProxy[]> {
         return await this.postService.getHighlights(page)
+    }
+
+    /**
+     * Method that can get the recomendations for each user, based on the category
+     * @param category inidicates which category the user want
+     * @param page indicates which page the user want to get
+     */
+    @Get('recomendations')
+    async getRecomendations(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
+        return await this.postService.getRecomendations(category, page)
     }
 }
