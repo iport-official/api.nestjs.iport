@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from 'src/typeorm/entities/post.entity';
 import { PostProxy } from '../models/post.proxy';
 import { CreatePostPayload } from '../models/create-post.payload';
+import { UserService } from 'src/modules/user/services/user.service';
 
 const contentInPage = 5
 
@@ -13,7 +14,8 @@ const contentInPage = 5
 export class PostService extends TypeOrmCrudService<PostEntity> {
     constructor(
         @InjectRepository(PostEntity)
-        private readonly repository: Repository<PostEntity>
+        private readonly repository: Repository<PostEntity>,
+        private readonly userService: UserService
     ) { super(repository) }
 
     /**
@@ -23,7 +25,12 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async create(createPostPayload: CreatePostPayload): Promise<PostProxy> {
         try {
-            return await this.repository.save({ ...createPostPayload })
+            const user = await this.userService.findOne({ where: { id: createPostPayload.userId } })
+            createPostPayload.userId = undefined
+            return await this.repository.save({
+                ...createPostPayload,
+                user
+            })
         } catch (error) {
             throw new InternalServerErrorException()
         }
@@ -51,6 +58,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .createQueryBuilder('posts')
                 .orderBy('posts.recomendation', 'DESC')
                 .offset(page * contentInPage)
+                .leftJoinAndSelect('posts.user', 'user')
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
             return posts.map(entity => new PostProxy(entity))
@@ -71,6 +79,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .where({ category })
                 .orderBy('posts.recomendation', 'DESC')
                 .offset(page * contentInPage)
+                .leftJoinAndSelect('posts.user', 'user')
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
             return posts.map(entity => new PostProxy(entity))
