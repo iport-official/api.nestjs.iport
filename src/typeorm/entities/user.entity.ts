@@ -8,6 +8,11 @@ import { BaseEntity } from "src/common/base-entity";
 @Entity('users')
 export class UserEntity extends BaseEntity{
     @Column({
+        type: 'text'
+    })
+    profileImage: string
+
+    @Column({
         length: 100,
         unique: true
     })
