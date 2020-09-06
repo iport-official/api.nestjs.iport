@@ -3,7 +3,7 @@ import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nest
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from '../user/services/user.service';
-import { RegisterUserDto } from './dto/register-dto';
+import { RegisterPayload } from './models/register.payload';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
      * @param registerUserDto store the data that will be used to create the new
      * user in the database
     */
-    async register(registerUserDto: RegisterUserDto) {
+    async register(registerUserDto: RegisterPayload) {
         const hashedPassword = await hash(registerUserDto.password, 10);
         try {
             const createdUser = await this.userService.createUser({
