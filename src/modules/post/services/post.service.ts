@@ -35,7 +35,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async getUniquePost(id: string): Promise<PostProxy> {
         try {
-            return await this.repository.findOne(id)
+            return await this.repository.findOne({ where: { id } })
         } catch (error) {
             throw new InternalServerErrorException()
         }
