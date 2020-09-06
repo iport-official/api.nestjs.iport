@@ -9,7 +9,7 @@ export class BaseEntity {
 
     @IsOptional({ groups: [CREATE, UPDATE]})
     @PrimaryGeneratedColumn('uuid')
-    id: number
+    id: string
 
     @IsOptional({ groups: [CREATE, UPDATE] })
     @CreateDateColumn()
