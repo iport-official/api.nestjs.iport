@@ -3,7 +3,9 @@ import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nest
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from '../user/services/user.service';
-import { RegisterUserDto } from './dto/register-dto';
+import { RegisterPayload } from './models/register.payload';
+import { LoginProxy } from './models/login.proxy';
+import { RegisterProxy } from './models/register.proxy';
 
 @Injectable()
 export class AuthService {
@@ -17,17 +19,17 @@ export class AuthService {
      * Method that register the user in the database
      * It is resposible for encrypting the password before send it to the databse
      * Before return the new created user is changes the password to 'undefined'
-     * @param registerUserDto store the data that will be used to create the new
+     * @param registerPayload stores the data that will be used to create the new
      * user in the database
     */
-    async register(registerUserDto: RegisterUserDto) {
-        const hashedPassword = await hash(registerUserDto.password, 10);
+    async register(registerPayload: RegisterPayload): Promise<RegisterProxy> {
+        const hashedPassword = await hash(registerPayload.password, 10);
         try {
             const createdUser = await this.userService.createUser({
-                email: registerUserDto.email,
+                profileImage: registerPayload.profileImage,
+                email: registerPayload.email,
                 password: hashedPassword,
             })
-            createdUser.password = undefined
             return createdUser
         } catch (error) {
             console.error(error)
@@ -36,11 +38,11 @@ export class AuthService {
 
     /**
      * Method that create a jwt (Json Web Token)
-     * @param user store the data that will be used to crete the jwt
+     * @param user stores the data that will be used to crete the jwt
      */
-    async login(user: { email: string, id: string }): Promise<{ access_token: string }> {
+    async login(user: { email: string, id: string }): Promise<LoginProxy> {
         return {
-            access_token: this.jwtService.sign({
+            access_token: await this.jwtService.signAsync({
                 email: user.email,
                 sub: user.id
             })
@@ -49,12 +51,12 @@ export class AuthService {
 
     /**
      * Method that validate the user login
-     * @param username store the username that will be validate
+     * @param username stores the username that will be validate
      * (in this case, by default, 'email')
-     * @param password store the password that will be validated
+     * @param password stores the password that will be validated
      * (hashed)
      */
-    async validateUser(username: string, password: string): Promise<any> {
+    async validateUser(username: string, password: string): Promise<{ id: string, email: string }> {
         try {
             const user = await this.userService.findOne({ email: username })
             await this.verifyPassword(password, user.password)
@@ -69,8 +71,8 @@ export class AuthService {
 
     /**
      * Method that validate the password
-     * @param password store the password that is passing in request
-     * @param hashedPassword store the password that is in the database
+     * @param password stores the password that is passing in request
+     * @param hashedPassword stores the password that is in the database
      */
     async verifyPassword(password: string, hashedPassword: string) {
         const isPasswordMatching = await compare(
