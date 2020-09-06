@@ -11,4 +11,5 @@ export class CreatePostPayload {
     requirements: string
     experienceLevel: string
     vacancyDescription: string
+    userId: string
 }

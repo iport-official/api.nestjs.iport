@@ -1,9 +1,11 @@
 import {
     Entity,
-    Column
+    Column,
+    OneToMany
 } from "typeorm";
 
 import { BaseEntity } from "src/common/base-entity";
+import { PostEntity } from "./post.entity";
 
 @Entity('users')
 export class UserEntity extends BaseEntity{
@@ -23,4 +25,7 @@ export class UserEntity extends BaseEntity{
         unique: true
     })
     password: string
+
+    @OneToMany(type => PostEntity, post => post.user)
+    posts: PostEntity[]
 }

@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
 export class CreatePost1598573661248 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
@@ -75,10 +75,22 @@ export class CreatePost1598573661248 implements MigrationInterface {
                         name: 'updateAt',
                         type: 'timestamp',
                         default: 'now()'
+                    },
+                    {
+                        name: 'userId',
+                        type: 'varchar',
+                        isNullable: false,
                     }
                 ]
             })
         )
+
+        await queryRunner.createForeignKey('posts', new TableForeignKey({
+            columnNames: ['userId'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'users',
+            onDelete: 'CASCADE'
+        }))
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

@@ -1,9 +1,11 @@
 import {
     Entity,
-    Column
+    Column,
+    ManyToOne
 } from "typeorm";
 
 import { BaseEntity } from "src/common/base-entity";
+import { UserEntity } from "./user.entity";
 
 @Entity('posts')
 export class PostEntity extends BaseEntity {
@@ -73,4 +75,12 @@ export class PostEntity extends BaseEntity {
         nullable: false,
     })
     vacancyDescription: string
+
+    @ManyToOne(
+        type => UserEntity,
+        user => user.posts,
+        {
+            onDelete: 'CASCADE'
+        })
+    user: UserEntity
 }
