@@ -1,4 +1,5 @@
 import { PostEntity } from "src/typeorm/entities/post.entity"
+import { RegisterProxy } from "src/modules/auth/models/register.proxy"
 
 export class PostProxy {
     id: string
@@ -15,6 +16,7 @@ export class PostProxy {
     experienceLevel: string
     vacancyDescription: string
     createAt: Date
+    user: RegisterProxy
 
     constructor(entity: PostEntity) {
         this.id = entity.id
@@ -31,5 +33,6 @@ export class PostProxy {
         this.experienceLevel = entity.experienceLevel
         this.vacancyDescription = entity.vacancyDescription
         this.createAt = entity.createAt
+        this.user = entity.user
     }
 }
