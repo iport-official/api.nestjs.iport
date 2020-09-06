@@ -2,10 +2,10 @@ import { hash, compare } from 'bcrypt'
 import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserService } from '../user/services/user.service';
-import { RegisterPayload } from './models/register.payload';
-import { LoginProxy } from './models/login.proxy';
-import { RegisterProxy } from './models/register.proxy';
+import { UserService } from '../../user/services/user.service';
+import { RegisterPayload } from '../models/register.payload';
+import { LoginProxy } from '../models/login.proxy';
+import { RegisterProxy } from '../models/register.proxy';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +27,7 @@ export class AuthService {
         try {
             const createdUser = await this.userService.createUser({
                 profileImage: registerPayload.profileImage,
+                username: registerPayload.username,
                 email: registerPayload.email,
                 password: hashedPassword,
             })
