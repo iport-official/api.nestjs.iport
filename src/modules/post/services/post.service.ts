@@ -42,13 +42,11 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async getUniquePost(id: string): Promise<PostProxy> {
         try {
-            const response = await this.repository
+            return await this.repository
                 .createQueryBuilder('posts')
-                .where({id})
+                .where({ id })
                 .leftJoinAndSelect('posts.user', 'user')
                 .getOne()
-
-            return response
         } catch (error) {
             throw new InternalServerErrorException()
         }
