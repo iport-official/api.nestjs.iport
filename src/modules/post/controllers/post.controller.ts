@@ -42,6 +42,7 @@ export class PostController {
      * Method that can return an unique post
      * @param id indicates which post the users wants to get
      */
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
         return await this.postService.getUniquePost(id)
@@ -51,6 +52,7 @@ export class PostController {
      * Method that returns the most recommended posts in the appk
      * @param page indicates which page the user want to laod
      */
+    @UseGuards(JwtAuthGuard)
     @Get('highlights')
     async getHighlights(@Query('page') page: number): Promise<PostProxy[]> {
         return await this.postService.getHighlights(page)
@@ -61,6 +63,7 @@ export class PostController {
      * @param category inidicates which category the user want
      * @param page indicates which page the user want to get
      */
+    @UseGuards(JwtAuthGuard)
     @Get('recomendations')
     async getRecomendations(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
         return await this.postService.getRecomendations(category, page)
