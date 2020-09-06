@@ -10,11 +10,11 @@ import {
 
 import { FileInterceptor } from '@nestjs/platform-express'
 
-import { AuthService } from "./auth.service";
-import { RegisterPayload } from "./models/register.payload";
-import { LocalAuthGuard } from "../../guards/local/local-auth.guard";
-import { LoginProxy } from "./models/login.proxy";
-import { RegisterProxy } from "./models/register.proxy";
+import { AuthService } from "../services/auth.service";
+import { RegisterPayload } from "../models/register.payload";
+import { LocalAuthGuard } from "../../../guards/local/local-auth.guard";
+import { LoginProxy } from "../models/login.proxy";
+import { RegisterProxy } from "../models/register.proxy";
 
 @Controller('users')
 export class AuthController {

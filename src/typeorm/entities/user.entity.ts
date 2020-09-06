@@ -24,6 +24,12 @@ export class UserEntity extends BaseEntity{
         length: 100,
         unique: true
     })
+    username: string
+
+    @Column({
+        length: 100,
+        unique: true
+    })
     password: string
 
     @OneToMany(type => PostEntity, post => post.user)
