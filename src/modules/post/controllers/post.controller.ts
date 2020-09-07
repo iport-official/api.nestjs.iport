@@ -11,12 +11,15 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 
 import { PostService } from '../services/post.service';
+
 import { CreatePostPayload } from '../models/create-post.payload';
-import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard';
 import { PostProxy } from '../models/post.proxy';
+
+import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard';
 
 @Controller('posts')
 export class PostController {
+
     constructor(
         private readonly postService: PostService
     ) { }
@@ -70,4 +73,5 @@ export class PostController {
     async getByCategory(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
         return await this.postService.getByCategory(category, page)
     }
+
 }
