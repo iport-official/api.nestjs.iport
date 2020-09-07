@@ -1,14 +1,18 @@
 import { Controller, Post, Body, UseGuards, Get, Request } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard';
+import { UserProfileProxy } from '../models/user-profile.proxy';
+import { UserService } from '../services/user.service';
 
 @Controller('users')
 export class UserController {
-    constructor() { }
+    constructor(
+        private readonly userService: UserService
+    ) { }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    getProfile(@Request() req: any) {
-        return req.user
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Get('profile')
+    // async getProfile(): Promise<UserProfileProxy> {
+    //     return await this.userService.getProfile()
+    // }
 }

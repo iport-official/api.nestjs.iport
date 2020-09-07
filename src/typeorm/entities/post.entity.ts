@@ -83,4 +83,5 @@ export class PostEntity extends BaseEntity {
             onDelete: 'CASCADE'
         })
     user: UserEntity
+
 }
