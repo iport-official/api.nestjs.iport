@@ -76,7 +76,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param category inidicates which category the user want
      * @param page indicates which page the user want to get
      */
-    async getRecomendations(category: string, page: number): Promise<PostProxy[]> {
+    async getByCategory(category: string, page: number): Promise<PostProxy[]> {
         try {
             const posts = await this.repository
                 .createQueryBuilder('posts')

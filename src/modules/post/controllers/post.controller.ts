@@ -17,7 +17,9 @@ import { PostProxy } from '../models/post.proxy';
 
 @Controller('posts')
 export class PostController {
-    constructor(private readonly postService: PostService) { }
+    constructor(
+        private readonly postService: PostService
+    ) { }
 
     /**
      * Method that can create posts
@@ -64,8 +66,8 @@ export class PostController {
      * @param page indicates which page the user want to get
      */
     @UseGuards(JwtAuthGuard)
-    @Get('recomendations')
-    async getRecomendations(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
-        return await this.postService.getRecomendations(category, page)
+    @Get('categories')
+    async getByCategory(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
+        return await this.postService.getByCategory(category, page)
     }
 }
