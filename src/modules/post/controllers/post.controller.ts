@@ -12,6 +12,8 @@ import { FileInterceptor } from '@nestjs/platform-express'
 
 import { PostService } from '../services/post.service';
 
+import { BaseArrayProxy } from 'src/common/base-array-proxy';
+
 import { CreatePostPayload } from '../models/create-post.payload';
 import { PostProxy } from '../models/post.proxy';
 
@@ -59,7 +61,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('highlights')
-    async getHighlights(@Query('page') page: number): Promise<PostProxy[]> {
+    async getHighlights(@Query('page') page: number): Promise<BaseArrayProxy<PostProxy>> {
         return await this.postService.getHighlights(page)
     }
 
@@ -70,7 +72,10 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('categories')
-    async getByCategory(@Query('category') category: string, @Query('page') page: number): Promise<PostProxy[]> {
+    async getByCategory(
+        @Query('category') category: string,
+        @Query('page') page: number
+    ): Promise<BaseArrayProxy<PostProxy>> {
         return await this.postService.getByCategory(category, page)
     }
 

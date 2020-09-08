@@ -7,11 +7,13 @@ import { PostEntity } from 'src/typeorm/entities/post.entity';
 import { PostProxy } from '../models/post.proxy';
 import { CreatePostPayload } from '../models/create-post.payload';
 import { UserService } from 'src/modules/user/services/user.service';
+import { BaseArrayProxy } from 'src/common/base-array-proxy';
 
 const contentInPage = 5
 
 @Injectable()
 export class PostService extends TypeOrmCrudService<PostEntity> {
+
     constructor(
         @InjectRepository(PostEntity)
         private readonly repository: Repository<PostEntity>,
@@ -56,16 +58,20 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that returns the most recommended posts in the app
      * @param page indicates which page the user want to laod
      */
-    async getHighlights(page: number): Promise<PostProxy[]> {
+    async getHighlights(page: number): Promise<BaseArrayProxy<PostProxy>> {
         try {
-            const posts = await this.repository
+            const [array, length] = await this.repository
                 .createQueryBuilder('posts')
                 .orderBy('posts.recomendation', 'DESC')
                 .offset(page * contentInPage)
                 .leftJoinAndSelect('posts.user', 'user')
                 .limit(page * contentInPage + contentInPage)
-                .getMany()
-            return posts.map(entity => new PostProxy(entity))
+                .getManyAndCount()
+
+            return {
+                length,
+                array: array.map((entity: PostEntity) => new PostProxy(entity))
+            }
         } catch (error) {
             throw new InternalServerErrorException()
         }
@@ -76,19 +82,24 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param category inidicates which category the user want
      * @param page indicates which page the user want to get
      */
-    async getByCategory(category: string, page: number): Promise<PostProxy[]> {
+    async getByCategory(category: string, page: number): Promise<BaseArrayProxy<PostProxy>> {
         try {
-            const posts = await this.repository
+            const [array, length] = await this.repository
                 .createQueryBuilder('posts')
                 .where({ category })
                 .orderBy('posts.recomendation', 'DESC')
                 .offset(page * contentInPage)
                 .leftJoinAndSelect('posts.user', 'user')
                 .limit(page * contentInPage + contentInPage)
-                .getMany()
-            return posts.map(entity => new PostProxy(entity))
+                .getManyAndCount()
+
+                return {
+                    length,
+                    array: array.map((entity: PostEntity) => new PostProxy(entity))
+                }
         } catch (error) {
             throw new InternalServerErrorException()
         }
     }
+
 }

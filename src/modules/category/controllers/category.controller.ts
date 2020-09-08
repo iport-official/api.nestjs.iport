@@ -11,6 +11,8 @@ import {
 
 import { CategoryService } from '../services/category.service';
 
+import { BaseArrayProxy } from 'src/common/base-array-proxy';
+
 import { CategoryPayload } from '../models/category.payload';
 import { CategoryProxy } from '../models/category.proxy';
 
@@ -36,7 +38,7 @@ export class CategoryController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getCategories(@Query('page') page: number): Promise<CategoryProxy[]> {
+    async getCategories(@Query('page') page: number): Promise<BaseArrayProxy<CategoryProxy>> {
         return await this.categoryService.getCategories(page)
     }
 
