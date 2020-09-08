@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
+import { BaseArrayProxy } from 'src/common/base-array-proxy';
+
 import { CategoryPayload } from '../models/category.payload';
 import { CategoryProxy } from '../models/category.proxy';
 
 import { CategoryEntity } from 'src/typeorm/entities/category.entity';
 
-import { BaseArrayProxy } from 'src/common/base-array-proxy';
 
 @Injectable()
 export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
