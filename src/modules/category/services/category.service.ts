@@ -8,6 +8,8 @@ import { CategoryProxy } from '../models/category.proxy';
 
 import { CategoryEntity } from 'src/typeorm/entities/category.entity';
 
+import { BaseArrayProxy } from 'src/common/base-array-proxy';
+
 @Injectable()
 export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
 
@@ -32,9 +34,13 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         }
     }
 
-    async getCategories(page: number) {
+    async getCategories(page: number): Promise<BaseArrayProxy<CategoryProxy>> {
         try {
-            return await this.repository.find()
+            const [array, length] = await this.repository
+                .createQueryBuilder('categories')
+                .getManyAndCount()
+
+            return { length, array }
         } catch (error) {
             throw new InternalServerErrorException()
         }
