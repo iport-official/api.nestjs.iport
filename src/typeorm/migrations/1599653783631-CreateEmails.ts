@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
-import { isNull } from "util";
 
 export class CreateEmails1599653783631 implements MigrationInterface {
 
@@ -17,6 +16,7 @@ export class CreateEmails1599653783631 implements MigrationInterface {
                     {
                         name: 'emailAddress',
                         type: 'varchar',
+                        length: '50',
                         isNullable: false
                     },
                     {

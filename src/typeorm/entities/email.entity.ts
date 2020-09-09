@@ -3,18 +3,18 @@ import { Entity, BaseEntity, Column, ManyToOne } from "typeorm";
 import { UserEntity } from "./user.entity";
 
 @Entity('telephones')
-export class TelephoneEntity extends BaseEntity {
+export class EmailEntity extends BaseEntity {
 
     @Column({
         type: 'varchar',
         length: 50,
         nullable: false
     })
-    telephoneNumber: string
+    emailAddress: string
 
     @ManyToOne(
         type => UserEntity,
-        user => user.telephones,
+        user => user.emails,
         {
             onDelete: 'CASCADE'
         })
