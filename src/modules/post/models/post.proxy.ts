@@ -8,7 +8,6 @@ export class PostProxy {
     description: string
     category: string
     recomendation: number
-    contact: string
     salary: number
     post: string
     local: string
@@ -25,7 +24,6 @@ export class PostProxy {
         this.description = entity.description
         this.category = entity.category
         this.recomendation = entity.recomendation
-        this.contact = entity.contact
         this.salary = entity.salary
         this.post = entity.post
         this.local = entity.local

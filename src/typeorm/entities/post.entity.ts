@@ -24,7 +24,6 @@ export class PostEntity extends BaseEntity {
 
     @Column({
         type: 'text',
-        length: 500,
         nullable: false
     })
     description: string
@@ -57,13 +56,13 @@ export class PostEntity extends BaseEntity {
 
     @Column({
         type: 'varchar',
+        length: 50,
         nullable: false
     })
     local: string
 
     @Column({
         type: 'text',
-        length: 500,
         nullable: false
     })
     requirements: string
@@ -77,7 +76,6 @@ export class PostEntity extends BaseEntity {
 
     @Column({
         type: 'text',
-        length: 1000,
         nullable: false,
     })
     vacancyDescription: string

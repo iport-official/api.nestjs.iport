@@ -25,7 +25,6 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'description',
                         type: 'text',
-                        length: '500',
                         isNullable: false
                     },
                     {
@@ -57,7 +56,6 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     },
                     {
                         name: 'requirements',
-                        length: '500',
                         type: 'text',
                         isNullable: false
                     },
@@ -70,7 +68,6 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'vacancyDescription',
                         type: 'text',
-                        length: '1000',
                         isNullable: false
                     },
                     {
