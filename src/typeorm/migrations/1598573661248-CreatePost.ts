@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
 export class CreatePost1598573661248 implements MigrationInterface {
+
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
@@ -52,6 +53,7 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'local',
                         type: 'varchar',
+                        length: '50',
                         isNullable: false
                     },
                     {
@@ -100,4 +102,5 @@ export class CreatePost1598573661248 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable('posts')
     }
+
 }
