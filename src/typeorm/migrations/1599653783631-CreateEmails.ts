@@ -23,7 +23,17 @@ export class CreateEmails1599653783631 implements MigrationInterface {
                         name: 'userId',
                         type: 'varchar',
                         isNullable: false
-                    }
+                    },
+                    {
+                        name: 'createAt',
+                        type: 'timestamp',
+                        default: 'now()'
+                    },
+                    {
+                        name: 'updateAt',
+                        type: 'timestamp',
+                        default: 'now()'
+                    },
                 ]
             })
         )

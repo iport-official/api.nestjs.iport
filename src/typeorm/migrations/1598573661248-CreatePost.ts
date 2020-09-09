@@ -19,11 +19,13 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'title',
                         type: 'varchar',
+                        length: '100',
                         isNullable: false
                     },
                     {
                         name: 'description',
                         type: 'text',
+                        length: '500',
                         isNullable: false
                     },
                     {
@@ -32,8 +34,9 @@ export class CreatePost1598573661248 implements MigrationInterface {
                         default: 0
                     },
                     {
-                        name: 'contact',
+                        name: 'category',
                         type: 'varchar',
+                        length: '30',
                         isNullable: false
                     },
                     {
@@ -44,6 +47,7 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'post',
                         type: 'varchar',
+                        length: '50',
                         isNullable: false
                     },
                     {
@@ -53,17 +57,20 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     },
                     {
                         name: 'requirements',
-                        type: 'varchar',
+                        length: '500',
+                        type: 'text',
                         isNullable: false
                     },
                     {
                         name: 'experienceLevel',
                         type: 'varchar',
+                        length: '60',
                         isNullable: false
                     },
                     {
                         name: 'vacancyDescription',
                         type: 'text',
+                        length: '1000',
                         isNullable: false
                     },
                     {
