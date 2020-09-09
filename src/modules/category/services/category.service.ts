@@ -19,6 +19,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         private readonly repository: Repository<CategoryEntity>
     ) { super(repository) }
 
+    /**
+     * Method that can add categories in the database
+     * @param categoryPayload The informations about the category
+     */
     async create(categoryPayload: CategoryPayload): Promise<CategoryProxy> {
         try {
             return await this.repository.save({ ...categoryPayload })
@@ -27,6 +31,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         }
     }
 
+    /**
+     * Method that can return just one category
+     * @param id indicates which category must be returned
+     */
     async getUniqueCategory(id: string): Promise<CategoryProxy> {
         try {
             return await this.repository.findOne({ where: { id } })
@@ -35,6 +43,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         }
     }
 
+    /**
+     * Method that return all categories, divide them in pages
+     * @param page indicates which page must be loaded
+     */
     async getCategories(page: number): Promise<BaseArrayProxy<CategoryProxy>> {
         try {
             const [array, length] = await this.repository
