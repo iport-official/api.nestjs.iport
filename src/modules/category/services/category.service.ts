@@ -10,7 +10,6 @@ import { CategoryProxy } from '../models/category.proxy';
 
 import { CategoryEntity } from 'src/typeorm/entities/category.entity';
 
-
 @Injectable()
 export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
 

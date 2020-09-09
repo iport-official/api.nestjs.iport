@@ -6,8 +6,7 @@ import {
     Query,
     Body,
     Param
-}
-    from '@nestjs/common';
+} from '@nestjs/common';
 
 import { CategoryService } from '../services/category.service';
 
