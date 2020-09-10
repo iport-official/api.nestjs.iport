@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne } from "typeorm";
 
-import { UserEntity } from "./user.entity";
 import { BaseEntity } from "src/common/base-entity";
+import { UserEntity } from "./user.entity";
 
 @Entity('telephones')
 export class TelephoneEntity extends BaseEntity {
