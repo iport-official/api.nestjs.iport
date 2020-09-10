@@ -1,7 +1,5 @@
 import { Controller, Post, Body, UseGuards, Get, Request } from '@nestjs/common';
 
-import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard';
-import { UserProfileProxy } from '../models/user-profile.proxy';
 import { UserService } from '../services/user.service';
 
 @Controller('users')
