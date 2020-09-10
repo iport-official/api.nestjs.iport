@@ -31,7 +31,14 @@ export class AuthService {
                 ...registerPayload,
                 password: hashedPassword
             })
-            return { ...createdUser }
+            return {
+                id: createdUser.id,
+                username: createdUser.username,
+                email: createdUser.email,
+                createAt: createdUser.createAt,
+                updateAt: createdUser.updateAt,
+                profileImage: createdUser.profileImage
+            }
         } catch (error) {
             console.error(error)
         }
