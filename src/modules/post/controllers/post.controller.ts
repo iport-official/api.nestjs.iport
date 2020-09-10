@@ -7,6 +7,7 @@ import {
     Query,
     UseInterceptors,
     UploadedFile,
+    Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express'
 
