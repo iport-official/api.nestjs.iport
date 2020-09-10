@@ -19,6 +19,10 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         private readonly userService: UserService
     ) { super(repository) }
 
+    /**
+     * Mehtod that allows creating telephones and the associating them to users
+     * @param telephonePayload indicates the array of telephones and the user id
+     */
     async registerTelephones(telephonePayload: TelephonePayload): Promise<BaseArrayProxy<TelephoneProxy>> {
         try {
             const user = await this.userService.findOne({ where: { id: telephonePayload.userId } })
