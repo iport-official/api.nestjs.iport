@@ -1,14 +1,14 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Post } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-
-import { PostEntity } from 'src/typeorm/entities/post.entity';
-import { UserService } from 'src/modules/user/services/user.service';
 
 import { CreatePostPayload } from '../models/create-post.payload';
 import { BaseArrayProxy } from 'src/common/base-array-proxy';
 import { PostProxy } from '../models/post.proxy';
+
+import { PostEntity } from 'src/typeorm/entities/post.entity';
+import { UserService } from 'src/modules/user/services/user.service';
 
 const contentInPage = 5
 
@@ -30,10 +30,11 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         try {
             const user = await this.userService.findOne({ where: { id: createPostPayload.userId } })
             createPostPayload.userId = undefined
-            return await this.repository.save({
+            const post = await this.repository.save({
                 ...createPostPayload,
                 user
             })
+            return new PostProxy(post)
         } catch (error) {
             throw new InternalServerErrorException()
         }

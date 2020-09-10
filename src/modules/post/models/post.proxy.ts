@@ -19,7 +19,6 @@ export class PostProxy {
 
     constructor(entity: PostEntity) {
         this.id = entity.id
-        this.image = entity.image
         this.title = entity.title
         this.description = entity.description
         this.category = entity.category
@@ -31,6 +30,24 @@ export class PostProxy {
         this.experienceLevel = entity.experienceLevel
         this.vacancyDescription = entity.vacancyDescription
         this.createAt = entity.createAt
-        this.user = entity.user
+        this.image = entity.image
+
+        const {
+            id,
+            username,
+            email,
+            createAt,
+            updateAt,
+            profileImage
+        } = entity.user
+
+        this.user = {
+            id,
+            username,
+            email,
+            createAt,
+            updateAt,
+            profileImage
+        }
     }
 }
