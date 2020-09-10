@@ -1,3 +1,1 @@
-export interface UserProfileProxy {
-
-}
+export interface UserProfileProxy { }

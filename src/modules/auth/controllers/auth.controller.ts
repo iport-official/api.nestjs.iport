@@ -5,7 +5,7 @@ import {
     Request,
     UseGuards,
     UseInterceptors,
-    UploadedFile
+    UploadedFile,
 } from "@nestjs/common";
 
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -18,6 +18,7 @@ import { RegisterProxy } from "../models/register.proxy";
 
 @Controller('users')
 export class AuthController {
+
     constructor(private authService: AuthService) { }
 
     /**
@@ -51,4 +52,5 @@ export class AuthController {
     async login(@Request() credentials: any): Promise<LoginProxy> {
         return this.authService.login(credentials.user)
     }
+
 }

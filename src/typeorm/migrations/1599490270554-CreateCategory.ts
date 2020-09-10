@@ -16,11 +16,15 @@ export class CreateCategory1599490270554 implements MigrationInterface {
                     {
                         name: 'name',
                         type: 'varchar',
+                        length: '100',
+                        isUnique: true,
                         isNullable: false
                     },
                     {
                         name: 'category',
                         type: 'varchar',
+                        length: '100',
+                        isUnique: true,
                         isNullable: false
                     },
                     {

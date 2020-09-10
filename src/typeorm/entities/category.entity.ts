@@ -5,12 +5,18 @@ import { BaseEntity } from "src/common/base-entity";
 export class CategoryEntity extends BaseEntity {
 
     @Column({
-        type: 'varchar'
+        type: 'varchar',
+        length: 100,
+        unique: true,
+        nullable: false
     })
     name: string
 
     @Column({
-        type: 'varchar'
+        type: 'varchar',
+        length: 100,
+        unique: true,
+        nullable: false
     })
     category: string
 

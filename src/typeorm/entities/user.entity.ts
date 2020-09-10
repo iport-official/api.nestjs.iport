@@ -1,37 +1,44 @@
-import {
-    Entity,
-    Column,
-    OneToMany
-} from "typeorm";
+import { Entity, Column, OneToMany } from "typeorm";
 
 import { BaseEntity } from "src/common/base-entity";
 import { PostEntity } from "./post.entity";
+import { TelephoneEntity } from "./telephone.entity";
 
 @Entity('users')
 export class UserEntity extends BaseEntity{
+
     @Column({
         type: 'text'
     })
     profileImage: string
 
     @Column({
-        length: 100,
-        unique: true
+        type: 'varchar',
+        length: 50,
+        unique: true,
+        nullable: false
     })
     email: string
 
     @Column({
-        length: 100,
-        unique: true
+        type: 'varchar',
+        length: 30,
+        unique: true,
+        nullable: false
     })
     username: string
 
     @Column({
-        length: 100,
-        unique: true
+        type: 'varchar',
+        length: 200,
+        nullable: false
     })
     password: string
 
     @OneToMany(type => PostEntity, post => post.user)
     posts: PostEntity[]
+
+    @OneToMany(type => TelephoneEntity, telephone => telephone.user)
+    telephones: TelephoneEntity[]
+
 }

@@ -11,27 +11,22 @@ import { UserEntity } from "./user.entity";
 export class PostEntity extends BaseEntity {
 
     @Column({
-        type: "text"
+        type: 'text'
     })
     image: string
 
     @Column({
+        type: 'varchar',
         length: 100,
-        nullable: false
+        nullable: false,
     })
     title: string
 
     @Column({
-        length: 1000,
+        type: 'text',
         nullable: false
     })
     description: string
-
-    @Column({
-        length: 100,
-        nullable: false
-    })
-    category: string
 
     @Column({
         type: "integer",
@@ -40,10 +35,11 @@ export class PostEntity extends BaseEntity {
     recomendation: number
 
     @Column({
-        length: 100,
+        type: 'varchar',
+        length: 30,
         nullable: false
     })
-    contact: string
+    category: string
 
     @Column({
         type: "decimal",
@@ -52,26 +48,34 @@ export class PostEntity extends BaseEntity {
     salary: number
 
     @Column({
-        nullable: false
+        type: 'varchar',
+        length: 50,
+        nullable: false,
     })
     post: string
 
     @Column({
+        type: 'varchar',
+        length: 50,
         nullable: false
     })
     local: string
 
     @Column({
+        type: 'text',
         nullable: false
     })
     requirements: string
 
     @Column({
+        type: 'varchar',
+        length: 60,
         nullable: false
     })
     experienceLevel: string
 
     @Column({
+        type: 'text',
         nullable: false,
     })
     vacancyDescription: string

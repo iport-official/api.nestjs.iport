@@ -6,9 +6,11 @@ import { UserService } from '../../user/services/user.service';
 import { RegisterPayload } from '../models/register.payload';
 import { LoginProxy } from '../models/login.proxy';
 import { RegisterProxy } from '../models/register.proxy';
+import { TelephoneService } from 'src/modules/telephone/services/telephone.service';
 
 @Injectable()
 export class AuthService {
+
     constructor(
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
@@ -26,12 +28,10 @@ export class AuthService {
         const hashedPassword = await hash(registerPayload.password, 10);
         try {
             const createdUser = await this.userService.createUser({
-                profileImage: registerPayload.profileImage,
-                username: registerPayload.username,
-                email: registerPayload.email,
-                password: hashedPassword,
+                ...registerPayload,
+                password: hashedPassword
             })
-            return createdUser
+            return { ...createdUser }
         } catch (error) {
             console.error(error)
         }
@@ -85,4 +85,5 @@ export class AuthService {
     }
 
     //#endregion
+
 }
