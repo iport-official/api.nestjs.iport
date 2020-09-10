@@ -1,13 +1,14 @@
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 
 import { PostEntity } from 'src/typeorm/entities/post.entity';
-import { PostProxy } from '../models/post.proxy';
-import { CreatePostPayload } from '../models/create-post.payload';
 import { UserService } from 'src/modules/user/services/user.service';
+
+import { CreatePostPayload } from '../models/create-post.payload';
 import { BaseArrayProxy } from 'src/common/base-array-proxy';
+import { PostProxy } from '../models/post.proxy';
 
 const contentInPage = 5
 
