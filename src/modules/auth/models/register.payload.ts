@@ -1,6 +1,3 @@
-export class RegisterPayload {
-    profileImage: string
-    email: string
-    username: string
-    password: string
-}
+import { RegisterUserPayload } from "src/modules/user/models/register-user.payload"
+
+export class RegisterPayload extends RegisterUserPayload { }
