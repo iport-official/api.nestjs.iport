@@ -7,6 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { PostModule } from './modules/post/post.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
+import { TelephoneModule } from './modules/telephone/telephone.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { CategoryModule } from './modules/category/category.module';
         PostModule,
         AuthModule,
         CategoryModule,
+        TelephoneModule,
         TypeOrmModule.forRoot(),
     ],
     controllers: [
