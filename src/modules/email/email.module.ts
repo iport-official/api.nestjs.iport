@@ -1,5 +1,6 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+
 import { EmailEntity } from "src/typeorm/entities/email.entity";
 import { UserModule } from "../user/user.module";
 import { EmailService } from "./services/email.service";

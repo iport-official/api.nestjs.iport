@@ -1,12 +1,14 @@
+import { Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
-import { Repository } from "typeorm";
-import { UserService } from "src/modules/user/services/user.service";
-import { BaseArrayProxy } from "src/common/base-array-proxy";
+
 import { EmailEntity } from "src/typeorm/entities/email.entity";
+import { BaseArrayProxy } from "src/common/base-array-proxy";
 import { EmailPayload } from "../models/email.payload";
 import { EmailProxy } from "../models/email.proxy";
+
+import { UserService } from "src/modules/user/services/user.service";
 
 @Injectable()
 export class EmailService extends TypeOrmCrudService<EmailEntity> {

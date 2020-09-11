@@ -1,9 +1,11 @@
 import { Controller, UseGuards, Post, Body } from "@nestjs/common";
+
 import { JwtAuthGuard } from "src/guards/jwt/jwt-auth.guard";
 import { BaseArrayProxy } from "src/common/base-array-proxy";
-import { EmailService } from "../services/email.service";
 import { EmailPayload } from "../models/email.payload";
 import { EmailProxy } from "../models/email.proxy";
+
+import { EmailService } from "../services/email.service";
 
 @Controller('users/emails')
 export class EmailController {
