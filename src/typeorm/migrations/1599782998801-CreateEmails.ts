@@ -15,6 +15,7 @@ export class CreateEmails1599782998801 implements MigrationInterface {
                     },
                     {
                         name: 'email',
+                        length: '100',
                         type: 'varchar',
                         isNullable: false
                     },

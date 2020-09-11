@@ -14,14 +14,15 @@ export class CreateTelephones1599653773196 implements MigrationInterface {
                         generationStrategy: 'uuid'
                     },
                     {
-                        name: 'telephoneNumber',
+                        name: 'telephone',
+                        length: '50',
                         type: 'varchar',
                         isNullable: false
                     },
                     {
                         name: 'userId',
                         type: 'varchar',
-                        isNullable: false
+                        isNullable: false,
                     },
                     {
                         name: 'createAt',

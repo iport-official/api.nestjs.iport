@@ -11,7 +11,7 @@ export class TelephoneEntity extends BaseEntity {
         length: 50,
         nullable: false
     })
-    telephoneNumber: string
+    telephone: string
 
     @ManyToOne(
         type => UserEntity,
