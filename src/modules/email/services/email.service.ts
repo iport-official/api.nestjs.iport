@@ -20,6 +20,10 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         private readonly userService: UserService
     ) { super(repository) }
 
+    /**
+     * Method that allows creating email and the associating them to users
+     * @param emailPayload indicates the array of emails and the user id
+     */
     async registerEmails(emailPayload: EmailPayload): Promise<BaseArrayProxy<EmailProxy>> {
         try {
             const user = await this.userService.findOne({ where: { id: emailPayload.userId } })
