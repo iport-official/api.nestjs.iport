@@ -8,6 +8,7 @@ import { PostModule } from './modules/post/post.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
 import { TelephoneModule } from './modules/telephone/telephone.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { TelephoneModule } from './modules/telephone/telephone.module';
         AuthModule,
         CategoryModule,
         TelephoneModule,
+        EmailModule,
         TypeOrmModule.forRoot(),
     ],
     controllers: [

@@ -29,7 +29,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
             const user = await this.userService.findOne({ where: { id: telephonePayload.userId } })
             const array = await this.repository.save(telephonePayload.telephones.map(telephone => {
                 return {
-                    telephoneNumber: telephone,
+                    telephone,
                     user: new RegisterProxy(user)
                 }
             }))
