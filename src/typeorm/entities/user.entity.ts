@@ -5,6 +5,8 @@ import { PostEntity } from "./post.entity";
 import { TelephoneEntity } from "./telephone.entity";
 import { EmailEntity } from "./email.entity";
 
+import { AccountType } from "src/models/enums/account.types";
+
 @Entity('users')
 export class UserEntity extends BaseEntity{
 
@@ -35,6 +37,13 @@ export class UserEntity extends BaseEntity{
         nullable: false
     })
     password: string
+
+    @Column({
+        type: 'varchar',
+        length: 8,
+        nullable: false
+    })
+    accountType: AccountType
 
     @OneToMany(type => PostEntity, post => post.user)
     posts: PostEntity[]
