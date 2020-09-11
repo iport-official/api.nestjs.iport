@@ -1,6 +1,6 @@
 export interface EmailPayload {
 
-    email: string[]
+    emails: string[]
     userId: string
 
 }

@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
@@ -9,6 +9,7 @@ import { EmailPayload } from "../models/email.payload";
 import { EmailProxy } from "../models/email.proxy";
 
 import { UserService } from "src/modules/user/services/user.service";
+import { RegisterProxy } from "src/modules/auth/models/register.proxy";
 
 @Injectable()
 export class EmailService extends TypeOrmCrudService<EmailEntity> {
@@ -20,7 +21,21 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
     ) { super(repository) }
 
     async registerEmails(emailPayload: EmailPayload): Promise<BaseArrayProxy<EmailProxy>> {
-        return null;
+        try {
+            const user = await this.userService.findOne({ where: { id: emailPayload.userId } })
+            const array = await this.repository.save(emailPayload.emails.map(email => {
+                return {
+                    email,
+                    user: new RegisterProxy(user)
+                }
+            }))
+            return {
+                length: array.length,
+                array: array.map(element => new EmailProxy(element))
+            }
+        } catch (error) {
+            throw new InternalServerErrorException()
+        }
     }
 
 }
