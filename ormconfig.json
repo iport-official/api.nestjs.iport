@@ -8,10 +8,10 @@
     "synchronize": true,
     "logging": true,
     "entities": [
-        "dist/typeorm/entities/*.js"
+        "dist/typeorm/entities/*.ts"
     ],
     "migrations": [
-        "dist/typeorm/migrations/*.js"
+        "src/typeorm/migrations/*.ts"
     ],
     "cli": {
         "migrationsDir": "src/typeorm/migrations",
