@@ -3,6 +3,7 @@ import { Entity, Column, OneToMany } from "typeorm";
 import { BaseEntity } from "src/common/base-entity";
 import { PostEntity } from "./post.entity";
 import { TelephoneEntity } from "./telephone.entity";
+import { EmailEntity } from "./email.entity";
 
 @Entity('users')
 export class UserEntity extends BaseEntity{
@@ -40,5 +41,8 @@ export class UserEntity extends BaseEntity{
 
     @OneToMany(type => TelephoneEntity, telephone => telephone.user)
     telephones: TelephoneEntity[]
+
+    @OneToMany(type => EmailEntity, email => email.user)
+    emails: EmailEntity[]
 
 }
