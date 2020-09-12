@@ -9,7 +9,7 @@ import { TelephoneProxy } from "../models/telephone.proxy";
 import { TelephonePayload } from "../models/telephone.payload";
 
 import { UserService } from "src/modules/user/services/user.service";
-import { RegisterProxy } from "src/modules/auth/models/register.proxy";
+import { UserProxy } from "src/modules/user/models/user.proxy";
 
 @Injectable()
 export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
@@ -30,7 +30,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
             const array = await this.repository.save(telephonePayload.telephones.map(telephone => {
                 return {
                     telephone,
-                    user: new RegisterProxy(user)
+                    user: new UserProxy(user)
                 }
             }))
             return {

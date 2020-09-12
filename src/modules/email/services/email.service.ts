@@ -10,6 +10,7 @@ import { EmailProxy } from "../models/email.proxy";
 
 import { UserService } from "src/modules/user/services/user.service";
 import { RegisterProxy } from "src/modules/auth/models/register.proxy";
+import { UserProxy } from "src/modules/user/models/user.proxy";
 
 @Injectable()
 export class EmailService extends TypeOrmCrudService<EmailEntity> {
@@ -30,7 +31,7 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
             const array = await this.repository.save(emailPayload.emails.map(email => {
                 return {
                     email,
-                    user: new RegisterProxy(user)
+                    user: new UserProxy(user)
                 }
             }))
             return {
