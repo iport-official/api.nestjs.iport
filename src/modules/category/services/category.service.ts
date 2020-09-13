@@ -50,11 +50,16 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
      */
     async getCategories(page: number): Promise<BaseArrayProxy<CategoryProxy>> {
         try {
-            const [array, length] = await this.repository
+            const queryBuilder = this.repository
                 .createQueryBuilder('categories')
+
+            const length = await queryBuilder
+                .getCount()
+
+            const array = await queryBuilder
                 .offset(page * contentInPage)
                 .limit(page * contentInPage + contentInPage)
-                .getManyAndCount()
+                .getMany()
 
             return { length, array }
         } catch (error) {
