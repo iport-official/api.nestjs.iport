@@ -10,6 +10,8 @@ import { CategoryProxy } from '../models/category.proxy';
 
 import { CategoryEntity } from 'src/typeorm/entities/category.entity';
 
+const contentInPage = 7
+
 @Injectable()
 export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
 
@@ -50,6 +52,8 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         try {
             const [array, length] = await this.repository
                 .createQueryBuilder('categories')
+                .offset(page * contentInPage)
+                .limit(page * contentInPage + contentInPage)
                 .getManyAndCount()
 
             return { length, array }
