@@ -63,13 +63,18 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async getHighlights(page: number): Promise<BaseArrayProxy<PostProxy>> {
         try {
-            const [array, length] = await this.repository
+            const queryBuilder = this.repository
                 .createQueryBuilder('posts')
                 .orderBy('posts.recomendation', 'DESC')
+
+            const length = await queryBuilder
+                .getCount()
+
+            const array = await queryBuilder
                 .offset(page * contentInPage)
                 .leftJoinAndSelect('posts.user', 'user')
                 .limit(page * contentInPage + contentInPage)
-                .getManyAndCount()
+                .getMany()
 
             return {
                 length,
@@ -87,14 +92,20 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async getByCategory(category: string, page: number): Promise<BaseArrayProxy<PostProxy>> {
         try {
-            const [array, length] = await this.repository
+            const queryBuilder = this.repository
                 .createQueryBuilder('posts')
                 .where({ category })
                 .orderBy('posts.recomendation', 'DESC')
+
+            const length = await queryBuilder
+                .getCount()
+
+
+            const array = await queryBuilder
                 .offset(page * contentInPage)
                 .leftJoinAndSelect('posts.user', 'user')
                 .limit(page * contentInPage + contentInPage)
-                .getManyAndCount()
+                .getMany()
 
                 return {
                     length,
