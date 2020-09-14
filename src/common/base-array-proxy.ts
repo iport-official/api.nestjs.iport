@@ -1,4 +1,4 @@
-export class BaseArrayProxy<T> {
+export interface BaseArrayProxy<T> {
 
     length: number
     array: T[]
