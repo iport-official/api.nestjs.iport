@@ -8,7 +8,6 @@ import { PostService } from './services/post.service';
 import { PostController } from './controllers/post.controller';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
-import { TelephoneModule } from '../telephone/telephone.module';
 
 @Module({
     imports: [

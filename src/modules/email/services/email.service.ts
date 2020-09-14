@@ -9,7 +9,6 @@ import { EmailPayload } from "../models/email.payload";
 import { EmailProxy } from "../models/email.proxy";
 
 import { UserService } from "src/modules/user/services/user.service";
-import { RegisterProxy } from "src/modules/auth/models/register.proxy";
 import { UserProxy } from "src/modules/user/models/user.proxy";
 
 @Injectable()
