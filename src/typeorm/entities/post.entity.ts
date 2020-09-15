@@ -32,7 +32,13 @@ export class PostEntity extends BaseEntity {
         type: "integer",
         default: 0
     })
-    recomendation: number
+    recomendations: number
+
+    @Column({
+        type: "integer",
+        default: 0
+    })
+    likes: number
 
     @Column({
         type: 'varchar',

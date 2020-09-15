@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Post } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 import { PostEntity } from 'src/typeorm/entities/post.entity';
@@ -65,7 +65,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
-                .orderBy('posts.recomendation', 'DESC')
+                .orderBy('posts.recomendations', 'DESC')
 
             const length = await queryBuilder
                 .getCount()
@@ -95,11 +95,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
                 .where({ category })
-                .orderBy('posts.recomendation', 'DESC')
+                .orderBy('posts.recomendations', 'DESC')
 
             const length = await queryBuilder
                 .getCount()
-
 
             const array = await queryBuilder
                 .offset(page * contentInPage)
@@ -111,6 +110,21 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                     length,
                     array: array.map((entity: PostEntity) => new PostProxy(entity))
                 }
+        } catch (error) {
+            throw new InternalServerErrorException()
+        }
+    }
+
+    async getMainPost(): Promise<PostProxy> {
+        try {
+            const post = await this.repository
+                .createQueryBuilder('posts')
+                .select()
+                .addSelect('MAX(posts.recomendations * 0.7 * posts.likes * 0.3)', 'MAX')
+                .leftJoinAndSelect('posts.user', 'user')
+                .getOne()
+
+            return new PostProxy(post)
         } catch (error) {
             throw new InternalServerErrorException()
         }

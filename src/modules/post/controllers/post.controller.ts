@@ -6,8 +6,7 @@ import {
     Get,
     Query,
     UseInterceptors,
-    UploadedFile,
-    Param,
+    UploadedFile
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -78,6 +77,12 @@ export class PostController {
         @Query('page') page: number
     ): Promise<BaseArrayProxy<PostProxy>> {
         return await this.postService.getByCategory(category, page)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('main')
+    async getMainPost(): Promise<PostProxy> {
+        return await this.postService.getMainPost()
     }
 
 }

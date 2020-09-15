@@ -7,7 +7,8 @@ export class PostProxy {
     title: string
     description: string
     category: string
-    recomendation: number
+    recomendations: number
+    likes: number
     salary: number
     post: string
     local: string
@@ -15,6 +16,7 @@ export class PostProxy {
     experienceLevel: string
     vacancyDescription: string
     createAt: Date
+    updateAt: Date
     user: UserProxy
 
     constructor(entity: PostEntity) {
@@ -22,7 +24,8 @@ export class PostProxy {
         this.title = entity.title
         this.description = entity.description
         this.category = entity.category
-        this.recomendation = entity.recomendation
+        this.recomendations = entity.recomendations
+        this.likes = entity.likes
         this.salary = entity.salary
         this.post = entity.post
         this.local = entity.local
@@ -30,6 +33,7 @@ export class PostProxy {
         this.experienceLevel = entity.experienceLevel
         this.vacancyDescription = entity.vacancyDescription
         this.createAt = entity.createAt
+        this.updateAt = entity.updateAt
         this.image = entity.image
 
         this.user = new UserProxy(entity.user)
