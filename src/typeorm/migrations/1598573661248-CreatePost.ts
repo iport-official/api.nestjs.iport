@@ -29,7 +29,12 @@ export class CreatePost1598573661248 implements MigrationInterface {
                         isNullable: false
                     },
                     {
-                        name: 'recomendation',
+                        name: 'recomendations',
+                        type: 'integer',
+                        default: 0
+                    },
+                    {
+                        name: 'likes',
                         type: 'integer',
                         default: 0
                     },
