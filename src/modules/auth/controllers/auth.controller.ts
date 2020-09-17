@@ -5,7 +5,6 @@ import {
     Request,
     UseGuards,
     UseInterceptors,
-    UploadedFile,
 } from "@nestjs/common";
 
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -35,11 +34,7 @@ export class AuthController {
             fileSize: 2 * 1024 * 1024
         }
     }))
-    async register(
-        @UploadedFile() file: any,
-        @Body() registerPayload: RegisterPayload
-    ): Promise<RegisterProxy> {
-        registerPayload.profileImage = file.buffer.toString('base64')
+    async register(@Body() registerPayload: RegisterPayload): Promise<RegisterProxy> {
         return await this.authService.register(registerPayload)
     }
 
