@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
@@ -22,9 +22,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     async createUser(registerUserPayload: RegisterUserPayload): Promise<RegisterProxy> {
         try {
-            return await this.repository.save(registerUserPayload)
+            const user = await this.repository.save(registerUserPayload)
+            return new RegisterProxy(user)
         } catch (error) {
-            throw new NotFoundException();
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -37,7 +38,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             const user = await this.repository.findOne({ where: { id } })
             return new UserProxy(user)
         } catch (error) {
-            throw new NotFoundException()
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 

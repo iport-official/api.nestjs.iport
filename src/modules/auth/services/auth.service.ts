@@ -26,29 +26,12 @@ export class AuthService {
     async register(registerPayload: RegisterPayload): Promise<RegisterProxy> {
         const hashedPassword = await hash(registerPayload.password, 10);
         try {
-            const {
-                id,
-                username,
-                email,
-                accountType,
-                createAt,
-                updateAt,
-                profileImage
-            } = await this.userService.createUser({
+            return await this.userService.createUser({
                 ...registerPayload,
                 password: hashedPassword
             })
-            return {
-                id,
-                username,
-                email,
-                accountType,
-                createAt,
-                updateAt,
-                profileImage
-            }
         } catch (error) {
-            console.error(error)
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -57,12 +40,17 @@ export class AuthService {
      * @param user stores the data that will be used to crete the jwt
      */
     async login(user: { email: string, id: string }): Promise<LoginProxy> {
-        return {
-            access_token: await this.jwtService.signAsync({
-                email: user.email,
-                sub: user.id
-            })
+        try {
+            return {
+                access_token: await this.jwtService.signAsync({
+                    email: user.email,
+                    sub: user.id
+                })
+            }
+        } catch (error) {
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
+
     }
 
     /**
@@ -79,7 +67,7 @@ export class AuthService {
             const { id, email } = user
             return { id, email }
         } catch (error) {
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST)
+            throw new HttpException('Wrong credentials provided', HttpStatus.UNAUTHORIZED)
         }
     }
 
@@ -96,7 +84,7 @@ export class AuthService {
             hashedPassword
         )
         if (!isPasswordMatching)
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST)
+            throw new HttpException('Wrong credentials provided', HttpStatus.UNAUTHORIZED)
     }
 
     //#endregion

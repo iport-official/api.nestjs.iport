@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { BaseArrayProxy } from 'src/common/base-array-proxy';
 
@@ -28,7 +28,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         try {
             return await this.repository.save({ ...categoryPayload })
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -40,7 +40,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         try {
             return await this.repository.findOne({ where: { id } })
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 
@@ -63,7 +63,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
 
             return { length, array }
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 

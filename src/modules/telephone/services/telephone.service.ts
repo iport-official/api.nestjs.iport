@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
 import { TelephoneEntity } from "src/typeorm/entities/telephone.entity";
@@ -38,7 +38,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
                 array: array.map(element => new TelephoneProxy(element))
             }
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
