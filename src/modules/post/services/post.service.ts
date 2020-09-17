@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, InternalServerErrorException, Post } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException, Post } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 import { PostEntity } from 'src/typeorm/entities/post.entity';
@@ -36,7 +36,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             })
             return new PostProxy(post)
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -53,7 +53,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .getOne()
             return new PostProxy(post)
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 
@@ -81,7 +81,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 array: array.map((entity: PostEntity) => new PostProxy(entity))
             }
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -106,12 +106,12 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
 
-                return {
-                    length,
-                    array: array.map((entity: PostEntity) => new PostProxy(entity))
-                }
+            return {
+                length,
+                array: array.map((entity: PostEntity) => new PostProxy(entity))
+            }
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 
@@ -126,7 +126,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             return new PostProxy(post)
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 

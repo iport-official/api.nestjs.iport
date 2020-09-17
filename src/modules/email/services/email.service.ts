@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
@@ -38,7 +38,7 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
                 array: array.map(element => new EmailProxy(element))
             }
         } catch (error) {
-            throw new InternalServerErrorException()
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
