@@ -8,11 +8,15 @@ import { jwtConstants } from './constants';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthController } from './controllers/auth.controller';
+import { TelephoneModule } from '../telephone/telephone.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
     imports: [
         forwardRef(() => UserModule),
         PassportModule,
+        TelephoneModule,
+        EmailModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '1h' }
