@@ -29,11 +29,6 @@ export class AuthController {
     * user in the database
      */
     @Post()
-    @UseInterceptors(FileInterceptor('profileImage', {
-        limits: {
-            fileSize: 2 * 1024 * 1024
-        }
-    }))
     async register(@Body() registerPayload: RegisterPayload): Promise<RegisterProxy> {
         return await this.authService.register(registerPayload)
     }
