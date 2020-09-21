@@ -22,7 +22,26 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     async createUser(registerUserPayload: RegisterUserPayload): Promise<RegisterProxy> {
         try {
-            const user = await this.repository.save(registerUserPayload)
+            const {
+                profileImage,
+                email,
+                password,
+                accountType,
+                username,
+                cpf,
+                cnpj,
+                cep
+            } = registerUserPayload
+            const user = await this.repository.save({
+                profileImage,
+                email,
+                password,
+                accountType,
+                username,
+                cpf,
+                cnpj,
+                cep                
+            })
             return new RegisterProxy(user)
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
