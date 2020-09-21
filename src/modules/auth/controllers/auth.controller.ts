@@ -4,10 +4,7 @@ import {
     Body,
     Request,
     UseGuards,
-    UseInterceptors,
 } from "@nestjs/common";
-
-import { FileInterceptor } from '@nestjs/platform-express'
 
 import { AuthService } from "../services/auth.service";
 import { RegisterPayload } from "../models/register.payload";
