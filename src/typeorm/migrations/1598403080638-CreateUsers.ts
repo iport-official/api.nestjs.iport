@@ -44,6 +44,22 @@ export class CreateUsers1598403080638 implements MigrationInterface {
                         isNullable: false
                     },
                     {
+                        name: 'cpf',
+                        type: 'varchar',
+                        length: '11',
+                    },
+                    {
+                        name: 'cnpj',
+                        type: 'varchar',
+                        length: '14',
+                    },
+                    {
+                        name: 'cep',
+                        type: 'varchar',
+                        length: '8',
+                        isNullable: false
+                    },
+                    {
                         name: 'createAt',
                         type: 'timestamp',
                         default: 'now()'

@@ -45,6 +45,25 @@ export class UserEntity extends BaseEntity{
     })
     accountType: AccountType
 
+    @Column({
+        type: 'varchar',
+        length: 11,
+    })
+    cpf: string
+
+    @Column({
+        type: 'varchar',
+        length: 14
+    })
+    cnpj: string
+
+    @Column({
+        type: 'varchar',
+        length: 8,
+        nullable: false
+    })
+    cep: string
+
     @OneToMany(type => PostEntity, post => post.user)
     posts: PostEntity[]
 
