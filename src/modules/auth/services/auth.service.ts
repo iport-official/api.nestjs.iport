@@ -1,11 +1,19 @@
 import { hash, compare } from 'bcrypt'
-import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
+import {
+    Injectable,
+    HttpException,
+    HttpStatus,
+    Inject,
+    forwardRef
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from '../../user/services/user.service';
 import { RegisterPayload } from '../models/register.payload';
 import { LoginProxy } from '../models/login.proxy';
 import { RegisterProxy } from '../models/register.proxy';
+import { TelephoneService } from 'src/modules/telephone/services/telephone.service';
+import { EmailService } from 'src/modules/email/services/email.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +21,8 @@ export class AuthService {
     constructor(
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
+        private readonly telephoneService: TelephoneService,
+        private readonly emailService: EmailService,
         private readonly jwtService: JwtService
     ) { }
 
@@ -26,10 +36,19 @@ export class AuthService {
     async register(registerPayload: RegisterPayload): Promise<RegisterProxy> {
         const hashedPassword = await hash(registerPayload.password, 10);
         try {
-            return await this.userService.createUser({
+            const user = await this.userService.createUser({
                 ...registerPayload,
                 password: hashedPassword
             })
+            await this.telephoneService.registerTelephones({
+                userId: user.id,
+                telephones: registerPayload.telephones
+            })
+            await this.emailService.registerEmails({
+                userId: user.id,
+                emails: registerPayload.emails
+            })
+            return user
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
