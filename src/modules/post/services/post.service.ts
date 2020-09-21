@@ -115,6 +115,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that can get the main post
+     */
     async getMainPost(): Promise<PostProxy> {
         try {
             const post = await this.repository

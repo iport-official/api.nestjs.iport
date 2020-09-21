@@ -79,6 +79,9 @@ export class PostController {
         return await this.postService.getByCategory(category, page)
     }
 
+    /**
+     * Method that can get the main post
+     */
     @UseGuards(JwtAuthGuard)
     @Get('main')
     async getMainPost(): Promise<PostProxy> {
