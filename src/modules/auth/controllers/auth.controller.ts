@@ -28,11 +28,6 @@ export class AuthController {
      * @param registerPayload stores the data that will be used to create a new user
      */
     @Post()
-    @UseInterceptors(FileInterceptor('profileImage', {
-        limits: {
-            fileSize: 2 * 1024 * 1024
-        }
-    }))
     async register(@Body() registerPayload: RegisterPayload): Promise<RegisterProxy> {
         return await this.authService.register(registerPayload)
     }
