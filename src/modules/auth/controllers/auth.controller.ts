@@ -4,6 +4,7 @@ import {
     Body,
     Request,
     UseGuards,
+    HttpCode
 } from "@nestjs/common";
 
 import { AuthService } from "../services/auth.service";
@@ -35,6 +36,7 @@ export class AuthController {
      */
     @UseGuards(LocalAuthGuard)
     @Post('/login')
+    @HttpCode(200)
     async login(@Request() credentials: any): Promise<LoginProxy> {
         return this.authService.login(credentials.user)
     }
