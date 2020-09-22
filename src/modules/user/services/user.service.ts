@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
@@ -11,6 +11,7 @@ import { UserProxy } from '../models/user.proxy';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
+    
     constructor(
         @InjectRepository(UserEntity)
         private readonly repository: Repository<UserEntity>
@@ -40,7 +41,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 username,
                 cpf,
                 cnpj,
-                cep                
+                cep
             })
             return new RegisterProxy(user)
         } catch (error) {
