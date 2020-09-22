@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Request } from '@nestjs/common';
+import { Controller, UseGuards, Get, Request, Patch, Body } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard';
 import { UserProxy } from '../models/user.proxy';
@@ -18,8 +18,8 @@ export class UserController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('profile')
-    async getProfile(@RequestUser() user: { id: string, username: string }): Promise<UserProxy> {
+    async getProfile(@RequestUser() user: { id: string }): Promise<UserProxy> {
         return await this.userService.getProfile(user.id)
     }
-
+    
 }
