@@ -39,6 +39,10 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         }
     }
 
+    /**
+     * Method that can delete a specific telephone
+     * @param id indicates the unique id that this telephone has
+     */
     public async deleteTelephone(id: string): Promise<void> {
         try {
             await this.repository.delete({ id })
@@ -47,6 +51,10 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         }
     }
 
+    /**
+     * Method that can delete all the user's telephones
+     * @param user indicates the user that will have all the telephones deleted
+     */
     public async deleteAllTelephonesByUser(user: UserEntity): Promise<void> {
         try {
             await this.repository.delete({ user })
