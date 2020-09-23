@@ -39,6 +39,10 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         }
     }
 
+    /**
+     * Method that can delete a specific email
+     * @param id indicates the unique id that this email has
+     */
     public async deleteEmail(id: string): Promise<void> {
         try {
             await this.repository.delete({ id })
@@ -47,6 +51,10 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         }
     }
 
+    /**
+     * Method that can delete all the user's emails
+     * @param user indicates the user that will have all the emails deleted
+     */
     public async deleteAllEmailsUsingByUser(user: UserEntity): Promise<void> {
         try {
             await this.repository.delete({ user })
