@@ -40,15 +40,11 @@ export class AuthService {
                 ...registerPayload,
                 password: hashedPassword
             })
-            await this.telephoneService.registerTelephones({
-                userId: user.id,
-                telephones: registerPayload.telephones
-            })
-            await this.emailService.registerEmails({
-                userId: user.id,
-                emails: registerPayload.emails
-            })
-            return user
+
+            await this.telephoneService.registerTelephones(registerPayload.telephones, user)
+            await this.emailService.registerEmails(registerPayload.emails, user)
+
+            return new RegisterProxy(user)
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
@@ -69,7 +65,6 @@ export class AuthService {
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
-
     }
 
     /**
@@ -83,8 +78,10 @@ export class AuthService {
         try {
             const user = await this.userService.findOne({ email: username })
             await this.verifyPassword(password, user.password)
-            const { id, email } = user
-            return { id, email }
+            return {
+                id: user.id,
+                email: user.email
+            }
         } catch (error) {
             throw new HttpException('Wrong credentials provided', HttpStatus.UNAUTHORIZED)
         }
