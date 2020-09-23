@@ -11,9 +11,9 @@ import { EmailModule } from '../email/email.module';
 
 @Module({
     imports: [
+        EmailModule,
+        TelephoneModule,
         forwardRef(() => AuthModule),
-        forwardRef(() => TelephoneModule),
-        forwardRef(() => EmailModule),
         TypeOrmModule.forFeature([UserEntity]),
     ],
     providers: [

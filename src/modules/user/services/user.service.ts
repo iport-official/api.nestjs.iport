@@ -27,7 +27,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that create new users
      * @param registerPayload stores the new user data
      */
-    async createUser(registerUserPayload: RegisterUserPayload): Promise<RegisterProxy> {
+    async createUser(registerUserPayload: RegisterUserPayload): Promise<UserEntity> {
         try {
             const {
                 profileImage,
@@ -39,7 +39,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 cnpj,
                 cep
             } = registerUserPayload
-            const user = await this.repository.save({
+            return await this.repository.save({
                 profileImage,
                 email,
                 password,
@@ -49,7 +49,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 cnpj,
                 cep
             })
-            return new RegisterProxy(user)
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
@@ -89,17 +88,13 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             .createQueryBuilder('users')
             .where({ id })
 
-        await this.telephoneService.deleteAllTelephonesUsingUserId(id)
-        await this.emailService.deleteAllEmailsUsingUserID(id)
+        const user = await queryBuilder.getOne()
 
-        await this.telephoneService.registerTelephones({
-            userId: id,
-            telephones
-        })
-        await this.emailService.registerEmails({
-            userId: id,
-            emails
-        })
+        await this.telephoneService.deleteAllTelephonesByUser(user)
+        await this.emailService.deleteAllEmailsUsingByUser(user)
+
+        await this.telephoneService.registerTelephones(telephones, user)
+        await this.emailService.registerEmails(emails, user)
 
         await queryBuilder
             .update({
@@ -113,7 +108,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             })
             .execute()
 
-        const user = await queryBuilder.getOne()
         return new UserProfileProxy(user)
     }
 
