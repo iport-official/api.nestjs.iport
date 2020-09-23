@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
 import { TelephoneEntity } from "src/typeorm/entities/telephone.entity";
@@ -14,9 +14,10 @@ import { UserProxy } from "src/modules/user/models/user.proxy";
 @Injectable()
 export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
 
-    constructor(
+    public constructor(
         @InjectRepository(TelephoneEntity)
         private readonly repository: Repository<TelephoneEntity>,
+        @Inject('UserService') 
         private readonly userService: UserService
     ) { super(repository) }
 
@@ -24,7 +25,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
      * Method that allows creating telephones and the associating them to users
      * @param telephonePayload indicates the array of telephones and the user id
      */
-    async registerTelephones(telephonePayload: TelephonePayload): Promise<BaseArrayProxy<TelephoneProxy>> {
+    public async registerTelephones(telephonePayload: TelephonePayload): Promise<BaseArrayProxy<TelephoneProxy>> {
         try {
             const user = await this.userService.findOne({ where: { id: telephonePayload.userId } })
             const array = await this.repository.save(telephonePayload.telephones.map(telephone => {
@@ -39,6 +40,23 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
             }
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    public async deleteTelephone(id: string): Promise<void> {
+        try {
+            await this.repository.delete({ id })
+        } catch (error) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+        }
+    }
+
+    public async deleteAllTelephonesUsingUserId(userId: string): Promise<void> {
+        try {
+            const user = await this.userService.findOne({ where: { id: userId } })
+            await this.repository.delete({ user })
+        } catch (error) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
     }
 
