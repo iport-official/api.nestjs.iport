@@ -6,7 +6,6 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { UserEntity } from 'src/typeorm/entities/user.entity';
 
 import { RegisterUserPayload } from '../models/register-user.payload';
-import { RegisterProxy } from 'src/modules/auth/models/register.proxy';
 import { UserProxy } from '../models/user.proxy';
 import { UserProfileProxy } from '../models/user-profile.proxy';
 import { UpdateUserPayload } from '../models/update-user.payload';
@@ -67,6 +66,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         }
     }
 
+    /**
+     * Method that can update the user data
+     * @param id indicates the which user will be updated
+     * @param updateUserPayload indicates the new user's data
+     */
     async updateProfile(
         id: string,
         updateUserPayload: UpdateUserPayload
