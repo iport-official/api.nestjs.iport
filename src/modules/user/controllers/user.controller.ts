@@ -24,6 +24,11 @@ export class UserController {
         return await this.userService.getProfile(user.id)
     }
 
+    /**
+     * Method that can udpate the user data
+     * @param id indicates which is the id of the user that will have him data changed
+     * @param updateUserPayload indicates the new data of the user
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     async updateProfile(

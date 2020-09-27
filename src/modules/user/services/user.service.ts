@@ -67,6 +67,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         }
     }
 
+    /**
+     * Method that can udpate the user data
+     * @param id indicates which is the id of the user that will have him data changed
+     * @param updateUserPayload indicates the new data of the user
+     */
     async updateProfile(
         id: string,
         updateUserPayload: UpdateUserPayload
