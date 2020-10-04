@@ -28,7 +28,7 @@ export class AuthService {
 
     /**
      * Method that register the user in the database
-     * It is resposible for encrypting the password before send it to the databse
+     * It is responsible for encrypting the password before send it to the database
      * Before return the new created user is changes the password to 'undefined'
      * @param registerPayload stores the data that will be used to create the new
      * user in the database
