@@ -24,7 +24,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
     /**
      * Method that create new users
-     * @param registerPayload stores the new user data
+     * @param registerUserPayload stores the new user data
      */
     async createUser(registerUserPayload: RegisterUserPayload): Promise<UserEntity> {
         try {
