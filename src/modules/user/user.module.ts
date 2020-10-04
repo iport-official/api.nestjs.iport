@@ -8,6 +8,8 @@ import { AuthService } from '../auth/services/auth.service';
 import { AuthModule } from '../auth/auth.module';
 import { TelephoneModule } from '../telephone/telephone.module';
 import { EmailModule } from '../email/email.module';
+import { CompanyUserService } from './services/company-user.service';
+import { PersonalUserService } from './services/personal-user.service';
 
 @Module({
     imports: [
@@ -18,9 +20,15 @@ import { EmailModule } from '../email/email.module';
     ],
     providers: [
         UserService,
+        CompanyUserService,
+        PersonalUserService,
         AuthService,
     ],
     controllers: [UserController],
-    exports: [UserService],
+    exports: [
+        UserService,
+        CompanyUserService,
+        PersonalUserService
+    ],
 })
 export class UserModule { }
