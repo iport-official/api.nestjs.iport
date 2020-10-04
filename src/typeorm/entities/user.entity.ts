@@ -10,7 +10,7 @@ import { PersonalUserEntity } from './personal-user.entity';
 import { CompanyUserEntity } from './company-user.entity';
 
 @Entity('users')
-export class UserEntity extends BaseEntity{
+export class UserEntity extends BaseEntity {
 
     @Column({
         type: 'text'
@@ -47,25 +47,6 @@ export class UserEntity extends BaseEntity{
     })
     accountType: AccountType
 
-    @Column({
-        type: 'varchar',
-        length: 11,
-    })
-    cpf: string
-
-    @Column({
-        type: 'varchar',
-        length: 14
-    })
-    cnpj: string
-
-    @Column({
-        type: 'varchar',
-        length: 8,
-        nullable: false
-    })
-    cep: string
-
     @OneToMany(type => PostEntity, post => post.user)
     posts: PostEntity[]
 
@@ -94,3 +75,38 @@ export class UserEntity extends BaseEntity{
     companyUser: CompanyUserEntity
 
 }
+
+/*
+
+{
+    id: string
+    profileImage: string,
+    email: string,
+    password: string,
+    accountType: string,
+    username: string,
+    city: string,
+    state: string,
+    content: {
+        cnpj: string
+        street: string,
+        number: number,
+    }
+}
+
+{
+    id: string
+    profileImage: string,
+    email: string,
+    password: string,
+    accountType: string,
+    username: string,
+    city: string,
+    state: string,
+    content: {
+        cpf,
+        highlights,
+    }
+}
+
+*/
