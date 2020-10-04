@@ -105,10 +105,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 profileImage,
                 email,
                 username,
-                accountType,
-                cep,
-                cnpj,
-                cpf,
+                accountType
             })
             .execute()
 
