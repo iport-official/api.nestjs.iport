@@ -10,13 +10,19 @@ import { TelephoneModule } from '../telephone/telephone.module';
 import { EmailModule } from '../email/email.module';
 import { CompanyUserService } from './services/company-user.service';
 import { PersonalUserService } from './services/personal-user.service';
+import { CompanyUserEntity } from '../../typeorm/entities/company-user.entity';
+import { PersonalUserEntity } from '../../typeorm/entities/personal-user.entity';
 
 @Module({
     imports: [
         EmailModule,
         TelephoneModule,
         forwardRef(() => AuthModule),
-        TypeOrmModule.forFeature([UserEntity]),
+        TypeOrmModule.forFeature([
+            UserEntity,
+            PersonalUserEntity,
+            CompanyUserEntity
+        ]),
     ],
     providers: [
         UserService,
