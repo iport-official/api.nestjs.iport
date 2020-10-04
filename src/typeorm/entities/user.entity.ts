@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from "typeorm";
+import { Entity, Column, OneToMany, OneToOne } from 'typeorm';
 
 import { BaseEntity } from "src/common/base-entity";
 import { PostEntity } from "./post.entity";
@@ -6,6 +6,8 @@ import { TelephoneEntity } from "./telephone.entity";
 import { EmailEntity } from "./email.entity";
 
 import { AccountType } from "src/models/enums/account.types";
+import { PersonalUserEntity } from './personal-user.entity';
+import { CompanyUserEntity } from './company-user.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity{
@@ -67,10 +69,28 @@ export class UserEntity extends BaseEntity{
     @OneToMany(type => PostEntity, post => post.user)
     posts: PostEntity[]
 
-    @OneToMany(type => TelephoneEntity, telephone => telephone.user)
+    @OneToMany(
+        type => TelephoneEntity,
+            telephone => telephone.user
+    )
     telephones: TelephoneEntity[]
 
-    @OneToMany(type => EmailEntity, email => email.user)
+    @OneToMany(
+        type => EmailEntity,
+            email => email.user
+    )
     emails: EmailEntity[]
+
+    @OneToOne(
+        type => PersonalUserEntity,
+        personalUser => personalUser.user
+    )
+    personalUser: PersonalUserEntity
+
+    @OneToOne(
+        type => CompanyUserEntity,
+        companyUser => companyUser.user
+    )
+    companyUser: CompanyUserEntity
 
 }
