@@ -1,4 +1,3 @@
-import { UserProxy } from "src/modules/user/models/user.proxy";
 import { TelephoneEntity } from "src/typeorm/entities/telephone.entity";
 
 export class TelephoneBaseProxy {
@@ -13,16 +12,6 @@ export class TelephoneBaseProxy {
         this.telephone = entity.telephone
         this.createAt = entity.createAt
         this.updateAt = entity.createAt
-    }
-
-}
-
-export class TelephoneProxy {
-
-    user: UserProxy
-
-    constructor(entity: TelephoneEntity) {
-        this.user = new UserProxy(entity.user)
     }
 
 }

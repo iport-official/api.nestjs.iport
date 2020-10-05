@@ -1,4 +1,3 @@
-import { UserProxy } from "src/modules/user/models/user.proxy"
 import { EmailEntity } from "src/typeorm/entities/email.entity"
 
 export class EmailBaseProxy {
@@ -14,15 +13,4 @@ export class EmailBaseProxy {
         this.createAt = entity.createAt
         this.updateAt = entity.updateAt
     }
-}
-
-export class EmailProxy extends EmailBaseProxy {
-
-    user: UserProxy
-
-    constructor(entity: EmailEntity) {
-        super(entity)
-        this.user = new UserProxy(entity.user)
-    }
-
 }

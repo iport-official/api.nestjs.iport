@@ -7,7 +7,7 @@ export class PostProxy {
     title: string
     description: string
     category: string
-    recomendations: number
+    recommendations: number
     likes: number
     salary: number
     post: string
@@ -24,7 +24,7 @@ export class PostProxy {
         this.title = entity.title
         this.description = entity.description
         this.category = entity.category
-        this.recomendations = entity.recomendations
+        this.recommendations = entity.recommendations
         this.likes = entity.likes
         this.salary = entity.salary
         this.post = entity.post

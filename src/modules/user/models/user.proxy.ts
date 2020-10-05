@@ -1,5 +1,7 @@
-import { AccountType } from "src/models/enums/account.types";
-import { UserEntity } from "src/typeorm/entities/user.entity";
+import { AccountType } from 'src/models/enums/account.types';
+import { UserEntity } from 'src/typeorm/entities/user.entity';
+import { PersonalUserProxy } from './personal-user.proxy';
+import { CompanyUserProxy } from './company-user.proxy';
 
 export class UserProxy {
 
@@ -9,6 +11,7 @@ export class UserProxy {
     accountType: AccountType
     createAt: Date
     updateAt: Date
+    content: PersonalUserProxy | CompanyUserProxy
     profileImage: string
 
     constructor(entity: UserEntity) {
@@ -19,6 +22,10 @@ export class UserProxy {
         this.createAt = entity.createAt
         this.updateAt = entity.updateAt
         this.profileImage = entity.profileImage
+
+        this.content = entity.accountType === AccountType.PERSONAL
+            ? new PersonalUserProxy(entity.personalUser)
+            : new CompanyUserProxy(entity.companyUser)
     }
 
 }
