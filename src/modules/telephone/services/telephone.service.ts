@@ -5,7 +5,7 @@ import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
 import { TelephoneEntity } from "src/typeorm/entities/telephone.entity";
 import { BaseArrayProxy } from "src/common/base-array-proxy";
-import { TelephoneProxy } from "../models/telephone.proxy";
+import { TelephoneBaseProxy } from '../models/telephone.proxy';
 
 import { UserProxy } from "src/modules/user/models/user.proxy";
 import { UserEntity } from "src/typeorm/entities/user.entity";
@@ -20,9 +20,10 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
 
     /**
      * Method that allows creating telephones and the associating them to users
-     * @param telephonePayload indicates the array of telephones and the user id
+     * @param telephones stores an array with all the user telephones
+     * @param user stores the user entity
      */
-    public async registerTelephones(telephones: string[], user: UserEntity): Promise<BaseArrayProxy<TelephoneProxy>> {
+    public async registerTelephones(telephones: string[], user: UserEntity): Promise<BaseArrayProxy<TelephoneBaseProxy>> {
         try {
             const array = await this.repository.save(telephones.map(telephone => {
                 return {
@@ -32,13 +33,18 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
             }))
             return {
                 length: array.length,
-                array: array.map(element => new TelephoneProxy(element))
+                array: array.map(element => new TelephoneBaseProxy(element))
             }
         } catch (error) {
+            console.log(error);
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
+    /**
+     * Method that can delete a specific telephone
+     * @param id indicates the unique id that this telephone has
+     */
     public async deleteTelephone(id: string): Promise<void> {
         try {
             await this.repository.delete({ id })
@@ -47,6 +53,10 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         }
     }
 
+    /**
+     * Method that can delete all the user's telephones
+     * @param user indicates the user that will have all the telephones deleted
+     */
     public async deleteAllTelephonesByUser(user: UserEntity): Promise<void> {
         try {
             await this.repository.delete({ user })

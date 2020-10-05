@@ -32,7 +32,7 @@ export class PostEntity extends BaseEntity {
         type: "integer",
         default: 0
     })
-    recomendations: number
+    recommendations: number
 
     @Column({
         type: "integer",

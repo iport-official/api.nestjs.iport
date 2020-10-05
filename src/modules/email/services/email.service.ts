@@ -1,11 +1,11 @@
 import { Repository } from "typeorm";
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
 import { EmailEntity } from "src/typeorm/entities/email.entity";
 import { BaseArrayProxy } from "src/common/base-array-proxy";
-import { EmailProxy } from "../models/email.proxy";
+import { EmailBaseProxy, EmailProxy } from '../models/email.proxy';
 
 import { UserProxy } from "src/modules/user/models/user.proxy";
 import { UserEntity } from "src/typeorm/entities/user.entity";
@@ -32,13 +32,17 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
             }))
             return {
                 length: array.length,
-                array: array.map(element => new EmailProxy(element))
+                array: array.map(element => new EmailBaseProxy(element))
             }
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
+    /**
+     * Method that can delete a specific email
+     * @param id indicates the unique id that this email has
+     */
     public async deleteEmail(id: string): Promise<void> {
         try {
             await this.repository.delete({ id })
@@ -47,6 +51,10 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         }
     }
 
+    /**
+     * Method that can delete all the user's emails
+     * @param user indicates the user that will have all the emails deleted
+     */
     public async deleteAllEmailsUsingByUser(user: UserEntity): Promise<void> {
         try {
             await this.repository.delete({ user })

@@ -1,31 +1,39 @@
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm'
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 import { UserEntity } from 'src/typeorm/entities/user.entity';
 
 import { RegisterUserPayload } from '../models/register-user.payload';
-import { RegisterProxy } from 'src/modules/auth/models/register.proxy';
 import { UserProxy } from '../models/user.proxy';
 import { UserProfileProxy } from '../models/user-profile.proxy';
 import { UpdateUserPayload } from '../models/update-user.payload';
 import { EmailService } from 'src/modules/email/services/email.service';
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service';
+import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload';
+import { RegisterCompanyUserPayload } from '../models/register-company-user.payload';
+import { PersonalUserService } from './personal-user.service';
+import { CompanyUserService } from './company-user.service';
+import { AccountType } from '../../../models/enums/account.types';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
 
     constructor(
         @InjectRepository(UserEntity)
-        private readonly repository: Repository<UserEntity>,
+        private readonly userRepository: Repository<UserEntity>,
+        private readonly personalUserService: PersonalUserService,
+        private readonly companyUserService: CompanyUserService,
         private readonly telephoneService: TelephoneService,
-        private readonly emailService: EmailService
-    ) { super(repository) }
+        private readonly emailService: EmailService,
+    ) {
+        super(userRepository);
+    }
 
     /**
      * Method that create new users
-     * @param registerPayload stores the new user data
+     * @param registerUserPayload stores the new user data
      */
     async createUser(registerUserPayload: RegisterUserPayload): Promise<UserEntity> {
         try {
@@ -35,22 +43,35 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 password,
                 accountType,
                 username,
-                cpf,
-                cnpj,
-                cep
-            } = registerUserPayload
-            return await this.repository.save({
+                city,
+                state,
+            } = registerUserPayload;
+
+            const personalUser = accountType === AccountType.PERSONAL
+                ? await this.personalUserService.registerPersonalAccount(
+                    registerUserPayload.content as RegisterPersonalUserPayload,
+                )
+                : null;
+
+            const companyUser = accountType === AccountType.COMPANY
+                ? await this.companyUserService.registerCompanyAccount(
+                    registerUserPayload.content as RegisterCompanyUserPayload,
+                )
+                : null;
+
+            return await this.userRepository.save({
                 profileImage,
                 email,
                 password,
                 accountType,
                 username,
-                cpf,
-                cnpj,
-                cep
-            })
+                city,
+                state,
+                personalUser,
+                companyUser,
+            });
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,21 +81,21 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     async getProfile(id: string): Promise<UserProxy> {
         try {
-            const user = await this.repository.findOne({ where: { id } })
-            return new UserProxy(user)
+            const user = await this.userRepository.findOne({ where: { id } });
+            return new UserProxy(user);
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
     }
 
     /**
-     * Method that can udpate the user data
-     * @param id indicates which is the id of the user that will have him data changed
-     * @param updateUserPayload indicates the new data of the user
+     * Method that can update the user data
+     * @param id indicates the which user will be updated
+     * @param updateUserPayload indicates the new user's data
      */
     async updateProfile(
         id: string,
-        updateUserPayload: UpdateUserPayload
+        updateUserPayload: UpdateUserPayload,
     ): Promise<UserProfileProxy> {
 
         const {
@@ -82,24 +103,21 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             email,
             username,
             accountType,
-            cep,
-            cnpj,
-            cpf,
             telephones,
-            emails
-        } = updateUserPayload
+            emails,
+        } = updateUserPayload;
 
-        const queryBuilder = this.repository
+        const queryBuilder = this.userRepository
             .createQueryBuilder('users')
-            .where({ id })
+            .where({ id });
 
-        const user = await queryBuilder.getOne()
+        const user = await queryBuilder.getOne();
 
-        await this.telephoneService.deleteAllTelephonesByUser(user)
-        await this.emailService.deleteAllEmailsUsingByUser(user)
+        await this.telephoneService.deleteAllTelephonesByUser(user);
+        await this.emailService.deleteAllEmailsUsingByUser(user);
 
-        await this.telephoneService.registerTelephones(telephones, user)
-        await this.emailService.registerEmails(emails, user)
+        await this.telephoneService.registerTelephones(telephones, user);
+        await this.emailService.registerEmails(emails, user);
 
         await queryBuilder
             .update({
@@ -107,13 +125,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 email,
                 username,
                 accountType,
-                cep,
-                cnpj,
-                cpf,
             })
-            .execute()
+            .execute();
 
-        return new UserProfileProxy(user)
+        return new UserProfileProxy(user);
     }
 
 }

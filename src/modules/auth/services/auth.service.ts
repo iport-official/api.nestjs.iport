@@ -9,11 +9,11 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 import { UserService } from '../../user/services/user.service';
-import { RegisterPayload } from '../models/register.payload';
 import { LoginProxy } from '../models/login.proxy';
 import { RegisterProxy } from '../models/register.proxy';
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service';
 import { EmailService } from 'src/modules/email/services/email.service';
+import { RegisterUserPayload } from '../../user/models/register-user.payload';
 
 @Injectable()
 export class AuthService {
@@ -28,21 +28,21 @@ export class AuthService {
 
     /**
      * Method that register the user in the database
-     * It is resposible for encrypting the password before send it to the databse
+     * It is responsible for encrypting the password before send it to the database
      * Before return the new created user is changes the password to 'undefined'
-     * @param registerPayload stores the data that will be used to create the new
+     * @param registerUserPayload stores the data that will be used to create the new
      * user in the database
     */
-    async register(registerPayload: RegisterPayload): Promise<RegisterProxy> {
-        const hashedPassword = await hash(registerPayload.password, 10);
+    async register(registerUserPayload: RegisterUserPayload): Promise<RegisterProxy> {
+        const hashedPassword = await hash(registerUserPayload.password, 10);
         try {
             const user = await this.userService.createUser({
-                ...registerPayload,
+                ...registerUserPayload,
                 password: hashedPassword
             })
 
-            await this.telephoneService.registerTelephones(registerPayload.telephones, user)
-            await this.emailService.registerEmails(registerPayload.emails, user)
+            await this.telephoneService.registerTelephones(registerUserPayload.telephones, user)
+            await this.emailService.registerEmails(registerUserPayload.emails, user)
 
             return new RegisterProxy(user)
         } catch (error) {
