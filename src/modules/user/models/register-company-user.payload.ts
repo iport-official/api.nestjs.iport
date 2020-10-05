@@ -1,7 +1,6 @@
 export class RegisterCompanyUserPayload {
-    city: string
     street: string
-    numero: number
+    number: number
     cep: string
     cpnj: string
 }
