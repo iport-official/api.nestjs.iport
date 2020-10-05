@@ -8,10 +8,10 @@ import {
 } from "@nestjs/common";
 
 import { AuthService } from "../services/auth.service";
-import { RegisterPayload } from "../models/register.payload";
 import { LocalAuthGuard } from "../../../guards/local/local-auth.guard";
 import { LoginProxy } from "../models/login.proxy";
 import { RegisterProxy } from "../models/register.proxy";
+import { RegisterUserPayload } from '../../user/models/register-user.payload';
 
 @Controller('users')
 export class AuthController {
@@ -22,11 +22,11 @@ export class AuthController {
      * Method that register the user in the database
     * It is responsible for encrypting the password before send it to the database
     * Before return the new created user is changes the password to 'undefined'
-     * @param registerPayload stores the data that will be used to create a new user
+     * @param registerUserPayload stores the data that will be used to create a new user
      */
     @Post()
-    async register(@Body() registerPayload: RegisterPayload): Promise<RegisterProxy> {
-        return await this.authService.register(registerPayload)
+    async register(@Body() registerUserPayload: RegisterUserPayload): Promise<RegisterProxy> {
+        return await this.authService.register(registerUserPayload)
     }
 
     /**
