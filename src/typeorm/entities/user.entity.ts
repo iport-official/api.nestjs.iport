@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 
 import { BaseEntity } from "src/common/base-entity";
 import { PostEntity } from "./post.entity";
@@ -42,10 +42,32 @@ export class UserEntity extends BaseEntity {
 
     @Column({
         type: 'varchar',
+        length: 50,
+        nullable: false
+    })
+    city: string
+
+    @Column({
+        type: 'varchar',
+        length: 2,
+        nullable:  false
+    })
+    state: string
+
+    @Column({
+        type: 'varchar',
         length: 8,
         nullable: false
     })
     accountType: AccountType
+
+    @OneToOne(type => PersonalUserEntity)
+    @JoinColumn()
+    personalUser: PersonalUserEntity
+
+    @OneToOne(type => CompanyUserEntity)
+    @JoinColumn()
+    companyUser: CompanyUserEntity
 
     @OneToMany(type => PostEntity, post => post.user)
     posts: PostEntity[]
@@ -61,18 +83,6 @@ export class UserEntity extends BaseEntity {
             email => email.user
     )
     emails: EmailEntity[]
-
-    @OneToOne(
-        type => PersonalUserEntity,
-        personalUser => personalUser.user
-    )
-    personalUser: PersonalUserEntity
-
-    @OneToOne(
-        type => CompanyUserEntity,
-        companyUser => companyUser.user
-    )
-    companyUser: CompanyUserEntity
 
 }
 
