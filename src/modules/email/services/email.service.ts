@@ -5,7 +5,7 @@ import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 
 import { EmailEntity } from "src/typeorm/entities/email.entity";
 import { BaseArrayProxy } from "src/common/base-array-proxy";
-import { EmailProxy } from "../models/email.proxy";
+import { EmailBaseProxy, EmailProxy } from '../models/email.proxy';
 
 import { UserProxy } from "src/modules/user/models/user.proxy";
 import { UserEntity } from "src/typeorm/entities/user.entity";
@@ -32,7 +32,7 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
             }))
             return {
                 length: array.length,
-                array: array.map(element => new EmailProxy(element))
+                array: array.map(element => new EmailBaseProxy(element))
             }
         } catch (error) {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
