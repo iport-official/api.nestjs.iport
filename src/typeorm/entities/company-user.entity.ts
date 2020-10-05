@@ -1,9 +1,8 @@
-import { Column, Entity } from 'typeorm';
-import { BaseEntity } from '../../common/base-entity';
+import { Column, Entity } from 'typeorm'
+import { BaseEntity } from '../../common/base-entity'
 
 @Entity('companyUsers')
 export class CompanyUserEntity extends BaseEntity {
-
     @Column({
         type: 'varchar'
     })
@@ -23,5 +22,4 @@ export class CompanyUserEntity extends BaseEntity {
         type: 'varchar'
     })
     cnpj: string
-
 }

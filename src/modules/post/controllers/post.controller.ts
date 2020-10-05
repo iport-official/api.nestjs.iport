@@ -7,24 +7,21 @@ import {
     Query,
     UseInterceptors,
     UploadedFile
-} from '@nestjs/common';
+} from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
-import { PostService } from '../services/post.service';
+import { PostService } from '../services/post.service'
 
-import { BaseArrayProxy } from 'src/common/base-array-proxy';
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
-import { CreatePostPayload } from '../models/create-post.payload';
-import { PostProxy } from '../models/post.proxy';
+import { CreatePostPayload } from '../models/create-post.payload'
+import { PostProxy } from '../models/post.proxy'
 
-import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
 
 @Controller('posts')
 export class PostController {
-
-    constructor(
-        private readonly postService: PostService
-    ) { }
+    constructor(private readonly postService: PostService) {}
 
     /**
      * Method that can create posts
@@ -32,11 +29,13 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Post()
-    @UseInterceptors(FileInterceptor('image', {
-        limits: {
-            fileSize: 2 * 1024 * 1024
-        }
-    }))
+    @UseInterceptors(
+        FileInterceptor('image', {
+            limits: {
+                fileSize: 2 * 1024 * 1024
+            }
+        })
+    )
     async create(
         @UploadedFile() file: any,
         @Body() createPostPayload: CreatePostPayload
@@ -61,7 +60,9 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('highlights')
-    async getHighlights(@Query('page') page: number): Promise<BaseArrayProxy<PostProxy>> {
+    async getHighlights(
+        @Query('page') page: number
+    ): Promise<BaseArrayProxy<PostProxy>> {
         return await this.postService.getHighlights(page)
     }
 
@@ -87,5 +88,4 @@ export class PostController {
     async getMainPost(): Promise<PostProxy> {
         return await this.postService.getMainPost()
     }
-
 }

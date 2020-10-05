@@ -1,7 +1,6 @@
-import { EmailEntity } from "src/typeorm/entities/email.entity"
+import { EmailEntity } from 'src/typeorm/entities/email.entity'
 
 export class EmailBaseProxy {
-
     id: string
     email: string
     createAt: Date

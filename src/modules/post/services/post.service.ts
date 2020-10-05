@@ -1,25 +1,26 @@
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { HttpException, HttpStatus, Injectable, InternalServerErrorException, Post } from '@nestjs/common';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
-import { PostEntity } from 'src/typeorm/entities/post.entity';
-import { CreatePostPayload } from '../models/create-post.payload';
-import { BaseArrayProxy } from 'src/common/base-array-proxy';
-import { PostProxy } from '../models/post.proxy';
+import { PostEntity } from 'src/typeorm/entities/post.entity'
+import { CreatePostPayload } from '../models/create-post.payload'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { PostProxy } from '../models/post.proxy'
 
-import { UserService } from 'src/modules/user/services/user.service';
+import { UserService } from 'src/modules/user/services/user.service'
 
 const contentInPage = 5
 
 @Injectable()
 export class PostService extends TypeOrmCrudService<PostEntity> {
-
     constructor(
         @InjectRepository(PostEntity)
         private readonly repository: Repository<PostEntity>,
         private readonly userService: UserService
-    ) { super(repository) }
+    ) {
+        super(repository)
+    }
 
     /**
      * Method that adds a new post in the database
@@ -28,7 +29,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     async create(createPostPayload: CreatePostPayload): Promise<PostProxy> {
         try {
-            const user = await this.userService.findOne({ where: { id: createPostPayload.userId } })
+            const user = await this.userService.findOne({
+                where: { id: createPostPayload.userId }
+            })
             createPostPayload.userId = undefined
             const post = await this.repository.save({
                 ...createPostPayload,
@@ -36,7 +39,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             })
             return new PostProxy(post)
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -67,8 +73,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .createQueryBuilder('posts')
                 .orderBy('posts.recomendations', 'DESC')
 
-            const length = await queryBuilder
-                .getCount()
+            const length = await queryBuilder.getCount()
 
             const array = await queryBuilder
                 .offset(page * contentInPage)
@@ -81,7 +86,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 array: array.map((entity: PostEntity) => new PostProxy(entity))
             }
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -90,15 +98,17 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param category inidicates which category the user want
      * @param page indicates which page the user want to get
      */
-    async getByCategory(category: string, page: number): Promise<BaseArrayProxy<PostProxy>> {
+    async getByCategory(
+        category: string,
+        page: number
+    ): Promise<BaseArrayProxy<PostProxy>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
                 .where({ category })
                 .orderBy('posts.recomendations', 'DESC')
 
-            const length = await queryBuilder
-                .getCount()
+            const length = await queryBuilder.getCount()
 
             const array = await queryBuilder
                 .offset(page * contentInPage)
@@ -123,14 +133,19 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             const post = await this.repository
                 .createQueryBuilder('posts')
                 .select()
-                .addSelect('MAX(posts.recomendations * 0.7 * posts.likes * 0.3)', 'MAX')
+                .addSelect(
+                    'MAX(posts.recomendations * 0.7 * posts.likes * 0.3)',
+                    'MAX'
+                )
                 .leftJoinAndSelect('posts.user', 'user')
                 .getOne()
 
             return new PostProxy(post)
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
-
 }

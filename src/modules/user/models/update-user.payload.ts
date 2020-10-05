@@ -1,7 +1,6 @@
-import { AccountType } from "src/models/enums/account.types"
+import { AccountType } from 'src/models/enums/account.types'
 
 export class UpdateUserPayload {
-
     profileImage?: string
     email?: string
     password?: string
@@ -12,5 +11,4 @@ export class UpdateUserPayload {
     cep?: string
     telephones?: string[]
     emails?: string[]
-
 }

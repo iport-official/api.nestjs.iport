@@ -1,7 +1,11 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
+import {
+    MigrationInterface,
+    QueryRunner,
+    Table,
+    TableForeignKey
+} from 'typeorm'
 
 export class CreatePost1598573661248 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
@@ -15,7 +19,7 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     },
                     {
                         name: 'image',
-                        type: 'text',
+                        type: 'text'
                     },
                     {
                         name: 'title',
@@ -90,22 +94,24 @@ export class CreatePost1598573661248 implements MigrationInterface {
                     {
                         name: 'userId',
                         type: 'varchar',
-                        isNullable: false,
+                        isNullable: false
                     }
                 ]
             })
         )
 
-        await queryRunner.createForeignKey('posts', new TableForeignKey({
-            columnNames: ['userId'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'users',
-            onDelete: 'CASCADE'
-        }))
+        await queryRunner.createForeignKey(
+            'posts',
+            new TableForeignKey({
+                columnNames: ['userId'],
+                referencedColumnNames: ['id'],
+                referencedTableName: 'users',
+                onDelete: 'CASCADE'
+            })
+        )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable('posts')
     }
-
 }

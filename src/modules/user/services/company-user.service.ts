@@ -3,15 +3,16 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { CompanyUserEntity } from '../../../typeorm/entities/company-user.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { RegisterCompanyUserPayload } from '../models/register-company-user.payload';
+import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
 
 @Injectable()
 export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
-
     public constructor(
         @InjectRepository(CompanyUserEntity)
         private readonly repository: Repository<CompanyUserEntity>
-    ) { super(repository) }
+    ) {
+        super(repository)
+    }
 
     public async registerCompanyAccount(
         registerCompanyAccountPayload: RegisterCompanyUserPayload
@@ -20,7 +21,6 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
     }
 
     public async getCompanyAccount(id: string): Promise<CompanyUserEntity> {
-        return await this.repository.findOne({where:{id}})
+        return await this.repository.findOne({ where: { id } })
     }
-
 }

@@ -1,10 +1,8 @@
-import { Controller } from "@nestjs/common";
+import { Controller } from '@nestjs/common'
 
 @Controller('users/telephones')
 export class TelephoneController {
-
-    public constructor() { }
-
+    public constructor() {}
 }
 
 //#region Old code

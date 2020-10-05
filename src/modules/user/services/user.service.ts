@@ -1,41 +1,42 @@
-import { Repository } from 'typeorm';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { Repository } from 'typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
-import { UserEntity } from 'src/typeorm/entities/user.entity';
+import { UserEntity } from 'src/typeorm/entities/user.entity'
 
-import { RegisterUserPayload } from '../models/register-user.payload';
-import { UserProxy } from '../models/user.proxy';
-import { UserProfileProxy } from '../models/user-profile.proxy';
-import { UpdateUserPayload } from '../models/update-user.payload';
-import { EmailService } from 'src/modules/email/services/email.service';
-import { TelephoneService } from 'src/modules/telephone/services/telephone.service';
-import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload';
-import { RegisterCompanyUserPayload } from '../models/register-company-user.payload';
-import { PersonalUserService } from './personal-user.service';
-import { CompanyUserService } from './company-user.service';
-import { AccountType } from '../../../models/enums/account.types';
+import { RegisterUserPayload } from '../models/register-user.payload'
+import { UserProxy } from '../models/user.proxy'
+import { UserProfileProxy } from '../models/user-profile.proxy'
+import { UpdateUserPayload } from '../models/update-user.payload'
+import { EmailService } from 'src/modules/email/services/email.service'
+import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
+import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload'
+import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
+import { PersonalUserService } from './personal-user.service'
+import { CompanyUserService } from './company-user.service'
+import { AccountType } from '../../../models/enums/account.types'
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
-
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly personalUserService: PersonalUserService,
         private readonly companyUserService: CompanyUserService,
         private readonly telephoneService: TelephoneService,
-        private readonly emailService: EmailService,
+        private readonly emailService: EmailService
     ) {
-        super(userRepository);
+        super(userRepository)
     }
 
     /**
      * Method that create new users
      * @param registerUserPayload stores the new user data
      */
-    async createUser(registerUserPayload: RegisterUserPayload): Promise<UserEntity> {
+    async createUser(
+        registerUserPayload: RegisterUserPayload
+    ): Promise<UserEntity> {
         try {
             const {
                 profileImage,
@@ -44,20 +45,22 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 accountType,
                 username,
                 city,
-                state,
-            } = registerUserPayload;
+                state
+            } = registerUserPayload
 
-            const personalUser = accountType === AccountType.PERSONAL
-                ? await this.personalUserService.registerPersonalAccount(
-                    registerUserPayload.content as RegisterPersonalUserPayload,
-                )
-                : null;
+            const personalUser =
+                accountType === AccountType.PERSONAL
+                    ? await this.personalUserService.registerPersonalAccount(
+                          registerUserPayload.content as RegisterPersonalUserPayload
+                      )
+                    : null
 
-            const companyUser = accountType === AccountType.COMPANY
-                ? await this.companyUserService.registerCompanyAccount(
-                    registerUserPayload.content as RegisterCompanyUserPayload,
-                )
-                : null;
+            const companyUser =
+                accountType === AccountType.COMPANY
+                    ? await this.companyUserService.registerCompanyAccount(
+                          registerUserPayload.content as RegisterCompanyUserPayload
+                      )
+                    : null
 
             return await this.userRepository.save({
                 profileImage,
@@ -68,10 +71,13 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 city,
                 state,
                 personalUser,
-                companyUser,
-            });
+                companyUser
+            })
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -81,10 +87,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     async getProfile(id: string): Promise<UserProxy> {
         try {
-            const user = await this.userRepository.findOne({ where: { id } });
-            return new UserProxy(user);
+            const user = await this.userRepository.findOne({ where: { id } })
+            return new UserProxy(user)
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 
@@ -95,40 +101,38 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     async updateProfile(
         id: string,
-        updateUserPayload: UpdateUserPayload,
+        updateUserPayload: UpdateUserPayload
     ): Promise<UserProfileProxy> {
-
         const {
             profileImage,
             email,
             username,
             accountType,
             telephones,
-            emails,
-        } = updateUserPayload;
+            emails
+        } = updateUserPayload
 
         const queryBuilder = this.userRepository
             .createQueryBuilder('users')
-            .where({ id });
+            .where({ id })
 
-        const user = await queryBuilder.getOne();
+        const user = await queryBuilder.getOne()
 
-        await this.telephoneService.deleteAllTelephonesByUser(user);
-        await this.emailService.deleteAllEmailsUsingByUser(user);
+        await this.telephoneService.deleteAllTelephonesByUser(user)
+        await this.emailService.deleteAllEmailsUsingByUser(user)
 
-        await this.telephoneService.registerTelephones(telephones, user);
-        await this.emailService.registerEmails(emails, user);
+        await this.telephoneService.registerTelephones(telephones, user)
+        await this.emailService.registerEmails(emails, user)
 
         await queryBuilder
             .update({
                 profileImage,
                 email,
                 username,
-                accountType,
+                accountType
             })
-            .execute();
+            .execute()
 
-        return new UserProfileProxy(user);
+        return new UserProfileProxy(user)
     }
-
 }

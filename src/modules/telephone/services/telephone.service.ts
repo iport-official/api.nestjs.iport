@@ -1,43 +1,52 @@
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
-import { TelephoneEntity } from "src/typeorm/entities/telephone.entity";
-import { BaseArrayProxy } from "src/common/base-array-proxy";
-import { TelephoneBaseProxy } from '../models/telephone.proxy';
+import { TelephoneEntity } from 'src/typeorm/entities/telephone.entity'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { TelephoneBaseProxy } from '../models/telephone.proxy'
 
-import { UserProxy } from "src/modules/user/models/user.proxy";
-import { UserEntity } from "src/typeorm/entities/user.entity";
+import { UserProxy } from 'src/modules/user/models/user.proxy'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 @Injectable()
 export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
-
     public constructor(
         @InjectRepository(TelephoneEntity)
-        private readonly repository: Repository<TelephoneEntity>,
-    ) { super(repository) }
+        private readonly repository: Repository<TelephoneEntity>
+    ) {
+        super(repository)
+    }
 
     /**
      * Method that allows creating telephones and the associating them to users
      * @param telephones stores an array with all the user telephones
      * @param user stores the user entity
      */
-    public async registerTelephones(telephones: string[], user: UserEntity): Promise<BaseArrayProxy<TelephoneBaseProxy>> {
+    public async registerTelephones(
+        telephones: string[],
+        user: UserEntity
+    ): Promise<BaseArrayProxy<TelephoneBaseProxy>> {
         try {
-            const array = await this.repository.save(telephones.map(telephone => {
-                return {
-                    telephone,
-                    user: new UserProxy(user)
-                }
-            }))
+            const array = await this.repository.save(
+                telephones.map(telephone => {
+                    return {
+                        telephone,
+                        user: new UserProxy(user)
+                    }
+                })
+            )
             return {
                 length: array.length,
                 array: array.map(element => new TelephoneBaseProxy(element))
             }
         } catch (error) {
-            console.log(error);
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            console.log(error)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -64,5 +73,4 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
     }
-
 }

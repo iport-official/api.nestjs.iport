@@ -1,7 +1,6 @@
-import { TelephoneEntity } from "src/typeorm/entities/telephone.entity";
+import { TelephoneEntity } from 'src/typeorm/entities/telephone.entity'
 
 export class TelephoneBaseProxy {
-
     id: string
     telephone: string
     createAt: Date
@@ -13,5 +12,4 @@ export class TelephoneBaseProxy {
         this.createAt = entity.createAt
         this.updateAt = entity.createAt
     }
-
 }

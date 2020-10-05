@@ -1,5 +1,5 @@
-import { PostEntity } from "src/typeorm/entities/post.entity"
-import { UserProxy } from "src/modules/user/models/user.proxy"
+import { PostEntity } from 'src/typeorm/entities/post.entity'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 export class PostProxy {
     id: string

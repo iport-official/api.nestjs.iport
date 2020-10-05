@@ -1,7 +1,6 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class CreateEmails1599782998801 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
@@ -33,7 +32,7 @@ export class CreateEmails1599782998801 implements MigrationInterface {
                         name: 'updateAt',
                         type: 'timestamp',
                         default: 'now()'
-                    },
+                    }
                 ]
             })
         )
@@ -42,5 +41,4 @@ export class CreateEmails1599782998801 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         queryRunner.dropTable('emails')
     }
-
 }

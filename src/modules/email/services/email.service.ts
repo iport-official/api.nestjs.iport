@@ -1,41 +1,50 @@
-import { Repository } from "typeorm";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
+import { Repository } from 'typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
-import { EmailEntity } from "src/typeorm/entities/email.entity";
-import { BaseArrayProxy } from "src/common/base-array-proxy";
-import { EmailBaseProxy, EmailProxy } from '../models/email.proxy';
+import { EmailEntity } from 'src/typeorm/entities/email.entity'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { EmailBaseProxy } from '../models/email.proxy'
 
-import { UserProxy } from "src/modules/user/models/user.proxy";
-import { UserEntity } from "src/typeorm/entities/user.entity";
+import { UserProxy } from 'src/modules/user/models/user.proxy'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 @Injectable()
 export class EmailService extends TypeOrmCrudService<EmailEntity> {
-
     public constructor(
         @InjectRepository(EmailEntity)
-        private readonly repository: Repository<EmailEntity>,
-    ) { super(repository) }
+        private readonly repository: Repository<EmailEntity>
+    ) {
+        super(repository)
+    }
 
     /**
      * Method that allows creating email and the associating them to users
      * @param emailPayload indicates the array of emails and the user id
      */
-    public async registerEmails(emails: string[], user: UserEntity): Promise<BaseArrayProxy<EmailProxy>> {
+    public async registerEmails(
+        emails: string[],
+        user: UserEntity
+    ): Promise<BaseArrayProxy<EmailBaseProxy>> {
         try {
-            const array = await this.repository.save(emails.map(email => {
-                return {
-                    email,
-                    user: new UserProxy(user)
-                }
-            }))
+            const array = await this.repository.save(
+                emails.map(email => {
+                    return {
+                        email,
+                        user: new UserProxy(user)
+                    }
+                })
+            )
             return {
                 length: array.length,
                 array: array.map(element => new EmailBaseProxy(element))
             }
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -62,5 +71,4 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
     }
-
 }

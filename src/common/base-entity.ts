@@ -1,13 +1,16 @@
-import { IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator'
 
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    CreateDateColumn,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm'
 
-import { CrudValidationGroups } from '@nestjsx/crud';
-const { CREATE, UPDATE } = CrudValidationGroups;
+import { CrudValidationGroups } from '@nestjsx/crud'
+const { CREATE, UPDATE } = CrudValidationGroups
 
 export class BaseEntity {
-
-    @IsOptional({ groups: [CREATE, UPDATE]})
+    @IsOptional({ groups: [CREATE, UPDATE] })
     @PrimaryGeneratedColumn('uuid')
     id: string
 

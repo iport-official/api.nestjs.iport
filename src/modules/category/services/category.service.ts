@@ -1,24 +1,25 @@
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
-import { BaseArrayProxy } from 'src/common/base-array-proxy';
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
-import { CategoryPayload } from '../models/category.payload';
-import { CategoryProxy } from '../models/category.proxy';
+import { CategoryPayload } from '../models/category.payload'
+import { CategoryProxy } from '../models/category.proxy'
 
-import { CategoryEntity } from 'src/typeorm/entities/category.entity';
+import { CategoryEntity } from 'src/typeorm/entities/category.entity'
 
 const contentInPage = 7
 
 @Injectable()
-export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
-
+export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
     constructor(
         @InjectRepository(CategoryEntity)
         private readonly repository: Repository<CategoryEntity>
-    ) { super(repository) }
+    ) {
+        super(repository)
+    }
 
     /**
      * Method that can add categories in the database
@@ -28,7 +29,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
         try {
             return await this.repository.save({ ...categoryPayload })
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -50,11 +54,11 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
      */
     async getCategories(page: number): Promise<BaseArrayProxy<CategoryProxy>> {
         try {
-            const queryBuilder = this.repository
-                .createQueryBuilder('categories')
+            const queryBuilder = this.repository.createQueryBuilder(
+                'categories'
+            )
 
-            const length = await queryBuilder
-                .getCount()
+            const length = await queryBuilder.getCount()
 
             const array = await queryBuilder
                 .offset(page * contentInPage)
@@ -63,8 +67,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity>{
 
             return { length, array }
         } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
-
 }

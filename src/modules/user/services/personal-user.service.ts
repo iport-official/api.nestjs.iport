@@ -6,12 +6,15 @@ import { PersonalUserEntity } from '../../../typeorm/entities/personal-user.enti
 import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload'
 
 @Injectable()
-export class PersonalUserService extends TypeOrmCrudService<PersonalUserEntity> {
-
+export class PersonalUserService extends TypeOrmCrudService<
+    PersonalUserEntity
+> {
     public constructor(
         @InjectRepository(PersonalUserEntity)
-        private readonly repository: Repository<PersonalUserEntity>,
-    ) { super(repository) }
+        private readonly repository: Repository<PersonalUserEntity>
+    ) {
+        super(repository)
+    }
 
     public async registerPersonalAccount(
         registerPersonalAccountPayload: RegisterPersonalUserPayload
@@ -20,7 +23,6 @@ export class PersonalUserService extends TypeOrmCrudService<PersonalUserEntity> 
     }
 
     public async getPersonalAccount(id: string): Promise<PersonalUserEntity> {
-        return await this.repository.findOne({ where: { id }})
+        return await this.repository.findOne({ where: { id } })
     }
-
 }

@@ -1,15 +1,10 @@
-import {
-    Entity,
-    Column,
-    ManyToOne
-} from "typeorm";
+import { Entity, Column, ManyToOne } from 'typeorm'
 
-import { BaseEntity } from "src/common/base-entity";
-import { UserEntity } from "./user.entity";
+import { BaseEntity } from 'src/common/base-entity'
+import { UserEntity } from './user.entity'
 
 @Entity('posts')
 export class PostEntity extends BaseEntity {
-
     @Column({
         type: 'text'
     })
@@ -18,7 +13,7 @@ export class PostEntity extends BaseEntity {
     @Column({
         type: 'varchar',
         length: 100,
-        nullable: false,
+        nullable: false
     })
     title: string
 
@@ -29,13 +24,13 @@ export class PostEntity extends BaseEntity {
     description: string
 
     @Column({
-        type: "integer",
+        type: 'integer',
         default: 0
     })
     recommendations: number
 
     @Column({
-        type: "integer",
+        type: 'integer',
         default: 0
     })
     likes: number
@@ -48,7 +43,7 @@ export class PostEntity extends BaseEntity {
     category: string
 
     @Column({
-        type: "decimal",
+        type: 'decimal',
         default: 0
     })
     salary: number
@@ -56,7 +51,7 @@ export class PostEntity extends BaseEntity {
     @Column({
         type: 'varchar',
         length: 50,
-        nullable: false,
+        nullable: false
     })
     post: string
 
@@ -82,7 +77,7 @@ export class PostEntity extends BaseEntity {
 
     @Column({
         type: 'text',
-        nullable: false,
+        nullable: false
     })
     vacancyDescription: string
 
@@ -91,7 +86,7 @@ export class PostEntity extends BaseEntity {
         user => user.posts,
         {
             onDelete: 'CASCADE'
-        })
+        }
+    )
     user: UserEntity
-
 }

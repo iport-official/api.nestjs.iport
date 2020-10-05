@@ -1,10 +1,8 @@
-import { Controller } from "@nestjs/common";
+import { Controller } from '@nestjs/common'
 
 @Controller('users/emails')
 export class EmailController {
-
-    public constructor() { }
-
+    public constructor() {}
 }
 
 //#region Old code
