@@ -6,7 +6,7 @@ export class EmailBaseProxy {
     createAt: Date
     updateAt: Date
 
-    constructor(entity: EmailEntity) {
+    public constructor(entity: EmailEntity) {
         this.id = entity.id
         this.email = entity.email
         this.createAt = entity.createAt

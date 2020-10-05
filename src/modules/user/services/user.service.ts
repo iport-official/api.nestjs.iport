@@ -19,7 +19,7 @@ import { AccountType } from '../../../models/enums/account.types'
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
-    constructor(
+    public constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly personalUserService: PersonalUserService,
@@ -34,7 +34,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that create new users
      * @param registerUserPayload stores the new user data
      */
-    async createUser(
+    public async createUser(
         registerUserPayload: RegisterUserPayload
     ): Promise<UserEntity> {
         try {
@@ -85,7 +85,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that returns the user based on id
      * @param id stores the id of the user that will be searched
      */
-    async getProfile(id: string): Promise<UserProxy> {
+    public async getProfile(id: string): Promise<UserProxy> {
         try {
             const user = await this.userRepository.findOne({ where: { id } })
             return new UserProxy(user)
@@ -99,7 +99,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * @param id indicates the which user will be updated
      * @param updateUserPayload indicates the new user's data
      */
-    async updateProfile(
+    public async updateProfile(
         id: string,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserProfileProxy> {

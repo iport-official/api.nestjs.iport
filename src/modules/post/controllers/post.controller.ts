@@ -21,7 +21,7 @@ import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
 
 @Controller('posts')
 export class PostController {
-    constructor(private readonly postService: PostService) {}
+    public constructor(private readonly postService: PostService) {}
 
     /**
      * Method that can create posts
@@ -36,7 +36,7 @@ export class PostController {
             }
         })
     )
-    async create(
+    public async create(
         @UploadedFile() file: any,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
@@ -50,7 +50,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
+    public async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
         return await this.postService.getUniquePost(id)
     }
 
@@ -60,7 +60,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('highlights')
-    async getHighlights(
+    public async getHighlights(
         @Query('page') page: number
     ): Promise<BaseArrayProxy<PostProxy>> {
         return await this.postService.getHighlights(page)
@@ -73,7 +73,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('categories')
-    async getByCategory(
+    public async getByCategory(
         @Query('category') category: string,
         @Query('page') page: number
     ): Promise<BaseArrayProxy<PostProxy>> {
@@ -85,7 +85,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('main')
-    async getMainPost(): Promise<PostProxy> {
+    public async getMainPost(): Promise<PostProxy> {
         return await this.postService.getMainPost()
     }
 }

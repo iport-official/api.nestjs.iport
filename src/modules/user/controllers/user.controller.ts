@@ -9,7 +9,7 @@ import { UserService } from '../services/user.service'
 
 @Controller('users')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    public constructor(private readonly userService: UserService) {}
 
     /**
      * Method that returns the user based on id
@@ -17,7 +17,9 @@ export class UserController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('profile')
-    async getProfile(@RequestUser() user: { id: string }): Promise<UserProxy> {
+    public async getProfile(
+        @RequestUser() user: { id: string }
+    ): Promise<UserProxy> {
         return await this.userService.getProfile(user.id)
     }
 
@@ -28,7 +30,7 @@ export class UserController {
      */
     @UseGuards(JwtAuthGuard)
     @Get()
-    async updateProfile(
+    public async updateProfile(
         @RequestUser() user: { id: string },
         updateUserPayload: UpdateUserPayload
     ): Promise<UserProfileProxy> {

@@ -6,7 +6,7 @@ export class TelephoneBaseProxy {
     createAt: Date
     updateAt: Date
 
-    constructor(entity: TelephoneEntity) {
+    public constructor(entity: TelephoneEntity) {
         this.id = entity.id
         this.telephone = entity.telephone
         this.createAt = entity.createAt

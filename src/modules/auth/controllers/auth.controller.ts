@@ -15,7 +15,7 @@ import { RegisterUserPayload } from '../../user/models/register-user.payload'
 
 @Controller('users')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    public constructor(private authService: AuthService) {}
 
     /**
      * Method that register the user in the database
@@ -24,7 +24,7 @@ export class AuthController {
      * @param registerUserPayload stores the data that will be used to create a new user
      */
     @Post()
-    async register(
+    public async register(
         @Body() registerUserPayload: RegisterUserPayload
     ): Promise<RegisterProxy> {
         return await this.authService.register(registerUserPayload)
@@ -37,7 +37,7 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('/login')
     @HttpCode(200)
-    async login(
+    public async login(
         @Request() credentials: { user: { email: string; id: string } }
     ): Promise<LoginProxy> {
         return this.authService.login(credentials.user)

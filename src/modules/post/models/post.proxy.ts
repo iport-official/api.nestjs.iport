@@ -19,7 +19,7 @@ export class PostProxy {
     updateAt: Date
     user: UserProxy
 
-    constructor(entity: PostEntity) {
+    public constructor(entity: PostEntity) {
         this.id = entity.id
         this.title = entity.title
         this.description = entity.description

@@ -14,7 +14,7 @@ const contentInPage = 5
 
 @Injectable()
 export class PostService extends TypeOrmCrudService<PostEntity> {
-    constructor(
+    public constructor(
         @InjectRepository(PostEntity)
         private readonly repository: Repository<PostEntity>,
         private readonly userService: UserService
@@ -27,7 +27,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param createPostPayload stores the post data that will be used to
      *  create a new post in the database
      */
-    async create(createPostPayload: CreatePostPayload): Promise<PostProxy> {
+    public async create(
+        createPostPayload: CreatePostPayload
+    ): Promise<PostProxy> {
         try {
             const user = await this.userService.findOne({
                 where: { id: createPostPayload.userId }
@@ -50,7 +52,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that can return an unique post
      * @param id indicates which post the users wants to get
      */
-    async getUniquePost(id: string): Promise<PostProxy> {
+    public async getUniquePost(id: string): Promise<PostProxy> {
         try {
             const post = await this.repository
                 .createQueryBuilder('posts')
@@ -67,7 +69,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that returns the most recommended posts in the app
      * @param page indicates which page the user want to laod
      */
-    async getHighlights(page: number): Promise<BaseArrayProxy<PostProxy>> {
+    public async getHighlights(
+        page: number
+    ): Promise<BaseArrayProxy<PostProxy>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
@@ -98,7 +102,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param category inidicates which category the user want
      * @param page indicates which page the user want to get
      */
-    async getByCategory(
+    public async getByCategory(
         category: string,
         page: number
     ): Promise<BaseArrayProxy<PostProxy>> {
@@ -128,7 +132,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     /**
      * Method that can get the main post
      */
-    async getMainPost(): Promise<PostProxy> {
+    public async getMainPost(): Promise<PostProxy> {
         try {
             const post = await this.repository
                 .createQueryBuilder('posts')

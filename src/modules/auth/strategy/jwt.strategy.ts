@@ -6,7 +6,7 @@ import { jwtConstants } from '../constants'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+    public constructor() {
         super({
             username: 'email',
             userId: 'id',
@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate(payload: {
+    public async validate(payload: {
         sub: string
         email: string
     }): Promise<{ id: string; username: string }> {

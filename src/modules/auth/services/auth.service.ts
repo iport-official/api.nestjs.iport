@@ -17,7 +17,7 @@ import { RegisterUserPayload } from '../../user/models/register-user.payload'
 
 @Injectable()
 export class AuthService {
-    constructor(
+    public constructor(
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
         private readonly telephoneService: TelephoneService,
@@ -32,7 +32,7 @@ export class AuthService {
      * @param registerUserPayload stores the data that will be used to create the new
      * user in the database
      */
-    async register(
+    public async register(
         registerUserPayload: RegisterUserPayload
     ): Promise<RegisterProxy> {
         const hashedPassword = await hash(registerUserPayload.password, 10)
@@ -64,7 +64,10 @@ export class AuthService {
      * Method that create a jwt (Json Web Token)
      * @param user stores the data that will be used to crete the jwt
      */
-    async login(user: { email: string; id: string }): Promise<LoginProxy> {
+    public async login(user: {
+        email: string
+        id: string
+    }): Promise<LoginProxy> {
         try {
             return {
                 access_token: await this.jwtService.signAsync({
@@ -87,7 +90,7 @@ export class AuthService {
      * @param password stores the password that will be validated
      * (hashed)
      */
-    async validateUser(
+    public async validateUser(
         username: string,
         password: string
     ): Promise<{ id: string; email: string }> {
@@ -113,7 +116,7 @@ export class AuthService {
      * @param password stores the password that is passing in request
      * @param hashedPassword stores the password that is in the database
      */
-    async verifyPassword(
+    public async verifyPassword(
         password: string,
         hashedPassword: string
     ): Promise<void> {

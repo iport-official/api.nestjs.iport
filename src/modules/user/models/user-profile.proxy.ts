@@ -7,7 +7,7 @@ export class UserProfileProxy extends UserProxy {
     telephones: TelephoneBaseProxy[]
     emails: EmailBaseProxy[]
 
-    constructor(entity: UserEntity) {
+    public constructor(entity: UserEntity) {
         super(entity)
         this.telephones = entity.telephones.map(
             telephone => new TelephoneBaseProxy(telephone)

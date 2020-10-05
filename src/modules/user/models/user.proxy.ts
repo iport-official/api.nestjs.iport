@@ -13,7 +13,7 @@ export class UserProxy {
     content: PersonalUserProxy | CompanyUserProxy
     profileImage: string
 
-    constructor(entity: UserEntity) {
+    public constructor(entity: UserEntity) {
         this.id = entity.id
         this.email = entity.email
         this.username = entity.username
