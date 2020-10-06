@@ -5,9 +5,8 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
 import { EmailEntity } from 'src/typeorm/entities/email.entity'
 import { BaseArrayProxy } from 'src/common/base-array-proxy'
-import { EmailBaseProxy } from '../models/email.proxy'
+import { SimpleEmailProxy } from '../models/email.proxy'
 
-import { UserProxy } from 'src/modules/user/models/user.proxy'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 @Injectable()
@@ -26,19 +25,22 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
     public async registerEmails(
         emails: string[],
         user: UserEntity
-    ): Promise<BaseArrayProxy<EmailBaseProxy>> {
+    ): Promise<BaseArrayProxy<SimpleEmailProxy>> {
         try {
             const array = await this.repository.save(
                 emails.map(email => {
                     return {
                         email,
-                        user: new UserProxy(user)
+                        user
                     }
                 })
             )
+            user.emails = array
             return {
                 length: array.length,
-                array: array.map(element => new EmailBaseProxy(element))
+                array: array.map(
+                    emailEntity => new SimpleEmailProxy(emailEntity)
+                )
             }
         } catch (error) {
             throw new HttpException(
