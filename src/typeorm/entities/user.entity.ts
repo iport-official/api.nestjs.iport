@@ -60,11 +60,17 @@ export class UserEntity extends BaseEntity {
     })
     accountType: AccountType
 
-    @OneToOne(type => PersonalUserEntity)
+    @OneToOne(
+        type => PersonalUserEntity,
+        personalUserEntity => personalUserEntity.user
+    )
     @JoinColumn()
     personalUser: PersonalUserEntity
 
-    @OneToOne(type => CompanyUserEntity)
+    @OneToOne(
+        type => CompanyUserEntity,
+        companyUserEntity => companyUserEntity.user
+    )
     @JoinColumn()
     companyUser: CompanyUserEntity
 
@@ -86,38 +92,3 @@ export class UserEntity extends BaseEntity {
     )
     emails: EmailEntity[]
 }
-
-/*
-
-{
-    id: string
-    profileImage: string,
-    email: string,
-    password: string,
-    accountType: string,
-    username: string,
-    city: string,
-    state: string,
-    content: {
-        cnpj: string
-        street: string,
-        number: number,
-    }
-}
-
-{
-    id: string
-    profileImage: string,
-    email: string,
-    password: string,
-    accountType: string,
-    username: string,
-    city: string,
-    state: string,
-    content: {
-        cpf,
-        highlights,
-    }
-}
-
-*/
