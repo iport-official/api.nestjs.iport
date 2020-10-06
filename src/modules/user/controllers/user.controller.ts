@@ -2,7 +2,7 @@ import { Controller, UseGuards, Get } from '@nestjs/common'
 import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { UpdateUserPayload } from '../models/update-user.payload'
-import { UserProxy } from '../models/user.proxy'
+import { CompleteUserProxy } from '../models/complete-user.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -12,14 +12,15 @@ export class UserController {
 
     /**
      * Method that returns the user based on id
-     * @param user the basic user data, that will be used to get the complete user data
+     * @param requestUser the basic user data, that will be used to get the complete user data
      */
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     public async getProfile(
-        @RequestUser() user: { id: string }
-    ): Promise<UserProxy> {
-        return await this.userService.getProfile(user.id)
+        @RequestUser() requestUser: { id: string }
+    ): Promise<CompleteUserProxy> {
+        const user = await this.userService.getProfile(requestUser.id)
+        return new CompleteUserProxy(user)
     }
 
     /**
@@ -30,9 +31,13 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @Get()
     public async updateProfile(
-        @RequestUser() user: { id: string },
+        @RequestUser() requestUser: { id: string },
         updateUserPayload: UpdateUserPayload
-    ): Promise<UserProxy> {
-        return await this.userService.updateProfile(user.id, updateUserPayload)
+    ): Promise<CompleteUserProxy> {
+        const user = await this.userService.updateProfile(
+            requestUser.id,
+            updateUserPayload
+        )
+        return new CompleteUserProxy(user)
     }
 }
