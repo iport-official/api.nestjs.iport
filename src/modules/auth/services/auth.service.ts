@@ -13,7 +13,7 @@ import { LoginProxy } from '../models/login.proxy'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
-import { UserProxy } from 'src/modules/user/models/user.proxy'
+import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
 
 @Injectable()
 export class AuthService {
@@ -34,7 +34,7 @@ export class AuthService {
      */
     public async register(
         registerUserPayload: RegisterUserPayload
-    ): Promise<UserProxy> {
+    ): Promise<CompleteUserProxy> {
         const hashedPassword = await hash(registerUserPayload.password, 10)
         try {
             const user = await this.userService.createUser({
@@ -51,7 +51,7 @@ export class AuthService {
                 user
             )
 
-            return new UserProxy(user)
+            return new CompleteUserProxy(user)
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
