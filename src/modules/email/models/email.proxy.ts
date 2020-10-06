@@ -1,6 +1,6 @@
 import { EmailEntity } from 'src/typeorm/entities/email.entity'
 
-export class EmailBaseProxy {
+export class SimpleEmailProxy {
     id: string
     email: string
     createAt: Date
