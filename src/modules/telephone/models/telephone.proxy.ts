@@ -1,6 +1,6 @@
 import { TelephoneEntity } from 'src/typeorm/entities/telephone.entity'
 
-export class TelephoneBaseProxy {
+export class SimpleTelephoneProxy {
     id: string
     telephone: string
     createAt: Date
