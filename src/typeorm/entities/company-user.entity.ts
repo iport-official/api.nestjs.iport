@@ -1,7 +1,8 @@
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../common/base-entity'
+import { UserEntity } from './user.entity'
 
-@Entity('companyUsers')
+@Entity('companyusers')
 export class CompanyUserEntity extends BaseEntity {
     @Column({
         type: 'varchar'
@@ -22,4 +23,14 @@ export class CompanyUserEntity extends BaseEntity {
         type: 'varchar'
     })
     cnpj: string
+
+    @OneToOne(
+        type => UserEntity,
+        user => user.companyUser,
+        {
+            onDelete: 'CASCADE'
+        }
+    )
+    @JoinColumn()
+    user: UserEntity
 }
