@@ -10,10 +10,10 @@ import { JwtService } from '@nestjs/jwt'
 
 import { UserService } from '../../user/services/user.service'
 import { LoginProxy } from '../models/login.proxy'
-import { RegisterProxy } from '../models/register.proxy'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 @Injectable()
 export class AuthService {
@@ -34,7 +34,7 @@ export class AuthService {
      */
     public async register(
         registerUserPayload: RegisterUserPayload
-    ): Promise<RegisterProxy> {
+    ): Promise<UserProxy> {
         const hashedPassword = await hash(registerUserPayload.password, 10)
         try {
             const user = await this.userService.createUser({
@@ -51,7 +51,7 @@ export class AuthService {
                 user
             )
 
-            return new RegisterProxy(user)
+            return new UserProxy(user)
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
