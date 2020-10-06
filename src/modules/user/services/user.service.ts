@@ -7,7 +7,6 @@ import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { RegisterUserPayload } from '../models/register-user.payload'
 import { UserProxy } from '../models/user.proxy'
-import { UserProfileProxy } from '../models/user-profile.proxy'
 import { UpdateUserPayload } from '../models/update-user.payload'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
@@ -62,7 +61,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                       )
                     : null
 
-            return await this.userRepository.save({
+            const user = await this.userRepository.save({
                 profileImage,
                 email,
                 password,
@@ -73,6 +72,17 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 personalUser,
                 companyUser
             })
+
+            if (companyUser)
+                this.companyUserService.updateCompanyUser(companyUser.id, {
+                    user
+                })
+            if (personalUser)
+                this.personalUserService.updatePersonalUser(personalUser.id, {
+                    user
+                })
+
+            return user
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
@@ -87,9 +97,35 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     public async getProfile(id: string): Promise<UserProxy> {
         try {
-            const user = await this.userRepository.findOne({ where: { id } })
-            return new UserProxy(user)
+            const queryBuilder = this.userRepository
+                .createQueryBuilder('users')
+                .where({ id })
+
+            const user = await queryBuilder.getOne()
+
+            if (user.accountType == AccountType.COMPANY) {
+                const companyUser = await queryBuilder
+                    .innerJoinAndSelect('users.telephones', 'telephones.user')
+                    .innerJoinAndSelect('users.emails', 'emails.user')
+                    .innerJoinAndSelect(
+                        'users.companyUser',
+                        'companyusers.user'
+                    )
+                    .getOne()
+                return new UserProxy(companyUser)
+            } else {
+                const personalUser = await queryBuilder
+                    .innerJoinAndSelect('users.telephones', 'telephones.user')
+                    .innerJoinAndSelect('users.emails', 'emails.user')
+                    .innerJoinAndSelect(
+                        'users.personalUser',
+                        'personalusers.user'
+                    )
+                    .getOne()
+                return new UserProxy(personalUser)
+            }
         } catch (error) {
+            console.log(error)
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
@@ -102,7 +138,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     public async updateProfile(
         id: string,
         updateUserPayload: UpdateUserPayload
-    ): Promise<UserProfileProxy> {
+    ): Promise<UserProxy> {
         const {
             profileImage,
             email,
@@ -133,6 +169,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             })
             .execute()
 
-        return new UserProfileProxy(user)
+        return new UserProxy(user)
     }
 }

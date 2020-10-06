@@ -2,7 +2,6 @@ import { Controller, UseGuards, Get } from '@nestjs/common'
 import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { UpdateUserPayload } from '../models/update-user.payload'
-import { UserProfileProxy } from '../models/user-profile.proxy'
 import { UserProxy } from '../models/user.proxy'
 
 import { UserService } from '../services/user.service'
@@ -33,7 +32,7 @@ export class UserController {
     public async updateProfile(
         @RequestUser() user: { id: string },
         updateUserPayload: UpdateUserPayload
-    ): Promise<UserProfileProxy> {
+    ): Promise<UserProxy> {
         return await this.userService.updateProfile(user.id, updateUserPayload)
     }
 }

@@ -5,9 +5,8 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
 import { TelephoneEntity } from 'src/typeorm/entities/telephone.entity'
 import { BaseArrayProxy } from 'src/common/base-array-proxy'
-import { TelephoneBaseProxy } from '../models/telephone.proxy'
+import { SimpleTelephoneProxy } from '../models/telephone.proxy'
 
-import { UserProxy } from 'src/modules/user/models/user.proxy'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 @Injectable()
@@ -27,22 +26,24 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     public async registerTelephones(
         telephones: string[],
         user: UserEntity
-    ): Promise<BaseArrayProxy<TelephoneBaseProxy>> {
+    ): Promise<BaseArrayProxy<SimpleTelephoneProxy>> {
         try {
             const array = await this.repository.save(
                 telephones.map(telephone => {
                     return {
                         telephone,
-                        user: new UserProxy(user)
+                        user
                     }
                 })
             )
+            user.telephones = array
             return {
                 length: array.length,
-                array: array.map(element => new TelephoneBaseProxy(element))
+                array: array.map(
+                    telephoneEntity => new SimpleTelephoneProxy(telephoneEntity)
+                )
             }
         } catch (error) {
-            console.log(error)
             throw new HttpException(
                 'Internal Server Error',
                 HttpStatus.INTERNAL_SERVER_ERROR

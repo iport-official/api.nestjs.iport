@@ -10,8 +10,8 @@ import {
 import { AuthService } from '../services/auth.service'
 import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
 import { LoginProxy } from '../models/login.proxy'
-import { RegisterProxy } from '../models/register.proxy'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 @Controller('users')
 export class AuthController {
@@ -26,7 +26,7 @@ export class AuthController {
     @Post()
     public async register(
         @Body() registerUserPayload: RegisterUserPayload
-    ): Promise<RegisterProxy> {
+    ): Promise<UserProxy> {
         return await this.authService.register(registerUserPayload)
     }
 
