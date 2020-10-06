@@ -4,8 +4,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
 import { TelephoneEntity } from 'src/typeorm/entities/telephone.entity'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
-import { SimpleTelephoneProxy } from '../models/telephone.proxy'
 
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
@@ -26,9 +24,9 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     public async registerTelephones(
         telephones: string[],
         user: UserEntity
-    ): Promise<BaseArrayProxy<SimpleTelephoneProxy>> {
+    ): Promise<TelephoneEntity[]> {
         try {
-            const array = await this.repository.save(
+            const telephoneEntities = await this.repository.save(
                 telephones.map(telephone => {
                     return {
                         telephone,
@@ -36,18 +34,23 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
                     }
                 })
             )
-            user.telephones = array
-            return {
-                length: array.length,
-                array: array.map(
-                    telephoneEntity => new SimpleTelephoneProxy(telephoneEntity)
-                )
-            }
+            user.telephones = telephoneEntities
+            return telephoneEntities
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
+        }
+    }
+
+    public async getTelephonesFromUser(
+        user: UserEntity
+    ): Promise<TelephoneEntity[]> {
+        try {
+            return await this.repository.find({ user })
+        } catch (error) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
     }
 
