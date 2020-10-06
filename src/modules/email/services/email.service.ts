@@ -4,8 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 
 import { EmailEntity } from 'src/typeorm/entities/email.entity'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
-import { SimpleEmailProxy } from '../models/email.proxy'
 
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
@@ -25,9 +23,9 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
     public async registerEmails(
         emails: string[],
         user: UserEntity
-    ): Promise<BaseArrayProxy<SimpleEmailProxy>> {
+    ): Promise<EmailEntity[]> {
         try {
-            const array = await this.repository.save(
+            const emailEntities = await this.repository.save(
                 emails.map(email => {
                     return {
                         email,
@@ -35,18 +33,21 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
                     }
                 })
             )
-            user.emails = array
-            return {
-                length: array.length,
-                array: array.map(
-                    emailEntity => new SimpleEmailProxy(emailEntity)
-                )
-            }
+            user.emails = emailEntities
+            return emailEntities
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
+        }
+    }
+
+    public async getEmailsFromUser(user: UserEntity): Promise<EmailEntity[]> {
+        try {
+            return await this.repository.find({ user })
+        } catch (error) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
     }
 
