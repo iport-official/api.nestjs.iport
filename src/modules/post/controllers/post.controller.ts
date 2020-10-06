@@ -1,14 +1,4 @@
-import {
-    Controller,
-    Body,
-    Post,
-    UseGuards,
-    Get,
-    Query,
-    UseInterceptors,
-    UploadedFile
-} from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
 
 import { PostService } from '../services/post.service'
 
@@ -29,19 +19,10 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Post()
-    @UseInterceptors(
-        FileInterceptor('image', {
-            limits: {
-                fileSize: 2 * 1024 * 1024
-            }
-        })
-    )
     public async create(
-        @UploadedFile() file: any,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
-        createPostPayload.image = file.buffer.toString('base64')
-        return await this.postService.create(createPostPayload)
+        return await this.postService.createPost(createPostPayload)
     }
 
     /**

@@ -6,7 +6,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { RegisterUserPayload } from '../models/register-user.payload'
-import { UserProxy } from '../models/user.proxy'
+import { CompleteUserProxy } from '../models/complete-user.proxy'
 import { UpdateUserPayload } from '../models/update-user.payload'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
@@ -95,7 +95,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that returns the user based on id
      * @param id stores the id of the user that will be searched
      */
-    public async getProfile(id: string): Promise<UserProxy> {
+    public async getProfile(id: string): Promise<UserEntity> {
         try {
             const queryBuilder = this.userRepository
                 .createQueryBuilder('users')
@@ -112,7 +112,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                         'companyusers.user'
                     )
                     .getOne()
-                return new UserProxy(companyUser)
+                return companyUser
             } else {
                 const personalUser = await queryBuilder
                     .innerJoinAndSelect('users.telephones', 'telephones.user')
@@ -122,7 +122,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                         'personalusers.user'
                     )
                     .getOne()
-                return new UserProxy(personalUser)
+                return personalUser
             }
         } catch (error) {
             console.log(error)
@@ -138,7 +138,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     public async updateProfile(
         id: string,
         updateUserPayload: UpdateUserPayload
-    ): Promise<UserProxy> {
+    ): Promise<UserEntity> {
         const {
             profileImage,
             email,
@@ -169,6 +169,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             })
             .execute()
 
-        return new UserProxy(user)
+        return user
     }
 }

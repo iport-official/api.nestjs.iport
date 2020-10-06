@@ -27,14 +27,13 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param createPostPayload stores the post data that will be used to
      *  create a new post in the database
      */
-    public async create(
+    public async createPost(
         createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
         try {
-            const user = await this.userService.findOne({
-                where: { id: createPostPayload.userId }
-            })
-            createPostPayload.userId = undefined
+            const user = await this.userService.getProfile(
+                createPostPayload.userId
+            )
             const post = await this.repository.save({
                 ...createPostPayload,
                 user
@@ -75,7 +74,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
-                .orderBy('posts.recomendations', 'DESC')
+                .orderBy('posts.recommendations', 'DESC')
 
             const length = await queryBuilder.getCount()
 
@@ -110,7 +109,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
                 .where({ category })
-                .orderBy('posts.recomendations', 'DESC')
+                .orderBy('posts.recommendations', 'DESC')
 
             const length = await queryBuilder.getCount()
 
@@ -138,7 +137,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .createQueryBuilder('posts')
                 .select()
                 .addSelect(
-                    'MAX(posts.recomendations * 0.7 * posts.likes * 0.3)',
+                    'MAX(posts.recommendations * 0.7 * posts.likes * 0.3)',
                     'MAX'
                 )
                 .leftJoinAndSelect('posts.user', 'user')
