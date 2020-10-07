@@ -5,6 +5,7 @@ import { UpdateUserPayload } from '../models/update-user.payload'
 import { CompleteUserProxy } from '../models/complete-user.proxy'
 
 import { UserService } from '../services/user.service'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Controller('users')
 export class UserController {
@@ -17,9 +18,9 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     public async getProfile(
-        @RequestUser() requestUser: { id: string }
+        @RequestUser() requestUser: ValidationProperties
     ): Promise<CompleteUserProxy> {
-        const user = await this.userService.getProfile(requestUser.id)
+        const user = await this.userService.getProfile(requestUser)
         return new CompleteUserProxy(user)
     }
 
@@ -31,7 +32,7 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @Get()
     public async updateProfile(
-        @RequestUser() requestUser: { id: string },
+        @RequestUser() requestUser: ValidationProperties,
         updateUserPayload: UpdateUserPayload
     ): Promise<CompleteUserProxy> {
         const user = await this.userService.updateProfile(

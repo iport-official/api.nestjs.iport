@@ -14,7 +14,6 @@ import { TelephoneService } from 'src/modules/telephone/services/telephone.servi
 import { EmailService } from 'src/modules/email/services/email.service'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
 import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
-import { UserEntity } from 'src/typeorm/entities/user.entity'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
