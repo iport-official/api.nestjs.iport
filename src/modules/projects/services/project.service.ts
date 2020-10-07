@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
 import { UserService } from 'src/modules/user/services/user.service'
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 import { Repository } from 'typeorm'
@@ -17,23 +18,12 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
     }
 
     public async createProject(
+        requestUser: ValidationProperties,
         createProjectPayload: CreateProjectPayload
     ): Promise<ProjectEntity> {
-        const {
-            image,
-            title,
-            startDate,
-            endDate,
-            description,
-            userId
-        } = createProjectPayload
-        const user = await this.userService.getUserById(userId)
+        const user = await this.userService.getUserById(requestUser.id)
         return await this.repository.save({
-            image,
-            title,
-            startDate,
-            endDate,
-            description,
+            ...createProjectPayload,
             user
         })
     }
@@ -44,7 +34,7 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
             .where({ id })
             .innerJoinAndSelect('projects.user', 'users.id')
             .getOne()
-        const user = await this.userService.getProfile(project.user.id)
+        const user = await this.userService.getProfile(project.user)
         project.user = user
         return project
     }
