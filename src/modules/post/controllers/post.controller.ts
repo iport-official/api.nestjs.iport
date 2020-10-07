@@ -8,6 +8,8 @@ import { CreatePostPayload } from '../models/create-post.payload'
 import { PostProxy } from '../models/post.proxy'
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUser } from 'src/decorators/user.decorator'
 
 @Controller('posts')
 export class PostController {
@@ -20,9 +22,10 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async create(
+        @RequestUser() requestUser: ValidationProperties,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
-        return await this.postService.createPost(createPostPayload)
+        return await this.postService.createPost(requestUser, createPostPayload)
     }
 
     /**

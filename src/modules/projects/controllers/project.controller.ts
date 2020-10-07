@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
@@ -12,9 +14,11 @@ export class ProjectController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createProject(
+        @RequestUser() requestUser: ValidationProperties,
         @Body() createProjectPayload: CreateProjectPayload
     ): Promise<CreateProjectProxy> {
         const project = await this.projectService.createProject(
+            requestUser,
             createProjectPayload
         )
         return new CreateProjectProxy(project)
