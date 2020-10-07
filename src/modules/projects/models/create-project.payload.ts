@@ -4,5 +4,4 @@ export class CreateProjectPayload {
     startDate: Date
     endDate: Date
     description: string
-    userId: string
 }
