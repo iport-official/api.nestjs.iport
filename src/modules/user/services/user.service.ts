@@ -14,6 +14,8 @@ import { RegisterCompanyUserPayload } from '../models/register-company-user.payl
 import { PersonalUserService } from './personal-user.service'
 import { CompanyUserService } from './company-user.service'
 import { AccountType } from '../../../models/enums/account.types'
+import { ValidateByOptions } from 'class-validator'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
@@ -94,35 +96,26 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that returns the user based on id
      * @param id stores the id of the user that will be searched
      */
-    public async getProfile(id: string): Promise<UserEntity> {
+    public async getProfile(
+        validationProperties: ValidationProperties
+    ): Promise<UserEntity> {
         try {
-            const user = await this.getUserById(id)
-
-            const queryBuilder = this.userRepository
+            const isPersonalAccount =
+                validationProperties.accountType === AccountType.PERSONAL
+            return await this.userRepository
                 .createQueryBuilder('users')
-                .where({ id })
-
-            if (user.accountType == AccountType.COMPANY) {
-                const companyUser = await queryBuilder
-                    .innerJoinAndSelect('users.telephones', 'telephones.user')
-                    .innerJoinAndSelect('users.emails', 'emails.user')
-                    .innerJoinAndSelect(
-                        'users.companyUser',
-                        'companyusers.user'
-                    )
-                    .getOne()
-                return companyUser
-            } else {
-                const personalUser = await queryBuilder
-                    .innerJoinAndSelect('users.telephones', 'telephones.user')
-                    .innerJoinAndSelect('users.emails', 'emails.user')
-                    .innerJoinAndSelect(
-                        'users.personalUser',
-                        'personalusers.user'
-                    )
-                    .getOne()
-                return personalUser
-            }
+                .where({ id: validationProperties.id })
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
+                .innerJoinAndSelect(
+                    isPersonalAccount
+                        ? 'users.personalUser'
+                        : 'users.companyUser',
+                    isPersonalAccount
+                        ? 'personalusers.user'
+                        : 'companyusers.user'
+                )
+                .getOne()
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
