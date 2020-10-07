@@ -8,6 +8,7 @@ import { EmailEntity } from './email.entity'
 import { AccountType } from 'src/models/enums/account.types'
 import { PersonalUserEntity } from './personal-user.entity'
 import { CompanyUserEntity } from './company-user.entity'
+import { ProjectEntity } from './project.entity'
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -91,4 +92,10 @@ export class UserEntity extends BaseEntity {
         email => email.user
     )
     emails: EmailEntity[]
+
+    @OneToMany(
+        type => ProjectEntity,
+        project => project.user
+    )
+    projects: ProjectEntity[]
 }

@@ -6,7 +6,6 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { RegisterUserPayload } from '../models/register-user.payload'
-import { CompleteUserProxy } from '../models/complete-user.proxy'
 import { UpdateUserPayload } from '../models/update-user.payload'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
@@ -97,11 +96,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     public async getProfile(id: string): Promise<UserEntity> {
         try {
+            const user = await this.getUserById(id)
+
             const queryBuilder = this.userRepository
                 .createQueryBuilder('users')
                 .where({ id })
-
-            const user = await queryBuilder.getOne()
 
             if (user.accountType == AccountType.COMPANY) {
                 const companyUser = await queryBuilder
@@ -125,7 +124,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 return personalUser
             }
         } catch (error) {
-            console.log(error)
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
@@ -148,11 +146,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             emails
         } = updateUserPayload
 
-        const queryBuilder = this.userRepository
-            .createQueryBuilder('users')
-            .where({ id })
-
-        const user = await queryBuilder.getOne()
+        const user = await this.getUserById(id)
 
         await this.telephoneService.deleteAllTelephonesByUser(user)
         await this.emailService.deleteAllEmailsUsingByUser(user)
@@ -160,7 +154,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         await this.telephoneService.registerTelephones(telephones, user)
         await this.emailService.registerEmails(emails, user)
 
-        await queryBuilder
+        await this.userRepository
+            .createQueryBuilder('users')
+            .where({ id })
             .update({
                 profileImage,
                 email,
@@ -170,5 +166,13 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             .execute()
 
         return user
+    }
+
+    public async getUserById(id: string): Promise<UserEntity> {
+        try {
+            return await this.userRepository.findOne({ id })
+        } catch (error) {
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+        }
     }
 }
