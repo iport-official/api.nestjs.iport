@@ -11,6 +11,11 @@ import { ProjectService } from '../services/project.service'
 export class ProjectController {
     public constructor(private readonly projectService: ProjectService) {}
 
+    /**
+     * Method that can create a new project entity in the database
+     * @param requestUser stores the user basic data (id, email, accountType)
+     * @param createProjectPayload stores the new project data
+     */
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createProject(
@@ -24,6 +29,10 @@ export class ProjectController {
         return new CreateProjectProxy(project)
     }
 
+    /**
+     * Method that can get a specific project entity
+     * @param id stores the project id
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     public async getProjectById(

@@ -14,6 +14,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         })
     }
 
+    /**
+     * Method that can validate the request credentials
+     * @param username stores the username that will be tested in the database (in this case the email)
+     * @param password stores the password that will be tested in the database
+     */
     public async validate(
         username: string,
         password: string

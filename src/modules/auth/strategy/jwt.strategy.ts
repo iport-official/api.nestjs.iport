@@ -15,6 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
+    /**
+     * Method that can validate the user basic properties (id, email, accountType)
+     * @param jwtValidationProperties stores the user basic properties
+     */
     public async validate(
         jwtValidationProperties: ValidationProperties
     ): Promise<ValidationProperties> {

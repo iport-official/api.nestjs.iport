@@ -14,12 +14,21 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
         super(repository)
     }
 
+    /**
+     * Method that can register some company account data in database
+     * @param registerCompanyAccountPayload stores the requestd ata
+     */
     public async registerCompanyAccount(
         registerCompanyAccountPayload: RegisterCompanyUserPayload
     ): Promise<CompanyUserEntity> {
         return await this.repository.save(registerCompanyAccountPayload)
     }
 
+    /**
+     * Method that can update some company user entity in the database
+     * @param id stores the project id that will be searched
+     * @param payload stores the new data, that will be updated
+     */
     public async updateCompanyUser(
         id: string,
         payload: DeepPartial<CompanyUserEntity>
@@ -27,6 +36,10 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
         return await this.repository.update({ id }, payload)
     }
 
+    /**
+     * Method that can get a specific account entity
+     * @param id stores the project id that will be searched
+     */
     public async getCompanyAccount(id: string): Promise<CompanyUserEntity> {
         return await this.repository.findOne({ where: { id } })
     }

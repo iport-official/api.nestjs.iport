@@ -161,6 +161,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         return user
     }
 
+    /**
+     * Method that can return an UserEntity
+     * @param id stores the user id
+     */
     public async getUserById(id: string): Promise<UserEntity> {
         try {
             return await this.userRepository.findOne({ id })

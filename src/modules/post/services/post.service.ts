@@ -9,7 +9,6 @@ import { BaseArrayProxy } from 'src/common/base-array-proxy'
 import { PostProxy } from '../models/post.proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
-import { RequestUser } from 'src/decorators/user.decorator'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 const contentInPage = 5

@@ -17,6 +17,11 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         super(repository)
     }
 
+    /**
+     * Method that can create a new project entity in the database
+     * @param requestUser stores the user basic data (id, email, accountType)
+     * @param createProjectPayload stores the new project data
+     */
     public async createProject(
         requestUser: ValidationProperties,
         createProjectPayload: CreateProjectPayload
@@ -28,6 +33,10 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         })
     }
 
+    /**
+     * Method that can get a specific project entity
+     * @param id stores the project id
+     */
     public async getProjectById(id: string): Promise<ProjectEntity> {
         const project = await this.repository
             .createQueryBuilder('projects')
