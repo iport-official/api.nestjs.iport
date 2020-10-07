@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
 import { TelephoneModule } from './modules/telephone/telephone.module'
 import { EmailModule } from './modules/email/email.module'
+import { ProjectModule } from './modules/projects/project.module'
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { EmailModule } from './modules/email/email.module'
         CategoryModule,
         TelephoneModule,
         EmailModule,
+        ProjectModule,
         TypeOrmModule.forRoot()
     ],
     controllers: [AppController],
