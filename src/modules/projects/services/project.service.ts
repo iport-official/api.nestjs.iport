@@ -4,6 +4,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 import { UserService } from 'src/modules/user/services/user.service'
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
 import { Repository } from 'typeorm'
 import { CreateProjectPayload } from '../models/create-project.payload'
 
@@ -46,5 +47,23 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         const user = await this.userService.getProfile(project.user)
         project.user = user
         return project
+    }
+
+    /**
+     * Method that can get all projects using the user data
+     * @param id stores the user id
+     */
+    public async getProjectsByUserId(
+        id: string
+    ): Promise<{
+        user: UserEntity
+        projects: ProjectEntity[]
+    }> {
+        const user = await this.userService.getUserById(id)
+        const projects = await this.repository.find({ where: { user } })
+        return {
+            user,
+            projects
+        }
     }
 }

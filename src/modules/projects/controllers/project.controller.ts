@@ -4,8 +4,12 @@ import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
-import { ProjectProxy } from '../models/project.proxy'
+import { CompleteProjectProxy } from '../models/complete-project.proxy'
 import { ProjectService } from '../services/project.service'
+import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { BasicProjectProxy } from '../models/basic-project.proxy'
+import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
 
 @Controller('users/projects')
 export class ProjectController {
@@ -37,8 +41,33 @@ export class ProjectController {
     @Get()
     public async getProjectById(
         @Query('id') id: string
-    ): Promise<ProjectProxy> {
+    ): Promise<CompleteProjectProxy> {
         const project = await this.projectService.getProjectById(id)
-        return new ProjectProxy(project)
+        return new CompleteProjectProxy(project)
+    }
+
+    /**
+     * Method that can get all projects using the user data
+     * @param requestUser stores the user data
+     */
+    @UseGuards(JwtAuthGuard)
+    @Get('/all')
+    public async getProjectsByUserId(
+        @RequestUser() requestUser: ValidationProperties
+    ): Promise<{
+        user: BasicUserProxy
+        projects: BaseArrayProxy<BasicProjectProxy>
+    }> {
+        const {
+            user,
+            projects
+        } = await this.projectService.getProjectsByUserId(requestUser.id)
+        return {
+            user: new BasicUserProxy(user),
+            projects: {
+                length: projects.length,
+                array: projects.map(project => new BasicProjectProxy(project))
+            }
+        }
     }
 }
