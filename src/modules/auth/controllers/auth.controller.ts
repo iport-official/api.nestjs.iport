@@ -1,17 +1,13 @@
-import {
-    Controller,
-    Post,
-    Body,
-    Request,
-    UseGuards,
-    HttpCode
-} from '@nestjs/common'
+import { Controller, Post, Body, UseGuards, HttpCode } from '@nestjs/common'
 
 import { AuthService } from '../services/auth.service'
 import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
 import { LoginProxy } from '../models/login.proxy'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
 import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
+import { RequestUser } from 'src/decorators/user.decorator'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Controller('users')
 export class AuthController {
@@ -38,8 +34,8 @@ export class AuthController {
     @Post('/login')
     @HttpCode(200)
     public async login(
-        @Request() credentials: { user: { email: string; id: string } }
+        @RequestUser() user: ValidationProperties
     ): Promise<LoginProxy> {
-        return this.authService.login(credentials.user)
+        return this.authService.login(user)
     }
 }

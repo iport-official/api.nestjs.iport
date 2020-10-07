@@ -14,6 +14,8 @@ import { TelephoneService } from 'src/modules/telephone/services/telephone.servi
 import { EmailService } from 'src/modules/email/services/email.service'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
 import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
+import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class AuthService {
@@ -64,15 +66,14 @@ export class AuthService {
      * Method that create a jwt (Json Web Token)
      * @param user stores the data that will be used to crete the jwt
      */
-    public async login(user: {
-        email: string
-        id: string
-    }): Promise<LoginProxy> {
+    public async login(user: ValidationProperties): Promise<LoginProxy> {
         try {
+            const { id, email, accountType } = user
             return {
                 access_token: await this.jwtService.signAsync({
-                    email: user.email,
-                    sub: user.id
+                    id,
+                    email,
+                    accountType
                 })
             }
         } catch (error) {
@@ -93,14 +94,16 @@ export class AuthService {
     public async validateUser(
         username: string,
         password: string
-    ): Promise<{ id: string; email: string }> {
+    ): Promise<ValidationProperties> {
         try {
-            const user = await this.userService.findOne({ email: username })
-            await this.verifyPassword(password, user.password)
-            return {
-                id: user.id,
-                email: user.email
-            }
+            const {
+                password: userPassword,
+                id,
+                email,
+                accountType
+            } = await this.userService.findOne({ email: username })
+            await this.verifyPassword(password, userPassword)
+            return { id, email, accountType }
         } catch (error) {
             throw new HttpException(
                 'Wrong credentials provided',
