@@ -17,7 +17,7 @@ import { PersonalUserService } from './personal-user.service'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
@@ -99,7 +99,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * @param id stores the id of the user that will be searched
      */
     public async getProfile(
-        validationProperties: ValidationProperties
+        validationProperties: RequestUserProperties
     ): Promise<UserEntity> {
         try {
             const isPersonalAccount =

@@ -7,7 +7,7 @@ import { BaseArrayProxy } from 'src/common/base-array-proxy'
 import { PostService } from '../services/post.service'
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'
 
 @Controller('posts')
@@ -21,7 +21,7 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async create(
-        @RequestUser() requestUser: ValidationProperties,
+        @RequestUser() requestUser: RequestUserProperties,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
         return await this.postService.createPost(requestUser, createPostPayload)

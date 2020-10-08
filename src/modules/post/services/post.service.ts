@@ -11,7 +11,7 @@ import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 const contentInPage = 5
 
@@ -31,7 +31,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      *  create a new post in the database
      */
     public async createPost(
-        requestUser: ValidationProperties,
+        requestUser: RequestUserProperties,
         createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
         try {

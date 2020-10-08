@@ -7,7 +7,7 @@ import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
 import { AuthService } from '../services/auth.service'
 
 import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'
 
 @Controller('users')
@@ -35,7 +35,7 @@ export class AuthController {
     @Post('/login')
     @HttpCode(200)
     public async login(
-        @RequestUser() user: ValidationProperties
+        @RequestUser() user: RequestUserProperties
     ): Promise<LoginProxy> {
         return this.authService.login(user)
     }

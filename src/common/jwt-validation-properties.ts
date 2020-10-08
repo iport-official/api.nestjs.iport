@@ -1,4 +1,4 @@
-export interface ValidationProperties {
+export interface RequestUserProperties {
     id: string
     email: string
     accountType: string

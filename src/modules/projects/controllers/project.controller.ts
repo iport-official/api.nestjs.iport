@@ -9,7 +9,7 @@ import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
 import { ProjectService } from '../services/project.service'
 
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
@@ -25,7 +25,7 @@ export class ProjectController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createProject(
-        @RequestUser() requestUser: ValidationProperties,
+        @RequestUser() requestUser: RequestUserProperties,
         @Body() createProjectPayload: CreateProjectPayload
     ): Promise<CreateProjectProxy> {
         const project = await this.projectService.createProject(
@@ -55,7 +55,7 @@ export class ProjectController {
     @UseGuards(JwtAuthGuard)
     @Get('/all')
     public async getProjectsByUserId(
-        @RequestUser() requestUser: ValidationProperties
+        @RequestUser() requestUser: RequestUserProperties
     ): Promise<{
         user: BasicUserProxy
         projects: BaseArrayProxy<BasicProjectProxy>

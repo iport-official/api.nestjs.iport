@@ -16,7 +16,7 @@ import { EmailService } from 'src/modules/email/services/email.service'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 
 import { hash, compare } from 'bcrypt'
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class AuthService {
@@ -67,7 +67,7 @@ export class AuthService {
      * Method that create a jwt (Json Web Token)
      * @param user stores the data that will be used to crete the jwt
      */
-    public async login(user: ValidationProperties): Promise<LoginProxy> {
+    public async login(user: RequestUserProperties): Promise<LoginProxy> {
         try {
             const { id, email, accountType } = user
             return {
@@ -95,7 +95,7 @@ export class AuthService {
     public async validateUser(
         username: string,
         password: string
-    ): Promise<ValidationProperties> {
+    ): Promise<RequestUserProperties> {
         try {
             const {
                 password: userPassword,

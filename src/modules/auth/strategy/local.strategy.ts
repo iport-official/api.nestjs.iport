@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport'
 import { AuthService } from '../services/auth.service'
 
 import { Strategy } from 'passport-local'
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -23,7 +23,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     public async validate(
         username: string,
         password: string
-    ): Promise<ValidationProperties> {
+    ): Promise<RequestUserProperties> {
         return await this.authService.validateUser(username, password)
     }
 }

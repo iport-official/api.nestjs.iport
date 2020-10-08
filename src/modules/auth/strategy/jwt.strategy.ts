@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport'
 
 import { jwtConstants } from '../constants'
 import { ExtractJwt, Strategy } from 'passport-jwt'
-import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -20,8 +20,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
      * @param jwtValidationProperties stores the user basic properties
      */
     public async validate(
-        jwtValidationProperties: ValidationProperties
-    ): Promise<ValidationProperties> {
+        jwtValidationProperties: RequestUserProperties
+    ): Promise<RequestUserProperties> {
         const { id, email, accountType } = jwtValidationProperties
         return { id, email, accountType }
     }
