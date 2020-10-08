@@ -57,7 +57,7 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      * Method that can get all projects using the user data
      * @param id stores the user id
      */
-    public async getProjectsByUserId(
+    public async getProjects(
         id: string
     ): Promise<{
         user: UserEntity

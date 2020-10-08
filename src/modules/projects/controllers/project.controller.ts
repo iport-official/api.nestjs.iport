@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
 import { BasicProjectProxy } from '../models/basic-project.proxy'
 import { CompleteProjectProxy } from '../models/complete-project.proxy'
@@ -13,7 +13,7 @@ import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
-@Controller('users/projects')
+@Controller('users/:userId/projects')
 export class ProjectController {
     public constructor(private readonly projectService: ProjectService) {}
 
@@ -40,9 +40,9 @@ export class ProjectController {
      * @param id stores the project id
      */
     @UseGuards(JwtAuthGuard)
-    @Get()
+    @Get(':id')
     public async getProjectById(
-        @Query('id') id: string
+        @Param('id') id: string
     ): Promise<CompleteProjectProxy> {
         const project = await this.projectService.getProjectById(id)
         return new CompleteProjectProxy(project)
@@ -53,17 +53,14 @@ export class ProjectController {
      * @param requestUser stores the user data
      */
     @UseGuards(JwtAuthGuard)
-    @Get('/all')
-    public async getProjectsByUserId(
-        @RequestUser() requestUser: RequestUserProperties
+    @Get()
+    public async getProjects(
+        @Param('userId') userId: string
     ): Promise<{
         user: BasicUserProxy
         projects: BaseArrayProxy<BasicProjectProxy>
     }> {
-        const {
-            user,
-            projects
-        } = await this.projectService.getProjectsByUserId(requestUser.id)
+        const { user, projects } = await this.projectService.getProjects(userId)
         return {
             user: new BasicUserProxy(user),
             projects: {
