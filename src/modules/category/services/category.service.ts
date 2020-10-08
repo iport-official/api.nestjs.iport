@@ -1,14 +1,13 @@
-import { Repository } from 'typeorm'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Repository } from 'typeorm'
 
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { CategoryEntity } from 'src/typeorm/entities/category.entity'
 
 import { CategoryPayload } from '../models/category.payload'
 import { CategoryProxy } from '../models/category.proxy'
-
-import { CategoryEntity } from 'src/typeorm/entities/category.entity'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
 const contentInPage = 7
 

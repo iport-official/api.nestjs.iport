@@ -1,10 +1,9 @@
-import { Repository } from 'typeorm'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
+import { Repository } from 'typeorm'
 
 import { EmailEntity } from 'src/typeorm/entities/email.entity'
-
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 @Injectable()

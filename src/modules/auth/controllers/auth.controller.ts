@@ -1,12 +1,14 @@
 import { Controller, Post, Body, UseGuards, HttpCode } from '@nestjs/common'
 
-import { AuthService } from '../services/auth.service'
-import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
-import { LoginProxy } from '../models/login.proxy'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
+import { LoginProxy } from '../models/login.proxy'
 import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
-import { RequestUser } from 'src/decorators/user.decorator'
+
+import { AuthService } from '../services/auth.service'
+
+import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUser } from 'src/decorators/user.decorator'
 
 @Controller('users')
 export class AuthController {

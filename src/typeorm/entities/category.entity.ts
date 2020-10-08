@@ -1,4 +1,5 @@
 import { Entity, Column } from 'typeorm'
+
 import { BaseEntity } from 'src/common/base-entity'
 
 @Entity('categories')

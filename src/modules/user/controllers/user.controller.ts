@@ -1,11 +1,13 @@
 import { Controller, UseGuards, Get } from '@nestjs/common'
-import { RequestUser } from 'src/decorators/user.decorator'
-import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
-import { UpdateUserPayload } from '../models/update-user.payload'
+
 import { CompleteUserProxy } from '../models/complete-user.proxy'
+import { UpdateUserPayload } from '../models/update-user.payload'
 
 import { UserService } from '../services/user.service'
+
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
+import { RequestUser } from 'src/decorators/user.decorator'
+import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
 @Controller('users')
 export class UserController {

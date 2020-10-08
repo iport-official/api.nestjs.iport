@@ -1,5 +1,6 @@
-import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
+
+import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
 export class CreateProjectProxy {
     id: string

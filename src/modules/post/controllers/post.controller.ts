@@ -1,11 +1,10 @@
 import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
 
-import { PostService } from '../services/post.service'
-
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
-
 import { CreatePostPayload } from '../models/create-post.payload'
 import { PostProxy } from '../models/post.proxy'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+
+import { PostService } from '../services/post.service'
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { CompanyUserEntity } from '../../../typeorm/entities/company-user.entity'
 import { InjectRepository } from '@nestjs/typeorm'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { DeepPartial, Repository, UpdateResult } from 'typeorm'
+
+import { CompanyUserEntity } from '../../../typeorm/entities/company-user.entity'
+
 import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
 
 @Injectable()

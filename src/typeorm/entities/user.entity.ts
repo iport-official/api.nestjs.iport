@@ -1,14 +1,14 @@
 import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
-import { PostEntity } from './post.entity'
-import { TelephoneEntity } from './telephone.entity'
-import { EmailEntity } from './email.entity'
-
 import { AccountType } from 'src/models/enums/account.types'
-import { PersonalUserEntity } from './personal-user.entity'
+
 import { CompanyUserEntity } from './company-user.entity'
+import { EmailEntity } from './email.entity'
+import { PersonalUserEntity } from './personal-user.entity'
+import { PostEntity } from './post.entity'
 import { ProjectEntity } from './project.entity'
+import { TelephoneEntity } from './telephone.entity'
+import { BaseEntity } from 'src/common/base-entity'
 
 @Entity('users')
 export class UserEntity extends BaseEntity {

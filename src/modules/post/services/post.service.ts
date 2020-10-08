@@ -1,14 +1,16 @@
-import { Repository } from 'typeorm'
-import { InjectRepository } from '@nestjs/typeorm'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
+import { Repository } from 'typeorm'
 
 import { PostEntity } from 'src/typeorm/entities/post.entity'
+
 import { CreatePostPayload } from '../models/create-post.payload'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
 import { PostProxy } from '../models/post.proxy'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
+
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 const contentInPage = 5

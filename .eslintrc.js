@@ -4,7 +4,7 @@ module.exports = {
         project: 'tsconfig.json',
         sourceType: 'module'
     },
-    plugins: ['@typescript-eslint/eslint-plugin'],
+    plugins: ['@typescript-eslint/eslint-plugin', 'import-helpers'],
     extends: [
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
@@ -19,6 +19,22 @@ module.exports = {
     rules: {
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/no-explicit-any': 'off'
+        '@typescript-eslint/no-explicit-any': 'off',
+        'import-helpers/order-imports': [
+            'warn',
+            {
+                newlinesBetween: 'always',
+                groups: [
+                    '/(@nestjs)|^typeorm/',
+                    '/.types/',
+                    '/.entity/',
+                    '/.proxy|.payload/',
+                    '/.controller/',
+                    '/.service/',
+                    [('parent', 'sibling', 'index')]
+                ],
+                alphabetize: { order: 'asc', ignoreCase: true }
+            }
+        ]
     }
 }

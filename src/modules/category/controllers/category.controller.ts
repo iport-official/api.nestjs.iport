@@ -8,12 +8,11 @@ import {
     Param
 } from '@nestjs/common'
 
-import { CategoryService } from '../services/category.service'
-
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
-
 import { CategoryPayload } from '../models/category.payload'
 import { CategoryProxy } from '../models/category.proxy'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+
+import { CategoryService } from '../services/category.service'
 
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 

@@ -1,20 +1,22 @@
-import { Repository } from 'typeorm'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
+import { Repository } from 'typeorm'
 
-import { UserEntity } from 'src/typeorm/entities/user.entity'
+import { AccountType } from '../../../models/enums/account.types'
 
+import { UserEntity } from '../../../typeorm/entities/user.entity'
+
+import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
+import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload'
 import { RegisterUserPayload } from '../models/register-user.payload'
 import { UpdateUserPayload } from '../models/update-user.payload'
+
+import { CompanyUserService } from './company-user.service'
+import { PersonalUserService } from './personal-user.service'
 import { EmailService } from 'src/modules/email/services/email.service'
 import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
-import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload'
-import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
-import { PersonalUserService } from './personal-user.service'
-import { CompanyUserService } from './company-user.service'
-import { AccountType } from '../../../models/enums/account.types'
-import { ValidateByOptions } from 'class-validator'
+
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()

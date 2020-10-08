@@ -1,9 +1,11 @@
 import { AccountType } from 'src/models/enums/account.types'
+
 import { UserEntity } from 'src/typeorm/entities/user.entity'
-import { PersonalUserProxy } from './personal-user.proxy'
+
 import { CompanyUserProxy } from './company-user.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { PersonalUserProxy } from './personal-user.proxy'
 import { BasicUserProxy } from './simple-user.proxy'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
 export class CompleteUserProxy extends BasicUserProxy {
     content: PersonalUserProxy | CompanyUserProxy

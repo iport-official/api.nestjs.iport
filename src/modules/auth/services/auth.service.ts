@@ -1,4 +1,3 @@
-import { hash, compare } from 'bcrypt'
 import {
     Injectable,
     HttpException,
@@ -8,12 +7,15 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
-import { UserService } from '../../user/services/user.service'
-import { LoginProxy } from '../models/login.proxy'
-import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
-import { EmailService } from 'src/modules/email/services/email.service'
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
+import { LoginProxy } from '../models/login.proxy'
 import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
+
+import { UserService } from '../../user/services/user.service'
+import { EmailService } from 'src/modules/email/services/email.service'
+import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
+
+import { hash, compare } from 'bcrypt'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()

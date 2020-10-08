@@ -1,4 +1,5 @@
 import { AccountType } from 'src/models/enums/account.types'
+
 import { RegisterCompanyUserPayload } from './register-company-user.payload'
 import { RegisterPersonalUserPayload } from './register-personal-user.payload'
 

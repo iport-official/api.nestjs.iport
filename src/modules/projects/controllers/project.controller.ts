@@ -1,15 +1,17 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
+
+import { BasicProjectProxy } from '../models/basic-project.proxy'
+import { CompleteProjectProxy } from '../models/complete-project.proxy'
+import { CreateProjectPayload } from '../models/create-project.payload'
+import { CreateProjectProxy } from '../models/create-project.proxy'
+import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
+
+import { ProjectService } from '../services/project.service'
+
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
-import { CreateProjectPayload } from '../models/create-project.payload'
-import { CreateProjectProxy } from '../models/create-project.proxy'
-import { CompleteProjectProxy } from '../models/complete-project.proxy'
-import { ProjectService } from '../services/project.service'
-import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
-import { BasicProjectProxy } from '../models/basic-project.proxy'
-import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
 
 @Controller('users/projects')
 export class ProjectController {

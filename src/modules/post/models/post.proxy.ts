@@ -1,4 +1,5 @@
 import { PostEntity } from 'src/typeorm/entities/post.entity'
+
 import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
 export class PostProxy {

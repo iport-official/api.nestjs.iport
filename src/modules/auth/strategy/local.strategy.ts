@@ -1,8 +1,9 @@
-import { Strategy } from 'passport-local'
-import { PassportStrategy } from '@nestjs/passport'
 import { Injectable } from '@nestjs/common'
+import { PassportStrategy } from '@nestjs/passport'
 
 import { AuthService } from '../services/auth.service'
+
+import { Strategy } from 'passport-local'
 import { ValidationProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
