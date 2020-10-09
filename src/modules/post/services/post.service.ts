@@ -159,17 +159,25 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that can return all the posts of a specific user
+     * @param id stores the user id
+     */
     public async getPostsByUserId(
         id: string
     ): Promise<{
         user: UserEntity
         posts: PostEntity[]
     }> {
-        const user = await this.userService.getUserById(id)
-        const posts = await this.repository.find({ where: { user } })
-        return {
-            user,
-            posts
+        try {
+            const user = await this.userService.getUserById(id)
+            const posts = await this.repository.find({ where: { user } })
+            return {
+                user,
+                posts
+            }
+        } catch (error) {
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 }
