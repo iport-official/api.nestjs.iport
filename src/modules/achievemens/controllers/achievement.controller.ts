@@ -5,7 +5,7 @@ import { CreateAchievementPayload } from '../models/create-achievement.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
 import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
-import { AchievementService } from '../services/achievements.service'
+import { AchievementService } from '../services/achievement.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'

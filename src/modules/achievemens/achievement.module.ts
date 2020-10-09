@@ -5,7 +5,7 @@ import { AchievementEntity } from 'src/typeorm/entities/achievement.entity'
 
 import { AchievementController } from './controllers/achievement.controller'
 
-import { AchievementService } from './services/achievements.service'
+import { AchievementService } from './services/achievement.service'
 
 import { UserModule } from '../user/user.module'
 
