@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get } from '@nestjs/common'
+import { Controller, UseGuards, Get, Put } from '@nestjs/common'
 
 import { CompleteUserProxy } from '../models/complete-user.proxy'
 import { UpdateUserPayload } from '../models/update-user.payload'
@@ -32,7 +32,7 @@ export class UserController {
      * @param updateUserPayload indicates the new data of the user
      */
     @UseGuards(JwtAuthGuard)
-    @Get()
+    @Put()
     public async updateProfile(
         @RequestUser() requestUser: RequestUserProperties,
         updateUserPayload: UpdateUserPayload

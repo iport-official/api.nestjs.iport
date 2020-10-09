@@ -1,9 +1,9 @@
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 
-import { BasicProjectProxy } from './basic-project.proxy'
+import { ProjectProxy } from './project.proxy'
 import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
 
-export class CompleteProjectProxy extends BasicProjectProxy {
+export class CompleteProjectProxy extends ProjectProxy {
     user: CompleteUserProxy
 
     public constructor(entity: ProjectEntity) {

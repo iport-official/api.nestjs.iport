@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
-import { BasicProjectProxy } from '../models/basic-project.proxy'
 import { CompleteProjectProxy } from '../models/complete-project.proxy'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
+import { ProjectProxy } from '../models/project.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
-import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { ProjectService } from '../services/project.service'
 
@@ -43,9 +43,9 @@ export class ProjectController {
     @Get(':id')
     public async getProjectById(
         @Param('id') id: string
-    ): Promise<CompleteProjectProxy> {
+    ): Promise<ProjectProxy> {
         const project = await this.projectService.getProjectById(id)
-        return new CompleteProjectProxy(project)
+        return new ProjectProxy(project)
     }
 
     /**
@@ -57,15 +57,15 @@ export class ProjectController {
     public async getProjects(
         @Param('userId') userId: string
     ): Promise<{
-        user: BasicUserProxy
-        projects: ArrayProxy<BasicProjectProxy>
+        user: UserProxy
+        projects: ArrayProxy<ProjectProxy>
     }> {
         const { user, projects } = await this.projectService.getProjects(userId)
         return {
-            user: new BasicUserProxy(user),
+            user: new UserProxy(user),
             projects: {
                 length: projects.length,
-                array: projects.map(project => new BasicProjectProxy(project))
+                array: projects.map(project => new ProjectProxy(project))
             }
         }
     }

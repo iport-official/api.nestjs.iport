@@ -3,7 +3,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { AchievementProxy } from '../models/achievement.proxy'
 import { CreateAchievementPayload } from '../models/create-achievement.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
-import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { AchievementService } from '../services/achievement.service'
 
@@ -11,7 +11,7 @@ import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { RequestUser } from 'src/decorators/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
-@Controller()
+@Controller('users/:userId/achievements')
 export class AchievementController {
     public constructor(
         private readonly achievementService: AchievementService
@@ -57,7 +57,7 @@ export class AchievementController {
     public async getAchievements(
         @Param('userId') userId: string
     ): Promise<{
-        user: BasicUserProxy
+        user: UserProxy
         achievements: ArrayProxy<AchievementProxy>
     }> {
         const {
@@ -65,7 +65,7 @@ export class AchievementController {
             achievements
         } = await this.achievementService.getAchievements(userId)
         return {
-            user: new BasicUserProxy(user),
+            user: new UserProxy(user),
             achievements: {
                 length: achievements.length,
                 array: achievements.map(

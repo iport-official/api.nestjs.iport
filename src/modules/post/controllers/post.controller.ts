@@ -1,7 +1,7 @@
 import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
 
+import { CompletePostProxy } from '../models/complete-post.proxy'
 import { CreatePostPayload } from '../models/create-post.payload'
-import { CompletePostProxy } from '../models/post.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
 
 import { PostService } from '../services/post.service'
@@ -24,7 +24,11 @@ export class PostController {
         @RequestUser() requestUser: RequestUserProperties,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<CompletePostProxy> {
-        return await this.postService.createPost(requestUser, createPostPayload)
+        const post = await this.postService.createPost(
+            requestUser,
+            createPostPayload
+        )
+        return new CompletePostProxy(post)
     }
 
     /**
@@ -36,7 +40,8 @@ export class PostController {
     public async getUniquePost(
         @Query('id') id: string
     ): Promise<CompletePostProxy> {
-        return await this.postService.getUniquePost(id)
+        const post = await this.postService.getUniquePost(id)
+        return new CompletePostProxy(post)
     }
 
     /**
@@ -48,7 +53,11 @@ export class PostController {
     public async getHighlights(
         @Query('page') page: number
     ): Promise<ArrayProxy<CompletePostProxy>> {
-        return await this.postService.getHighlights(page)
+        const posts = await this.postService.getHighlights(page)
+        return {
+            length: posts.length,
+            array: posts.array.map(post => new CompletePostProxy(post))
+        }
     }
 
     /**
@@ -62,7 +71,11 @@ export class PostController {
         @Query('category') category: string,
         @Query('page') page: number
     ): Promise<ArrayProxy<CompletePostProxy>> {
-        return await this.postService.getByCategory(category, page)
+        const posts = await this.postService.getByCategory(category, page)
+        return {
+            length: posts.length,
+            array: posts.array.map(post => new CompletePostProxy(post))
+        }
     }
 
     /**
@@ -71,6 +84,7 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     @Get('main')
     public async getMainPost(): Promise<CompletePostProxy> {
-        return await this.postService.getMainPost()
+        const post = await this.postService.getMainPost()
+        return new CompletePostProxy(post)
     }
 }

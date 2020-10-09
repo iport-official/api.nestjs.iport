@@ -1,10 +1,10 @@
 import { AchievementEntity } from 'src/typeorm/entities/achievement.entity'
 
 import { AchievementProxy } from './achievement.proxy'
-import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 export class UserAchievementProxy extends AchievementProxy {
-    user: BasicUserProxy
+    user: UserProxy
 
     public constructor(entity: AchievementEntity) {
         super(entity)
