@@ -10,8 +10,6 @@ import { CreateProjectPayload } from '../models/create-project.payload'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
-import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-
 @Injectable()
 export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
     public constructor(
@@ -28,10 +26,10 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      * @param createProjectPayload stores the new project data
      */
     public async createProject(
-        requestUser: RequestUserProperties,
+        id: string,
         createProjectPayload: CreateProjectPayload
     ): Promise<ProjectEntity> {
-        const user = await this.userService.getUserById(requestUser.id)
+        const user = await this.userService.getUserById(id)
         return await this.repository.save({
             ...createProjectPayload,
             user
