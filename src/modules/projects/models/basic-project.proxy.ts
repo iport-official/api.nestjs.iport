@@ -8,7 +8,7 @@ export class BasicProjectProxy {
     endDate: Date
     description: string
 
-    constructor(entity: ProjectEntity) {
+    public constructor(entity: ProjectEntity) {
         this.id = entity.id
         this.title = entity.title
         this.startDate = entity.startDate
