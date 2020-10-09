@@ -8,6 +8,7 @@ import { AppService } from './app.service'
 import { AchievementModule } from './modules/achievemens/achievement.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
+import { CompetenceModule } from './modules/competences/competence.module'
 import { EmailModule } from './modules/email/email.module'
 import { ExperienceModule } from './modules/experiences/experience.module'
 import { PostModule } from './modules/post/post.module'
@@ -26,6 +27,7 @@ import { UserModule } from './modules/user/user.module'
         ProjectModule,
         ExperienceModule,
         AchievementModule,
+        CompetenceModule,
         TypeOrmModule.forRoot()
     ],
     controllers: [AppController],
