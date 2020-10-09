@@ -12,6 +12,10 @@ import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 export class UserPostController {
     public constructor(private readonly postService: PostService) {}
 
+    /**
+     * Method that can return all thes posts of a specific user
+     * @param userId stores the user id
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     public async getPostsByUserId(
