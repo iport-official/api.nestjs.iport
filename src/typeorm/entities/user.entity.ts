@@ -4,6 +4,7 @@ import { AccountType } from 'src/models/enums/account.types'
 
 import { AchievementEntity } from './achievement.entity'
 import { CompanyUserEntity } from './company-user.entity'
+import { CompetenceEntity } from './competence.entity'
 import { EmailEntity } from './email.entity'
 import { ExperienceEntity } from './experience.entity'
 import { PersonalUserEntity } from './personal-user.entity'
@@ -112,4 +113,10 @@ export class UserEntity extends BaseEntity {
         achievement => achievement.user
     )
     achievements: AchievementEntity[]
+
+    @OneToMany(
+        type => CompetenceEntity,
+        competence => competence.user
+    )
+    competences: CompetenceEntity[]
 }
