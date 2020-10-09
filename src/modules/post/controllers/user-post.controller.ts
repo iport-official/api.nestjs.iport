@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 
 import { PostProxy } from '../models/basic-post.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
 import { PostService } from '../services/post.service'
@@ -18,7 +18,7 @@ export class UserPostController {
         @Param('userId') userId: string
     ): Promise<{
         user: BasicUserProxy
-        posts: BaseArrayProxy<PostProxy>
+        posts: ArrayProxy<PostProxy>
     }> {
         const result = await this.postService.getPostsByUserId(userId)
         return {

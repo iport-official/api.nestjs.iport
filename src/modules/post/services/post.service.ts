@@ -8,7 +8,7 @@ import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreatePostPayload } from '../models/create-post.payload'
 import { CompletePostProxy } from '../models/post.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
@@ -73,7 +73,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     public async getHighlights(
         page: number
-    ): Promise<BaseArrayProxy<CompletePostProxy>> {
+    ): Promise<ArrayProxy<CompletePostProxy>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
@@ -109,7 +109,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     public async getByCategory(
         category: string,
         page: number
-    ): Promise<BaseArrayProxy<CompletePostProxy>> {
+    ): Promise<ArrayProxy<CompletePostProxy>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')

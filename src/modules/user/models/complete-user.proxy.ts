@@ -5,12 +5,12 @@ import { UserEntity } from 'src/typeorm/entities/user.entity'
 import { CompanyUserProxy } from './company-user.proxy'
 import { PersonalUserProxy } from './personal-user.proxy'
 import { BasicUserProxy } from './simple-user.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 
 export class CompleteUserProxy extends BasicUserProxy {
     content: PersonalUserProxy | CompanyUserProxy
-    telephones: BaseArrayProxy<string>
-    emails: BaseArrayProxy<string>
+    telephones: ArrayProxy<string>
+    emails: ArrayProxy<string>
 
     public constructor(entity: UserEntity) {
         super(entity)

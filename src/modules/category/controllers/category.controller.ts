@@ -10,7 +10,7 @@ import {
 
 import { CategoryPayload } from '../models/category.payload'
 import { CategoryProxy } from '../models/category.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 
 import { CategoryService } from '../services/category.service'
 
@@ -50,7 +50,7 @@ export class CategoryController {
     @Get()
     public async getCategories(
         @Query('page') page: number
-    ): Promise<BaseArrayProxy<CategoryProxy>> {
+    ): Promise<ArrayProxy<CategoryProxy>> {
         return await this.categoryService.getCategories(page)
     }
 }

@@ -4,7 +4,7 @@ import { BasicExperienceProxy } from '../models/basic-experience.proxy'
 import { CompleteExperienceProxy } from '../models/complete-experience.proxy'
 import { CreateExperiencePayload } from '../models/create-experience.payload'
 import { CreateExperienceProxy } from '../models/create-experience.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
 import { ExperienceService } from '../services/experience.service'
@@ -45,7 +45,7 @@ export class ExperienceController {
         @Param('userId') userId: string
     ): Promise<{
         user: BasicUserProxy
-        experiences: BaseArrayProxy<BasicExperienceProxy>
+        experiences: ArrayProxy<BasicExperienceProxy>
     }> {
         const {
             user,

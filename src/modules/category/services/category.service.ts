@@ -7,7 +7,7 @@ import { CategoryEntity } from 'src/typeorm/entities/category.entity'
 
 import { CategoryPayload } from '../models/category.payload'
 import { CategoryProxy } from '../models/category.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 
 const contentInPage = 7
 
@@ -55,7 +55,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
      */
     public async getCategories(
         page: number
-    ): Promise<BaseArrayProxy<CategoryProxy>> {
+    ): Promise<ArrayProxy<CategoryProxy>> {
         try {
             const queryBuilder = this.repository.createQueryBuilder(
                 'categories'

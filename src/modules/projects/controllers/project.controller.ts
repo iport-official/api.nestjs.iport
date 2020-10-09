@@ -4,7 +4,7 @@ import { BasicProjectProxy } from '../models/basic-project.proxy'
 import { CompleteProjectProxy } from '../models/complete-project.proxy'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
 
 import { ProjectService } from '../services/project.service'
@@ -58,7 +58,7 @@ export class ProjectController {
         @Param('userId') userId: string
     ): Promise<{
         user: BasicUserProxy
-        projects: BaseArrayProxy<BasicProjectProxy>
+        projects: ArrayProxy<BasicProjectProxy>
     }> {
         const { user, projects } = await this.projectService.getProjects(userId)
         return {

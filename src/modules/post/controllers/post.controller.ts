@@ -2,7 +2,7 @@ import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
 
 import { CreatePostPayload } from '../models/create-post.payload'
 import { CompletePostProxy } from '../models/post.proxy'
-import { BaseArrayProxy } from 'src/common/base-array-proxy'
+import { ArrayProxy } from 'src/common/array-proxy'
 
 import { PostService } from '../services/post.service'
 
@@ -47,7 +47,7 @@ export class PostController {
     @Get('highlights')
     public async getHighlights(
         @Query('page') page: number
-    ): Promise<BaseArrayProxy<CompletePostProxy>> {
+    ): Promise<ArrayProxy<CompletePostProxy>> {
         return await this.postService.getHighlights(page)
     }
 
@@ -61,7 +61,7 @@ export class PostController {
     public async getByCategory(
         @Query('category') category: string,
         @Query('page') page: number
-    ): Promise<BaseArrayProxy<CompletePostProxy>> {
+    ): Promise<ArrayProxy<CompletePostProxy>> {
         return await this.postService.getByCategory(category, page)
     }
 
