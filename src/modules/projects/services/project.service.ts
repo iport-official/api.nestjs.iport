@@ -22,14 +22,14 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
 
     /**
      * Method that can create a new project entity in the database
-     * @param requestUser stores the user basic data (id, email, accountType)
+     * @param userId stores the user id
      * @param createProjectPayload stores the new project data
      */
     public async createProject(
-        id: string,
+        userid: string,
         createProjectPayload: CreateProjectPayload
     ): Promise<ProjectEntity> {
-        const user = await this.userService.getUserById(id)
+        const user = await this.userService.getUserById(userid)
         return await this.repository.save({
             ...createProjectPayload,
             user
@@ -52,7 +52,7 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
     }
 
     /**
-     * Method that can get all projects using the user data
+     * Method that can get all projects using the user id
      * @param id stores the user id
      */
     public async getProjects(
