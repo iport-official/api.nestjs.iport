@@ -4,9 +4,10 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { PostEntity } from 'src/typeorm/entities/post.entity'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreatePostPayload } from '../models/create-post.payload'
-import { PostProxy } from '../models/post.proxy'
+import { CompletePostProxy } from '../models/post.proxy'
 import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
@@ -33,14 +34,14 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     public async createPost(
         requestUser: RequestUserProperties,
         createPostPayload: CreatePostPayload
-    ): Promise<PostProxy> {
+    ): Promise<CompletePostProxy> {
         try {
             const user = await this.userService.getProfile(requestUser)
             const post = await this.repository.save({
                 ...createPostPayload,
                 user
             })
-            return new PostProxy(post)
+            return new CompletePostProxy(post)
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
@@ -53,14 +54,14 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that can return an unique post
      * @param id indicates which post the users wants to get
      */
-    public async getUniquePost(id: string): Promise<PostProxy> {
+    public async getUniquePost(id: string): Promise<CompletePostProxy> {
         try {
             const post = await this.repository
                 .createQueryBuilder('posts')
                 .where({ id })
                 .leftJoinAndSelect('posts.user', 'user')
                 .getOne()
-            return new PostProxy(post)
+            return new CompletePostProxy(post)
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
@@ -72,7 +73,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     public async getHighlights(
         page: number
-    ): Promise<BaseArrayProxy<PostProxy>> {
+    ): Promise<BaseArrayProxy<CompletePostProxy>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
@@ -88,7 +89,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             return {
                 length,
-                array: array.map((entity: PostEntity) => new PostProxy(entity))
+                array: array.map(
+                    (entity: PostEntity) => new CompletePostProxy(entity)
+                )
             }
         } catch (error) {
             throw new HttpException(
@@ -106,7 +109,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     public async getByCategory(
         category: string,
         page: number
-    ): Promise<BaseArrayProxy<PostProxy>> {
+    ): Promise<BaseArrayProxy<CompletePostProxy>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
@@ -123,7 +126,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             return {
                 length,
-                array: array.map((entity: PostEntity) => new PostProxy(entity))
+                array: array.map(
+                    (entity: PostEntity) => new CompletePostProxy(entity)
+                )
             }
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
@@ -133,7 +138,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     /**
      * Method that can get the main post
      */
-    public async getMainPost(): Promise<PostProxy> {
+    public async getMainPost(): Promise<CompletePostProxy> {
         try {
             const post = await this.repository
                 .createQueryBuilder('posts')
@@ -145,12 +150,26 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .leftJoinAndSelect('posts.user', 'user')
                 .getOne()
 
-            return new PostProxy(post)
+            return new CompletePostProxy(post)
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
+        }
+    }
+
+    public async getPostsByUserId(
+        id: string
+    ): Promise<{
+        user: UserEntity
+        posts: PostEntity[]
+    }> {
+        const user = await this.userService.getUserById(id)
+        const posts = await this.repository.find({ where: { user } })
+        return {
+            user,
+            posts
         }
     }
 }
