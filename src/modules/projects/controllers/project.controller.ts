@@ -29,7 +29,7 @@ export class ProjectController {
         @Body() createProjectPayload: CreateProjectPayload
     ): Promise<CreateProjectProxy> {
         const project = await this.projectService.createProject(
-            requestUser,
+            requestUser.id,
             createProjectPayload
         )
         return new CreateProjectProxy(project)

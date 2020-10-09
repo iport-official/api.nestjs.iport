@@ -15,7 +15,6 @@ import { BaseArrayProxy } from 'src/common/base-array-proxy'
 import { CategoryService } from '../services/category.service'
 
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
-
 @Controller('categories')
 export class CategoryController {
     public constructor(private readonly categoryService: CategoryService) {}
