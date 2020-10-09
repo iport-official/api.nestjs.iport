@@ -6,8 +6,8 @@ import { Repository } from 'typeorm'
 import { PostEntity } from 'src/typeorm/entities/post.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
+import { CompletePostProxy } from '../models/complete-post.proxy'
 import { CreatePostPayload } from '../models/create-post.payload'
-import { CompletePostProxy } from '../models/post.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
@@ -34,14 +34,14 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     public async createPost(
         requestUser: RequestUserProperties,
         createPostPayload: CreatePostPayload
-    ): Promise<CompletePostProxy> {
+    ): Promise<PostEntity> {
         try {
             const user = await this.userService.getProfile(requestUser)
             const post = await this.repository.save({
                 ...createPostPayload,
                 user
             })
-            return new CompletePostProxy(post)
+            return post
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',
@@ -54,14 +54,14 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that can return an unique post
      * @param id indicates which post the users wants to get
      */
-    public async getUniquePost(id: string): Promise<CompletePostProxy> {
+    public async getUniquePost(id: string): Promise<PostEntity> {
         try {
             const post = await this.repository
                 .createQueryBuilder('posts')
                 .where({ id })
                 .leftJoinAndSelect('posts.user', 'user')
                 .getOne()
-            return new CompletePostProxy(post)
+            return post
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
@@ -71,9 +71,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that returns the most recommended posts in the app
      * @param page indicates which page the user want to laod
      */
-    public async getHighlights(
-        page: number
-    ): Promise<ArrayProxy<CompletePostProxy>> {
+    public async getHighlights(page: number): Promise<ArrayProxy<PostEntity>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
@@ -89,9 +87,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             return {
                 length,
-                array: array.map(
-                    (entity: PostEntity) => new CompletePostProxy(entity)
-                )
+                array
             }
         } catch (error) {
             throw new HttpException(
@@ -109,7 +105,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     public async getByCategory(
         category: string,
         page: number
-    ): Promise<ArrayProxy<CompletePostProxy>> {
+    ): Promise<ArrayProxy<PostEntity>> {
         try {
             const queryBuilder = this.repository
                 .createQueryBuilder('posts')
@@ -126,9 +122,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             return {
                 length,
-                array: array.map(
-                    (entity: PostEntity) => new CompletePostProxy(entity)
-                )
+                array
             }
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
@@ -138,7 +132,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
     /**
      * Method that can get the main post
      */
-    public async getMainPost(): Promise<CompletePostProxy> {
+    public async getMainPost(): Promise<PostEntity> {
         try {
             const post = await this.repository
                 .createQueryBuilder('posts')
@@ -150,7 +144,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .leftJoinAndSelect('posts.user', 'user')
                 .getOne()
 
-            return new CompletePostProxy(post)
+            return post
         } catch (error) {
             throw new HttpException(
                 'Internal Server Error',

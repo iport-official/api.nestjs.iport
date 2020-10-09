@@ -1,6 +1,6 @@
 import { ExperienceEntity } from 'src/typeorm/entities/experience.entity'
 
-import { BasicUserProxy } from 'src/modules/user/models/simple-user.proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 export class CreateExperienceProxy {
     id: string
@@ -9,7 +9,7 @@ export class CreateExperienceProxy {
     startDate: Date
     endDate: Date
     description: string
-    user: BasicUserProxy
+    user: UserProxy
 
     public constructor(entity: ExperienceEntity) {
         this.id = entity.id
@@ -17,7 +17,7 @@ export class CreateExperienceProxy {
         this.startDate = entity.startDate
         this.endDate = entity.endDate
         this.description = entity.description
-        this.user = new BasicUserProxy(entity.user)
+        this.user = new UserProxy(entity.user)
         this.image = entity.image
     }
 }

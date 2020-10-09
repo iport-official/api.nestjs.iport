@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
+import { AchievementEntity } from './achievement.entity'
 import { CompanyUserEntity } from './company-user.entity'
 import { EmailEntity } from './email.entity'
 import { ExperienceEntity } from './experience.entity'
@@ -105,4 +106,10 @@ export class UserEntity extends BaseEntity {
         experience => experience.user
     )
     experiences: ExperienceEntity[]
+
+    @OneToMany(
+        type => AchievementEntity,
+        achievement => achievement.user
+    )
+    achievements: AchievementEntity[]
 }

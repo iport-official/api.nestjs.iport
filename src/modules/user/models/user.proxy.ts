@@ -2,7 +2,7 @@ import { AccountType } from 'src/models/enums/account.types'
 
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
-export class BasicUserProxy {
+export class UserProxy {
     id: string
     email: string
     username: string

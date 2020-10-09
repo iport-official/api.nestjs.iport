@@ -5,6 +5,7 @@ import { AppController } from './app.controller'
 
 import { AppService } from './app.service'
 
+import { AchievementModule } from './modules/achievemens/achievement.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
 import { EmailModule } from './modules/email/email.module'
@@ -24,6 +25,7 @@ import { UserModule } from './modules/user/user.module'
         EmailModule,
         ProjectModule,
         ExperienceModule,
+        AchievementModule,
         TypeOrmModule.forRoot()
     ],
     controllers: [AppController],

@@ -1,6 +1,6 @@
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 
-export class BasicProjectProxy {
+export class ProjectProxy {
     id: string
     image: string
     title: string
