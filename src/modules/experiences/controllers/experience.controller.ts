@@ -17,6 +17,11 @@ import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 export class ExperienceController {
     public constructor(private readonly experienceService: ExperienceService) {}
 
+    /**
+     * Method that can register some experience in the database
+     * @param requestUser stores the user basic data (id, email, accountType)
+     * @param createExperiencePayload stores the new data, that will be saved in the database
+     */
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createExperience(
@@ -30,6 +35,10 @@ export class ExperienceController {
         return new CreateExperienceProxy(experience)
     }
 
+    /**
+     * Method that can return a experience from a user just with it id
+     * @param id stores the experience id
+     */
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     public async getExperienceById(
@@ -39,6 +48,10 @@ export class ExperienceController {
         return new CompleteExperienceProxy(experience)
     }
 
+    /**
+     * Method that can get all the experiences from a user
+     * @param userId stores the user id
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     public async getExperiences(

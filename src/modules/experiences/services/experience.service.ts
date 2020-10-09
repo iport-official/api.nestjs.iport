@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -20,39 +20,67 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         super(repository)
     }
 
+    /**
+     * Method that can register some experience in the database
+     * @param id stores the user id
+     * @param createExperiencePayload stores the new data, that will be saved in the database
+     */
     public async createExperience(
         id: string,
         createExperiencePayload: CreateExperiencePayload
     ): Promise<ExperienceEntity> {
-        const user = await this.userService.getUserById(id)
-        return await this.repository.save({
-            ...createExperiencePayload,
-            user
-        })
+        try {
+            const user = await this.userService.getUserById(id)
+            return await this.repository.save({
+                ...createExperiencePayload,
+                user
+            })
+        } catch (error) {
+            throw new HttpException(
+                'Internal Server Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
     }
 
+    /**
+     * Method that can return a experience from a user just with it id
+     * @param id stores the experience id
+     */
     public async getExperienceById(id: string): Promise<ExperienceEntity> {
-        const experience = await this.repository
-            .createQueryBuilder('experiences')
-            .where({ id })
-            .innerJoinAndSelect('experiences.user', 'users.id')
-            .getOne()
-        const user = await this.userService.getProfile(experience.user)
-        experience.user = user
-        return experience
+        try {
+            const experience = await this.repository
+                .createQueryBuilder('experiences')
+                .where({ id })
+                .innerJoinAndSelect('experiences.user', 'users.id')
+                .getOne()
+            const user = await this.userService.getProfile(experience.user)
+            experience.user = user
+            return experience
+        } catch (error) {
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+        }
     }
 
+    /**
+     * Method that can get all the experiences from a user
+     * @param userId stores the user id
+     */
     public async getExperiences(
-        id: string
+        userId: string
     ): Promise<{
         user: UserEntity
         experiences: ExperienceEntity[]
     }> {
-        const user = await this.userService.getUserById(id)
-        const experiences = await this.repository.find({ where: { user } })
-        return {
-            user,
-            experiences
+        try {
+            const user = await this.userService.getUserById(userId)
+            const experiences = await this.repository.find({ where: { user } })
+            return {
+                user,
+                experiences
+            }
+        } catch (error) {
+            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         }
     }
 }
