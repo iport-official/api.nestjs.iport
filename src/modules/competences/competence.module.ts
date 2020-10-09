@@ -3,7 +3,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { CompetenceEntity } from "src/typeorm/entities/competence.entity";
 
-import { UserController } from "../user/controllers/user.controller";
 import { CompetenceController } from "./controllers/competence.controller";
 
 import { CompetenceService } from "./services/competence.service";
