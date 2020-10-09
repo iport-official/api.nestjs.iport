@@ -16,6 +16,11 @@ import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 export class CompetenceController {
     public constructor(private readonly competenceSercice: CompetenceService) {}
 
+    /**
+     * Method that can register a competence in the database
+     * @param requestUser stores the user basic data (id, email, accountType)
+     * @param createCompetencePayload stores the competence data
+     */
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createCompetence(
@@ -29,6 +34,10 @@ export class CompetenceController {
         return new CompetenceProxy(competence)
     }
 
+    /**
+     * Method that get a specific competence entity
+     * @param id stores the competence id
+     */
     @UseGuards(JwtAuthGuard)
     @Get(':id')
     public async getCompetenceById(
@@ -38,6 +47,10 @@ export class CompetenceController {
         return new CompetenceProxy(competence)
     }
 
+    /**
+     * Method that can get all competences using the user id
+     * @param userId stores the user id
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     public async getCompetences(

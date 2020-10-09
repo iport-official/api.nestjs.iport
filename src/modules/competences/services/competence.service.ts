@@ -20,6 +20,11 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         super(repository)
     }
 
+    /**
+     * Method that can register a competence in the database
+     * @param userId stores the user id
+     * @param createCompetencePayload stores the competence data
+     */
     public async createCompetence(
         userId: string,
         createCompetencePayload: CreateCompetencePayload
@@ -31,6 +36,10 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         })
     }
 
+    /**
+     * Method that get a specific competence entity
+     * @param id stores the competence id
+     */
     public async getCompetencesById(id: string): Promise<CompetenceEntity> {
         const competence = await this.repository
             .createQueryBuilder('competences')
@@ -42,6 +51,10 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         return competence
     }
 
+    /**
+     * Method that can get all competences using the user id
+     * @param userId stores the user id
+     */
     public async getCompetences(
         userId: string
     ): Promise<{
