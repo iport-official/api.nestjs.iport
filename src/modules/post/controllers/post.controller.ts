@@ -1,7 +1,7 @@
 import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
 
 import { CreatePostPayload } from '../models/create-post.payload'
-import { PostProxy } from '../models/post.proxy'
+import { CompletePostProxy } from '../models/post.proxy'
 import { BaseArrayProxy } from 'src/common/base-array-proxy'
 
 import { PostService } from '../services/post.service'
@@ -23,7 +23,7 @@ export class PostController {
     public async create(
         @RequestUser() requestUser: RequestUserProperties,
         @Body() createPostPayload: CreatePostPayload
-    ): Promise<PostProxy> {
+    ): Promise<CompletePostProxy> {
         return await this.postService.createPost(requestUser, createPostPayload)
     }
 
@@ -33,7 +33,9 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get()
-    public async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
+    public async getUniquePost(
+        @Query('id') id: string
+    ): Promise<CompletePostProxy> {
         return await this.postService.getUniquePost(id)
     }
 
@@ -45,7 +47,7 @@ export class PostController {
     @Get('highlights')
     public async getHighlights(
         @Query('page') page: number
-    ): Promise<BaseArrayProxy<PostProxy>> {
+    ): Promise<BaseArrayProxy<CompletePostProxy>> {
         return await this.postService.getHighlights(page)
     }
 
@@ -59,7 +61,7 @@ export class PostController {
     public async getByCategory(
         @Query('category') category: string,
         @Query('page') page: number
-    ): Promise<BaseArrayProxy<PostProxy>> {
+    ): Promise<BaseArrayProxy<CompletePostProxy>> {
         return await this.postService.getByCategory(category, page)
     }
 
@@ -68,7 +70,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get('main')
-    public async getMainPost(): Promise<PostProxy> {
+    public async getMainPost(): Promise<CompletePostProxy> {
         return await this.postService.getMainPost()
     }
 }

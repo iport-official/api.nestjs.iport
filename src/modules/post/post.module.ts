@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { PostEntity } from 'src/typeorm/entities/post.entity'
 
 import { PostController } from './controllers/post.controller'
+import { UserPostController } from './controllers/user-post.controller'
 
 import { AuthService } from '../auth/services/auth.service'
 import { PostService } from './services/post.service'
@@ -23,6 +24,6 @@ import { UserModule } from '../user/user.module'
     ],
     providers: [PostService, AuthService],
     exports: [PostService],
-    controllers: [PostController]
+    controllers: [PostController, UserPostController]
 })
 export class PostModule {}
