@@ -1,5 +1,7 @@
 import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { CompletePostProxy } from '../models/complete-post.proxy'
 import { CreatePostPayload } from '../models/create-post.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
@@ -8,7 +10,9 @@ import { PostService } from '../services/post.service'
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { Roles } from 'src/decorators/roles/roles.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('posts')
 export class PostController {
@@ -18,6 +22,8 @@ export class PostController {
      * Method that can create posts
      * @param createPostPayload stores the post data before creating it
      */
+    @Roles(AccountType.COMPANY)
+    @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Post()
     public async create(

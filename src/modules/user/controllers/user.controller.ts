@@ -6,7 +6,7 @@ import { UpdateUserPayload } from '../models/update-user.payload'
 import { UserService } from '../services/user.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
 @Controller('users')
@@ -18,11 +18,11 @@ export class UserController {
      * @param requestUser the basic user data, that will be used to get the complete user data
      */
     @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    public async getProfile(
+    @Get('me')
+    public async getMe(
         @RequestUser() requestUser: RequestUserProperties
     ): Promise<CompleteUserProxy> {
-        const user = await this.userService.getProfile(requestUser)
+        const user = await this.userService.getMe(requestUser)
         return new CompleteUserProxy(user)
     }
 

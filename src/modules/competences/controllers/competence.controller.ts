@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { CompetenceProxy } from '../models/competence.proxy'
 import { CreateCompetencePayload } from '../models/create-competence.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
@@ -8,8 +10,10 @@ import { UserProxy } from 'src/modules/user/models/user.proxy'
 import { CompetenceService } from '../services/competence.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { Roles } from 'src/decorators/roles/roles.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
+import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 
 @Controller('users/:userId/competences')
@@ -21,6 +25,8 @@ export class CompetenceController {
      * @param requestUser stores the user basic data (id, email, accountType)
      * @param createCompetencePayload stores the competence data
      */
+    @Roles(AccountType.PERSONAL)
+    @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createCompetence(

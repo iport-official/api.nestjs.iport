@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { CompleteProjectProxy } from '../models/complete-project.proxy'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
@@ -10,8 +12,10 @@ import { UserProxy } from 'src/modules/user/models/user.proxy'
 import { ProjectService } from '../services/project.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { Roles } from 'src/decorators/roles/roles.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
+import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('users/:userId/projects')
 export class ProjectController {
@@ -22,6 +26,8 @@ export class ProjectController {
      * @param requestUser stores the user basic data (id, email, accountType)
      * @param createProjectPayload stores the new project data
      */
+    @Roles(AccountType.PERSONAL)
+    @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createProject(

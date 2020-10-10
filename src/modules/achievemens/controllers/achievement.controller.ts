@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { AchievementProxy } from '../models/achievement.proxy'
 import { CreateAchievementPayload } from '../models/create-achievement.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
@@ -8,8 +10,10 @@ import { UserProxy } from 'src/modules/user/models/user.proxy'
 import { AchievementService } from '../services/achievement.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { Roles } from 'src/decorators/roles/roles.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
+import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('users/:userId/achievements')
 export class AchievementController {
@@ -22,6 +26,8 @@ export class AchievementController {
      * @param requestUser stores the user basic data (id, email, accountType)
      * @param createAchievementPayload stores the new achievement data
      */
+    @Roles(AccountType.PERSONAL)
+    @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createAchievement(

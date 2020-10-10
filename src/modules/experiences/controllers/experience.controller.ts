@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { BasicExperienceProxy } from '../models/basic-experience.proxy'
 import { CompleteExperienceProxy } from '../models/complete-experience.proxy'
 import { CreateExperiencePayload } from '../models/create-experience.payload'
@@ -10,8 +12,10 @@ import { UserProxy } from 'src/modules/user/models/user.proxy'
 import { ExperienceService } from '../services/experience.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { Roles } from 'src/decorators/roles/roles.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
+import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('users/:userId/experiences')
 export class ExperienceController {
@@ -22,6 +26,8 @@ export class ExperienceController {
      * @param requestUser stores the user basic data (id, email, accountType)
      * @param createExperiencePayload stores the new data, that will be saved in the database
      */
+    @Roles(AccountType.PERSONAL)
+    @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createExperience(

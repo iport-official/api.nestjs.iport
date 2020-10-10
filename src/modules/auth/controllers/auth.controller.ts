@@ -8,7 +8,7 @@ import { AuthService } from '../services/auth.service'
 
 import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
 
 @Controller('users')
 export class AuthController {
