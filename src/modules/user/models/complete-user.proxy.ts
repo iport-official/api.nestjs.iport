@@ -14,12 +14,10 @@ export class CompleteUserProxy extends UserProxy {
 
     public constructor(entity: UserEntity) {
         super(entity)
-
         this.content =
             entity.accountType === AccountType.PERSONAL
                 ? new PersonalUserProxy(entity.personalUser)
                 : new CompanyUserProxy(entity.companyUser)
-
         this.telephones = {
             length: entity.telephones.length,
             array: entity.telephones.map(
