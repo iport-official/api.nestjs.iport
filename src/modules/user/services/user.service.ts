@@ -98,7 +98,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that returns the user based on id
      * @param id stores the id of the user that will be searched
      */
-    public async getProfile(
+    public async getMe(
         validationProperties: RequestUserProperties
     ): Promise<UserEntity> {
         try {

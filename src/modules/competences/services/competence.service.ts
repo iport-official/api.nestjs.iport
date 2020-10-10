@@ -46,7 +46,7 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
             .where({ id })
             .innerJoinAndSelect('competences.user', 'users.id')
             .getOne()
-        const user = await this.userService.getProfile(competence.user)
+        const user = await this.userService.getMe(competence.user)
         competence.user = user
         return competence
     }

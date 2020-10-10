@@ -36,7 +36,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         createPostPayload: CreatePostPayload
     ): Promise<PostEntity> {
         try {
-            const user = await this.userService.getProfile(requestUser)
+            const user = await this.userService.getMe(requestUser)
             const post = await this.repository.save({
                 ...createPostPayload,
                 user

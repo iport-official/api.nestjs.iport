@@ -46,7 +46,7 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
             .where({ id })
             .innerJoinAndSelect('projects.user', 'users.id')
             .getOne()
-        const user = await this.userService.getProfile(project.user)
+        const user = await this.userService.getMe(project.user)
         project.user = user
         return project
     }

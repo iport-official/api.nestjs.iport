@@ -54,7 +54,7 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
                 .where({ id })
                 .innerJoinAndSelect('experiences.user', 'users.id')
                 .getOne()
-            const user = await this.userService.getProfile(experience.user)
+            const user = await this.userService.getMe(experience.user)
             experience.user = user
             return experience
         } catch (error) {

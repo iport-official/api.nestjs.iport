@@ -46,7 +46,7 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
             .where({ id })
             .innerJoinAndSelect('achievements.user', 'users.id')
             .getOne()
-        const user = await this.userService.getProfile(achievement.user)
+        const user = await this.userService.getMe(achievement.user)
         achievement.user = user
         return achievement
     }
