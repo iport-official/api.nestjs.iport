@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
+
+import { AccountType } from 'src/models/enums/account.types'
 
 import { AchievementEntity } from 'src/typeorm/entities/achievement.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
@@ -30,11 +32,22 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
         userId: string,
         createAchievementPayload: CreateAchievementPayload
     ): Promise<AchievementEntity> {
-        const user = await this.userService.getUserById(userId)
-        return await this.repository.save({
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        const { id } = await this.repository.save({
             ...createAchievementPayload,
             user
         })
+        return await this.repository
+            .createQueryBuilder('achievements')
+            .where({ id })
+            .innerJoinAndSelect('achievements.user', 'users')
+            .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+            .leftJoinAndSelect('users.telephones', 'telephones.user')
+            .leftJoinAndSelect('users.emails', 'emails.user')
+            .getOne()
     }
 
     /**
@@ -42,15 +55,18 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
      * @param id stores the achievement id
      */
     public async getAchievementById(id: string): Promise<AchievementEntity> {
-        const achievement = await this.repository
-            .createQueryBuilder('achievements')
-            .where({ id })
-            .innerJoinAndSelect('achievements.user', 'users.id')
-            .innerJoinAndSelect('users.personaUser', 'personalusers.user')
-            .innerJoinAndSelect('users.telephones', 'telephones.user')
-            .innerJoinAndSelect('users.emails', 'emails.user')
-            .getOne()
-        return achievement
+        try {
+            return await this.repository
+                .createQueryBuilder('achievements')
+                .where({ id })
+                .innerJoinAndSelect('achievements.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
+                .getOne()
+        } catch (error) {
+            throw new NotFoundException(error)
+        }
     }
 
     /**
@@ -60,7 +76,10 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
     public async getAchievements(
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, AchievementEntity>> {
-        const user = await this.userService.getUserById(userId)
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
         const achievements = await this.repository.find({ where: { user } })
         return {
             user,
