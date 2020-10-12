@@ -2,7 +2,6 @@ import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 
 import { PostProxy } from '../models/post.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
-import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { PostService } from '../services/post.service'
 
@@ -20,17 +19,14 @@ export class UserPostController {
     @Get()
     public async getPostsByUserId(
         @Param('userId') userId: string
-    ): Promise<{
-        user: UserProxy
-        posts: ArrayProxy<PostProxy>
-    }> {
-        const result = await this.postService.getPostsByUserId(userId)
+    ): Promise<ArrayProxy<PostProxy>> {
+        const posts = await this.postService.getPostsByUserId(userId)
+
+        // console.log(posts.length)
+
         return {
-            user: new UserProxy(result.user),
-            posts: {
-                length: result.posts.length,
-                array: result.posts.map(post => new PostProxy(post))
-            }
+            length: posts.length,
+            array: posts.array.map(post => new PostProxy(post))
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Get, Put } from '@nestjs/common'
 
-import { CompleteUserProxy } from '../models/complete-user.proxy'
 import { UpdateUserPayload } from '../models/update-user.payload'
+import { UserProxy } from '../models/user.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -21,9 +21,9 @@ export class UserController {
     @Get('me')
     public async getMe(
         @RequestUser() requestUser: RequestUserProperties
-    ): Promise<CompleteUserProxy> {
+    ): Promise<UserProxy> {
         const user = await this.userService.getMe(requestUser)
-        return new CompleteUserProxy(user)
+        return new UserProxy(user)
     }
 
     /**
@@ -36,11 +36,11 @@ export class UserController {
     public async updateProfile(
         @RequestUser() requestUser: RequestUserProperties,
         updateUserPayload: UpdateUserPayload
-    ): Promise<CompleteUserProxy> {
+    ): Promise<UserProxy> {
         const user = await this.userService.updateProfile(
             requestUser.id,
             updateUserPayload
         )
-        return new CompleteUserProxy(user)
+        return new UserProxy(user)
     }
 }
