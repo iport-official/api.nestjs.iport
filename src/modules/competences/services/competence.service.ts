@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { CompetenceEntity } from 'src/typeorm/entities/competence.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
@@ -35,11 +37,22 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         createCompetencePayload: CreateCompetencePayload
     ): Promise<CompetenceEntity> {
         try {
-            const user = await this.userService.getUserById(userId)
-            return await this.repository.save({
+            const user = await this.userService.getUserById(
+                userId,
+                AccountType.PERSONAL
+            )
+            const { id } = await this.repository.save({
                 ...createCompetencePayload,
                 user
             })
+            return await this.repository
+                .createQueryBuilder('competences')
+                .where({ id })
+                .innerJoinAndSelect('competences.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
+                .getOne()
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
@@ -51,14 +64,14 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
      */
     public async getCompetencesById(id: string): Promise<CompetenceEntity> {
         try {
-            const competence = await this.repository
+            return await this.repository
                 .createQueryBuilder('competences')
                 .where({ id })
-                .innerJoinAndSelect('competences.user', 'users.id')
+                .innerJoinAndSelect('competences.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
-            const user = await this.userService.getMe(competence.user)
-            competence.user = user
-            return competence
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
@@ -72,7 +85,10 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, CompetenceEntity>> {
         try {
-            const user = await this.userService.getUserById(userId)
+            const user = await this.userService.getUserById(
+                userId,
+                AccountType.PERSONAL
+            )
             const competences = await this.repository.find({ where: { user } })
             return {
                 user,

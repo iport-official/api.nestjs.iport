@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { ExperienceEntity } from 'src/typeorm/entities/experience.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
@@ -73,7 +75,10 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, ExperienceEntity>> {
         try {
-            const user = await this.userService.getUserById(userId)
+            const user = await this.userService.getUserById(
+                userId,
+                AccountType.PERSONAL
+            )
             const experiences = await this.repository.find({ where: { user } })
             return {
                 user,
