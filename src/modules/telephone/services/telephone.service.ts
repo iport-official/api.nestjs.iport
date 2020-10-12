@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -25,7 +29,9 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         user: UserEntity
     ): Promise<TelephoneEntity[]> {
         try {
-            const telephoneEntities = await this.repository.save(
+            if (!telephones || telephones.length === 0 || user === null)
+                return null
+            return await this.repository.save(
                 telephones.map(telephone => {
                     return {
                         telephone,
@@ -33,13 +39,9 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
                     }
                 })
             )
-            user.telephones = telephoneEntities
-            return telephoneEntities
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            console.log(error)
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -49,7 +51,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         try {
             return await this.repository.find({ user })
         } catch (error) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -61,7 +63,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         try {
             await this.repository.delete({ id })
         } catch (error) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -73,7 +75,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         try {
             await this.repository.delete({ user })
         } catch (error) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 }

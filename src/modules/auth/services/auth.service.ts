@@ -1,9 +1,9 @@
 import {
     Injectable,
-    HttpException,
-    HttpStatus,
     Inject,
-    forwardRef
+    forwardRef,
+    InternalServerErrorException,
+    UnauthorizedException
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
@@ -44,22 +44,17 @@ export class AuthService {
                 ...registerUserPayload,
                 password: hashedPassword
             })
-
-            await this.telephoneService.registerTelephones(
+            user.telephones = await this.telephoneService.registerTelephones(
                 registerUserPayload.telephones,
                 user
             )
-            await this.emailService.registerEmails(
+            user.emails = await this.emailService.registerEmails(
                 registerUserPayload.emails,
                 user
             )
-
             return new UserProxy(user)
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -78,10 +73,7 @@ export class AuthService {
                 })
             }
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -106,10 +98,7 @@ export class AuthService {
             await this.verifyPassword(password, userPassword)
             return { id, email, accountType }
         } catch (error) {
-            throw new HttpException(
-                'Wrong credentials provided',
-                HttpStatus.UNAUTHORIZED
-            )
+            throw new UnauthorizedException('Wrong credentials provided')
         }
     }
 
@@ -126,10 +115,7 @@ export class AuthService {
     ): Promise<void> {
         const isPasswordMatching = await compare(password, hashedPassword)
         if (!isPasswordMatching)
-            throw new HttpException(
-                'Wrong credentials provided',
-                HttpStatus.UNAUTHORIZED
-            )
+            throw new UnauthorizedException('Wrong credentials provided')
     }
 
     //#endregion

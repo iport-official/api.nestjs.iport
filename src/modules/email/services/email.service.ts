@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -24,7 +28,8 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         user: UserEntity
     ): Promise<EmailEntity[]> {
         try {
-            const emailEntities = await this.repository.save(
+            if (!emails || emails.length === 0 || user === null) return null
+            return await this.repository.save(
                 emails.map(email => {
                     return {
                         email,
@@ -32,13 +37,8 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
                     }
                 })
             )
-            user.emails = emailEntities
-            return emailEntities
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -50,7 +50,7 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         try {
             return await this.repository.find({ user })
         } catch (error) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -62,7 +62,7 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         try {
             await this.repository.delete({ id })
         } catch (error) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -74,7 +74,7 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         try {
             await this.repository.delete({ user })
         } catch (error) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 }
