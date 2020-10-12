@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -41,10 +45,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             })
             return post
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -59,12 +60,12 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .where({ id })
                 .leftJoinAndSelect('posts.user', 'users')
                 .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
             return post
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -84,8 +85,8 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .offset(page * contentInPage)
                 .leftJoinAndSelect('posts.user', 'users')
                 .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
 
@@ -94,10 +95,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 array
             }
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -122,8 +120,8 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 .offset(page * contentInPage)
                 .leftJoinAndSelect('posts.user', 'users')
                 .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
 
@@ -132,7 +130,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 array
             }
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -149,15 +147,12 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 )
                 .leftJoinAndSelect('posts.user', 'users')
                 .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
         } catch (error) {
             console.log(error)
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -178,8 +173,8 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             const array = await query
                 .innerJoinAndSelect('posts.user', 'users')
                 .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getMany()
 
             return {
@@ -187,7 +182,7 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 array
             }
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 }

@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -37,10 +41,7 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
                 user
             })
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -60,7 +61,7 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
                 .getOne()
             return experience
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -82,7 +83,7 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
                 }
             }
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 }

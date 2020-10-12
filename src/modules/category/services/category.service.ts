@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -30,10 +36,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
         try {
             return await this.repository.save({ ...categoryPayload })
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -45,7 +48,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
         try {
             return await this.repository.findOne({ where: { id } })
         } catch (error) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new NotFoundException(error)
         }
     }
 
@@ -70,10 +73,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
             return { length, array }
         } catch (error) {
-            throw new HttpException(
-                'Internal Server Error',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
+            throw new InternalServerErrorException(error)
         }
     }
 }

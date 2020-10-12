@@ -13,6 +13,8 @@ import { ProjectEntity } from './project.entity'
 import { TelephoneEntity } from './telephone.entity'
 import { BaseEntity } from 'src/common/base-entity'
 
+import { IsOptional } from 'class-validator'
+
 @Entity('users')
 export class UserEntity extends BaseEntity {
     @Column({
@@ -84,17 +86,19 @@ export class UserEntity extends BaseEntity {
     )
     posts: PostEntity[]
 
+    @IsOptional()
     @OneToMany(
         type => TelephoneEntity,
         telephone => telephone.user
     )
-    telephones: TelephoneEntity[]
+    telephones?: TelephoneEntity[]
 
+    @IsOptional()
     @OneToMany(
         type => EmailEntity,
         email => email.user
     )
-    emails: EmailEntity[]
+    emails?: EmailEntity[]
 
     @OneToMany(
         type => ProjectEntity,

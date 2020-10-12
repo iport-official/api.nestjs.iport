@@ -15,8 +15,8 @@ export class UserProxy {
     updateAt: Date
     profileImage: string
     content: PersonalUserProxy | CompanyUserProxy
-    telephones: ArrayProxy<string> | null
-    emails: ArrayProxy<string> | null
+    telephones?: ArrayProxy<string>
+    emails?: ArrayProxy<string>
 
     public constructor(entity: UserEntity) {
         this.id = entity.id

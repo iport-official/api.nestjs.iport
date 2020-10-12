@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { DeepPartial, Repository, UpdateResult } from 'typeorm'
@@ -23,7 +27,11 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
     public async registerCompanyAccount(
         registerCompanyAccountPayload: RegisterCompanyUserPayload
     ): Promise<CompanyUserEntity> {
-        return await this.repository.save(registerCompanyAccountPayload)
+        try {
+            return await this.repository.save(registerCompanyAccountPayload)
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -35,7 +43,11 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
         id: string,
         payload: DeepPartial<CompanyUserEntity>
     ): Promise<UpdateResult> {
-        return await this.repository.update({ id }, payload)
+        try {
+            return await this.repository.update({ id }, payload)
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -43,6 +55,10 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
      * @param id stores the project id that will be searched
      */
     public async getCompanyAccount(id: string): Promise<CompanyUserEntity> {
-        return await this.repository.findOne({ where: { id } })
+        try {
+            return await this.repository.findOne({ where: { id } })
+        } catch (error) {
+            throw new NotFoundException(error)
+        }
     }
 }

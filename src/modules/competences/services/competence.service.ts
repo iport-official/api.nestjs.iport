@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -30,11 +34,15 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         userId: string,
         createCompetencePayload: CreateCompetencePayload
     ): Promise<CompetenceEntity> {
-        const user = await this.userService.getUserById(userId)
-        return await this.repository.save({
-            ...createCompetencePayload,
-            user
-        })
+        try {
+            const user = await this.userService.getUserById(userId)
+            return await this.repository.save({
+                ...createCompetencePayload,
+                user
+            })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -42,14 +50,18 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
      * @param id stores the competence id
      */
     public async getCompetencesById(id: string): Promise<CompetenceEntity> {
-        const competence = await this.repository
-            .createQueryBuilder('competences')
-            .where({ id })
-            .innerJoinAndSelect('competences.user', 'users.id')
-            .getOne()
-        const user = await this.userService.getMe(competence.user)
-        competence.user = user
-        return competence
+        try {
+            const competence = await this.repository
+                .createQueryBuilder('competences')
+                .where({ id })
+                .innerJoinAndSelect('competences.user', 'users.id')
+                .getOne()
+            const user = await this.userService.getMe(competence.user)
+            competence.user = user
+            return competence
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -59,14 +71,18 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
     public async getCompetences(
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, CompetenceEntity>> {
-        const user = await this.userService.getUserById(userId)
-        const competences = await this.repository.find({ where: { user } })
-        return {
-            user,
-            arrayProxy: {
-                length: competences.length,
-                array: competences
+        try {
+            const user = await this.userService.getUserById(userId)
+            const competences = await this.repository.find({ where: { user } })
+            return {
+                user,
+                arrayProxy: {
+                    length: competences.length,
+                    array: competences
+                }
             }
+        } catch (error) {
+            throw new NotFoundException(error)
         }
     }
 }

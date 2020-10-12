@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { DeepPartial, Repository, UpdateResult } from 'typeorm'
@@ -25,7 +29,11 @@ export class PersonalUserService extends TypeOrmCrudService<
     public async registerPersonalAccount(
         registerPersonalAccountPayload: RegisterPersonalUserPayload
     ): Promise<PersonalUserEntity> {
-        return await this.repository.save(registerPersonalAccountPayload)
+        try {
+            return await this.repository.save(registerPersonalAccountPayload)
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -37,7 +45,11 @@ export class PersonalUserService extends TypeOrmCrudService<
         id: string,
         payload: DeepPartial<PersonalUserEntity>
     ): Promise<UpdateResult> {
-        return await this.repository.update({ id }, payload)
+        try {
+            return await this.repository.update({ id }, payload)
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -45,6 +57,10 @@ export class PersonalUserService extends TypeOrmCrudService<
      * @param id stores the personal user id
      */
     public async getPersonalAccount(id: string): Promise<PersonalUserEntity> {
-        return await this.repository.findOne({ where: { id } })
+        try {
+            return await this.repository.findOne({ where: { id } })
+        } catch (error) {
+            throw new NotFoundException(error)
+        }
     }
 }

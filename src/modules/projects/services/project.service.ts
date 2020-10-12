@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -30,11 +34,15 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         userid: string,
         createProjectPayload: CreateProjectPayload
     ): Promise<ProjectEntity> {
-        const user = await this.userService.getUserById(userid)
-        return await this.repository.save({
-            ...createProjectPayload,
-            user
-        })
+        try {
+            const user = await this.userService.getUserById(userid)
+            return await this.repository.save({
+                ...createProjectPayload,
+                user
+            })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -42,14 +50,18 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      * @param id stores the project id
      */
     public async getProjectById(id: string): Promise<ProjectEntity> {
-        const project = await this.repository
-            .createQueryBuilder('projects')
-            .where({ id })
-            .innerJoinAndSelect('projects.user', 'users.id')
-            .getOne()
-        const user = await this.userService.getMe(project.user)
-        project.user = user
-        return project
+        try {
+            const project = await this.repository
+                .createQueryBuilder('projects')
+                .where({ id })
+                .innerJoinAndSelect('projects.user', 'users.id')
+                .getOne()
+            const user = await this.userService.getMe(project.user)
+            project.user = user
+            return project
+        } catch (error) {
+            throw new NotFoundException(error)
+        }
     }
 
     /**
@@ -59,14 +71,18 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
     public async getProjects(
         id: string
     ): Promise<UserWithArrayProxy<UserEntity, ProjectEntity>> {
-        const user = await this.userService.getUserById(id)
-        const projects = await this.repository.find({ where: { user } })
-        return {
-            user,
-            arrayProxy: {
-                length: projects.length,
-                array: projects
+        try {
+            const user = await this.userService.getUserById(id)
+            const projects = await this.repository.find({ where: { user } })
+            return {
+                user,
+                arrayProxy: {
+                    length: projects.length,
+                    array: projects
+                }
             }
+        } catch (error) {
+            throw new NotFoundException(error)
         }
     }
 }

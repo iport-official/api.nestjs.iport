@@ -108,8 +108,8 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             return await this.userRepository
                 .createQueryBuilder('users')
                 .where({ id: validationProperties.id })
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .innerJoinAndSelect(
                     isPersonalAccount
                         ? 'users.personalUser'
@@ -133,35 +133,39 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         id: string,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserEntity> {
-        const {
-            profileImage,
-            email,
-            username,
-            accountType,
-            telephones,
-            emails
-        } = updateUserPayload
-
-        const user = await this.getUserById(id)
-
-        await this.telephoneService.deleteAllTelephonesByUser(user)
-        await this.emailService.deleteAllEmailsUsingByUser(user)
-
-        await this.telephoneService.registerTelephones(telephones, user)
-        await this.emailService.registerEmails(emails, user)
-
-        await this.userRepository
-            .createQueryBuilder('users')
-            .where({ id })
-            .update({
+        try {
+            const {
                 profileImage,
                 email,
                 username,
-                accountType
-            })
-            .execute()
+                accountType,
+                telephones,
+                emails
+            } = updateUserPayload
 
-        return user
+            const user = await this.getUserById(id)
+
+            await this.telephoneService.deleteAllTelephonesByUser(user)
+            await this.emailService.deleteAllEmailsUsingByUser(user)
+
+            await this.telephoneService.registerTelephones(telephones, user)
+            await this.emailService.registerEmails(emails, user)
+
+            await this.userRepository
+                .createQueryBuilder('users')
+                .where({ id })
+                .update({
+                    profileImage,
+                    email,
+                    username,
+                    accountType
+                })
+                .execute()
+
+            return user
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
