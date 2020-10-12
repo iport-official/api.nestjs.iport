@@ -1,5 +1,7 @@
 import { PostEntity } from 'src/typeorm/entities/post.entity'
 
+import { UserProxy } from 'src/modules/user/models/user.proxy'
+
 export class PostProxy {
     id: string
     image: string
@@ -16,6 +18,7 @@ export class PostProxy {
     vacancyDescription: string
     createAt: Date
     updateAt: Date
+    user: UserProxy
 
     public constructor(entity: PostEntity) {
         this.id = entity.id
@@ -33,5 +36,6 @@ export class PostProxy {
         this.createAt = entity.createAt
         this.updateAt = entity.updateAt
         this.image = entity.image
+        this.user = new UserProxy(entity.user)
     }
 }

@@ -4,9 +4,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { PostEntity } from 'src/typeorm/entities/post.entity'
-import { UserEntity } from 'src/typeorm/entities/user.entity'
 
-import { CompletePostProxy } from '../models/complete-post.proxy'
 import { CreatePostPayload } from '../models/create-post.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
 
@@ -155,20 +153,28 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
     /**
      * Method that can return all the posts of a specific user
-     * @param id stores the user id
+     * @param userId stores the user id
      */
     public async getPostsByUserId(
-        id: string
-    ): Promise<{
-        user: UserEntity
-        posts: PostEntity[]
-    }> {
+        userId: string
+    ): Promise<ArrayProxy<PostEntity>> {
         try {
-            const user = await this.userService.getUserById(id)
-            const posts = await this.repository.find({ where: { user } })
+            const query = this.repository
+                .createQueryBuilder('posts')
+                .where({ user: userId })
+
+            const length = await query.getCount()
+
+            const array = await query
+                .innerJoinAndSelect('posts.user', 'users')
+                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
+                .getMany()
+
             return {
-                user,
-                posts
+                length,
+                array
             }
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
