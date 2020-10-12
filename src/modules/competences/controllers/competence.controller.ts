@@ -5,6 +5,7 @@ import { AccountType } from 'src/models/enums/account.types'
 import { CompetenceProxy } from '../models/competence.proxy'
 import { CreateCompetencePayload } from '../models/create-competence.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { CompetenceService } from '../services/competence.service'
@@ -14,7 +15,6 @@ import { Roles } from 'src/decorators/roles/roles.decorator'
 import { RequestUser } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { RolesGuard } from 'src/guards/roles/roles.guard'
-
 
 @Controller('users/:userId/competences')
 export class CompetenceController {
@@ -61,19 +61,16 @@ export class CompetenceController {
     @Get()
     public async getCompetences(
         @Param('userId') userId: string
-    ): Promise<{
-        user: UserProxy
-        competences: ArrayProxy<CompetenceProxy>
-    }> {
+    ): Promise<UserWithArrayProxy<UserProxy, CompetenceProxy>> {
         const {
             user,
-            competences
+            arrayProxy
         } = await this.competenceSercice.getCompetences(userId)
         return {
             user: new UserProxy(user),
-            competences: {
-                length: competences.length,
-                array: competences.map(
+            arrayProxy: {
+                length: arrayProxy.length,
+                array: arrayProxy.array.map(
                     competence => new CompetenceProxy(competence)
                 )
             }
