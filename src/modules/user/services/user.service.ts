@@ -103,22 +103,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         validationProperties: RequestUserProperties
     ): Promise<UserEntity> {
         try {
-            const isPersonalAccount =
-                validationProperties.accountType === AccountType.PERSONAL
-            return await this.userRepository
-                .createQueryBuilder('users')
-                .where({ id: validationProperties.id })
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
-                .innerJoinAndSelect(
-                    isPersonalAccount
-                        ? 'users.personalUser'
-                        : 'users.companyUser',
-                    isPersonalAccount
-                        ? 'personalusers.user'
-                        : 'companyusers.user'
-                )
-                .getOne()
+            return await this.getUserById(
+                validationProperties.id,
+                validationProperties.accountType
+            )
         } catch (error) {
             throw new NotFoundException(error)
         }
@@ -172,9 +160,35 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that can return an UserEntity
      * @param id stores the user id
      */
-    public async getUserById(id: string): Promise<UserEntity> {
+    public async getUserById(
+        id: string,
+        accountType?: string
+    ): Promise<UserEntity> {
         try {
-            return await this.userRepository.findOne({ id })
+            if (accountType) {
+                const isPersonalAccount = accountType == AccountType.PERSONAL
+                return await this.userRepository
+                    .createQueryBuilder('users')
+                    .where({ id })
+                    .leftJoinAndSelect('users.telephones', 'telephones.user')
+                    .leftJoinAndSelect('users.emails', 'emails.user')
+                    .innerJoinAndSelect(
+                        isPersonalAccount
+                            ? 'users.personalUser'
+                            : 'users.companyUser',
+                        isPersonalAccount
+                            ? 'personalusers.user'
+                            : 'companyusers.user'
+                    )
+                    .getOne()
+            } else {
+                return await this.userRepository
+                    .createQueryBuilder('users')
+                    .where({ id })
+                    .leftJoinAndSelect('users.telephones', 'telephones.user')
+                    .leftJoinAndSelect('users.emails', 'emails.user')
+                    .getOne()
+            }
         } catch (error) {
             throw new NotFoundException(error)
         }
