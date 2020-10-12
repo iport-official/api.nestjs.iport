@@ -7,6 +7,7 @@ import { AchievementEntity } from 'src/typeorm/entities/achievement.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateAchievementPayload } from '../models/create-achievement.payload'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
@@ -45,9 +46,10 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
             .createQueryBuilder('achievements')
             .where({ id })
             .innerJoinAndSelect('achievements.user', 'users.id')
+            .innerJoinAndSelect('users.personaUser', 'personalusers.user')
+            .innerJoinAndSelect('users.telephones', 'telephones.user')
+            .innerJoinAndSelect('users.emails', 'emails.user')
             .getOne()
-        const user = await this.userService.getMe(achievement.user)
-        achievement.user = user
         return achievement
     }
 
@@ -57,15 +59,15 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
      */
     public async getAchievements(
         userId: string
-    ): Promise<{
-        user: UserEntity
-        achievements: AchievementEntity[]
-    }> {
+    ): Promise<UserWithArrayProxy<UserEntity, AchievementEntity>> {
         const user = await this.userService.getUserById(userId)
         const achievements = await this.repository.find({ where: { user } })
         return {
             user,
-            achievements
+            arrayProxy: {
+                length: achievements.length,
+                array: achievements
+            }
         }
     }
 }

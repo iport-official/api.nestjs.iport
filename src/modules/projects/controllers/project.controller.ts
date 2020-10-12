@@ -6,6 +6,7 @@ import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
 import { ProjectProxy } from '../models/project.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { ProjectService } from '../services/project.service'
@@ -61,16 +62,17 @@ export class ProjectController {
     @Get()
     public async getProjects(
         @Param('userId') userId: string
-    ): Promise<{
-        user: UserProxy
-        projects: ArrayProxy<ProjectProxy>
-    }> {
-        const { user, projects } = await this.projectService.getProjects(userId)
+    ): Promise<UserWithArrayProxy<UserProxy, ProjectProxy>> {
+        const { user, arrayProxy } = await this.projectService.getProjects(
+            userId
+        )
         return {
             user: new UserProxy(user),
-            projects: {
-                length: projects.length,
-                array: projects.map(project => new ProjectProxy(project))
+            arrayProxy: {
+                length: arrayProxy.length,
+                array: arrayProxy.array.map(
+                    project => new ProjectProxy(project)
+                )
             }
         }
     }

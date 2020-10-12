@@ -4,7 +4,7 @@ import { AccountType } from 'src/models/enums/account.types'
 
 import { AchievementProxy } from '../models/achievement.proxy'
 import { CreateAchievementPayload } from '../models/create-achievement.payload'
-import { ArrayProxy } from 'src/common/array-proxy'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { AchievementService } from '../services/achievement.service'
@@ -62,19 +62,16 @@ export class AchievementController {
     @Get()
     public async getAchievements(
         @Param('userId') userId: string
-    ): Promise<{
-        user: UserProxy
-        achievements: ArrayProxy<AchievementProxy>
-    }> {
+    ): Promise<UserWithArrayProxy<UserProxy, AchievementProxy>> {
         const {
             user,
-            achievements
+            arrayProxy
         } = await this.achievementService.getAchievements(userId)
         return {
             user: new UserProxy(user),
-            achievements: {
-                length: achievements.length,
-                array: achievements.map(
+            arrayProxy: {
+                length: arrayProxy.length,
+                array: arrayProxy.array.map(
                     achievement => new AchievementProxy(achievement)
                 )
             }

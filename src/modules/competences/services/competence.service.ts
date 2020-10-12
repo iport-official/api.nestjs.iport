@@ -7,6 +7,7 @@ import { CompetenceEntity } from 'src/typeorm/entities/competence.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateCompetencePayload } from '../models/create-competence.payload'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
@@ -57,15 +58,15 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
      */
     public async getCompetences(
         userId: string
-    ): Promise<{
-        user: UserEntity
-        competences: CompetenceEntity[]
-    }> {
+    ): Promise<UserWithArrayProxy<UserEntity, CompetenceEntity>> {
         const user = await this.userService.getUserById(userId)
         const competences = await this.repository.find({ where: { user } })
         return {
             user,
-            competences
+            arrayProxy: {
+                length: competences.length,
+                array: competences
+            }
         }
     }
 }

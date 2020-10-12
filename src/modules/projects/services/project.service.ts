@@ -7,6 +7,7 @@ import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateProjectPayload } from '../models/create-project.payload'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
@@ -57,15 +58,15 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      */
     public async getProjects(
         id: string
-    ): Promise<{
-        user: UserEntity
-        projects: ProjectEntity[]
-    }> {
+    ): Promise<UserWithArrayProxy<UserEntity, ProjectEntity>> {
         const user = await this.userService.getUserById(id)
         const projects = await this.repository.find({ where: { user } })
         return {
             user,
-            projects
+            arrayProxy: {
+                length: projects.length,
+                array: projects
+            }
         }
     }
 }

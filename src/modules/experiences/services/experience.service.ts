@@ -7,6 +7,7 @@ import { ExperienceEntity } from 'src/typeorm/entities/experience.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateExperiencePayload } from '../models/create-experience.payload'
+import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
@@ -53,9 +54,10 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
                 .createQueryBuilder('experiences')
                 .where({ id })
                 .innerJoinAndSelect('experiences.user', 'users.id')
+                .innerJoinAndSelect('users.personaUser', 'personalusers.user')
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
-            const user = await this.userService.getMe(experience.user)
-            experience.user = user
             return experience
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
@@ -68,16 +70,16 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
      */
     public async getExperiences(
         userId: string
-    ): Promise<{
-        user: UserEntity
-        experiences: ExperienceEntity[]
-    }> {
+    ): Promise<UserWithArrayProxy<UserEntity, ExperienceEntity>> {
         try {
             const user = await this.userService.getUserById(userId)
             const experiences = await this.repository.find({ where: { user } })
             return {
                 user,
-                experiences
+                arrayProxy: {
+                    length: experiences.length,
+                    array: experiences
+                }
             }
         } catch (error) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND)
