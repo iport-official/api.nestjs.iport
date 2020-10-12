@@ -29,19 +29,30 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
 
     /**
      * Method that can register some experience in the database
-     * @param id stores the user id
+     * @param userId stores the user id
      * @param createExperiencePayload stores the new data, that will be saved in the database
      */
     public async createExperience(
-        id: string,
+        userId: string,
         createExperiencePayload: CreateExperiencePayload
     ): Promise<ExperienceEntity> {
         try {
-            const user = await this.userService.getUserById(id)
-            return await this.repository.save({
+            const user = await this.userService.getUserById(
+                userId,
+                AccountType.PERSONAL
+            )
+            const { id } = await this.repository.save({
                 ...createExperiencePayload,
                 user
             })
+            return await this.repository
+                .createQueryBuilder('experiences')
+                .where({ id })
+                .innerJoinAndSelect('experiences.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
+                .getOne()
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
@@ -53,15 +64,14 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
      */
     public async getExperienceById(id: string): Promise<ExperienceEntity> {
         try {
-            const experience = await this.repository
+            return await this.repository
                 .createQueryBuilder('experiences')
                 .where({ id })
-                .innerJoinAndSelect('experiences.user', 'users.id')
-                .innerJoinAndSelect('users.personaUser', 'personalusers.user')
-                .innerJoinAndSelect('users.telephones', 'telephones.user')
-                .innerJoinAndSelect('users.emails', 'emails.user')
+                .innerJoinAndSelect('experiences.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
-            return experience
         } catch (error) {
             throw new NotFoundException(error)
         }

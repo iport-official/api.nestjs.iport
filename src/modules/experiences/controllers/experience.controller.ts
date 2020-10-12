@@ -2,9 +2,9 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
 import { AccountType } from 'src/models/enums/account.types'
 
-import { ExperienceProxy } from '../models/basic-experience.proxy'
 import { CreateExperiencePayload } from '../models/create-experience.payload'
 import { CreateExperienceProxy } from '../models/create-experience.proxy'
+import { ExperienceProxy } from '../models/experience.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
