@@ -2,8 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
 import { AccountType } from 'src/models/enums/account.types'
 
-import { BasicExperienceProxy } from '../models/basic-experience.proxy'
-import { CompleteExperienceProxy } from '../models/complete-experience.proxy'
+import { ExperienceProxy } from '../models/basic-experience.proxy'
 import { CreateExperiencePayload } from '../models/create-experience.payload'
 import { CreateExperienceProxy } from '../models/create-experience.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'
@@ -49,9 +48,9 @@ export class ExperienceController {
     @Get(':id')
     public async getExperienceById(
         @Param('id') id: string
-    ): Promise<CompleteExperienceProxy> {
+    ): Promise<ExperienceProxy> {
         const experience = await this.experienceService.getExperienceById(id)
-        return new CompleteExperienceProxy(experience)
+        return new ExperienceProxy(experience)
     }
 
     /**
@@ -64,7 +63,7 @@ export class ExperienceController {
         @Param('userId') userId: string
     ): Promise<{
         user: UserProxy
-        experiences: ArrayProxy<BasicExperienceProxy>
+        experiences: ArrayProxy<ExperienceProxy>
     }> {
         const {
             user,
@@ -75,7 +74,7 @@ export class ExperienceController {
             experiences: {
                 length: experiences.length,
                 array: experiences.map(
-                    experience => new BasicExperienceProxy(experience)
+                    experience => new ExperienceProxy(experience)
                 )
             }
         }
