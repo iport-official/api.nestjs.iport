@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
@@ -31,15 +33,26 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      * @param createProjectPayload stores the new project data
      */
     public async createProject(
-        userid: string,
+        userId: string,
         createProjectPayload: CreateProjectPayload
     ): Promise<ProjectEntity> {
         try {
-            const user = await this.userService.getUserById(userid)
-            return await this.repository.save({
+            const user = await this.userService.getUserById(
+                userId,
+                AccountType.PERSONAL
+            )
+            const { id } = await this.repository.save({
                 ...createProjectPayload,
                 user
             })
+            return await this.repository
+                .createQueryBuilder('projects')
+                .where({ id })
+                .innerJoinAndSelect('projects.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
+                .getOne()
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
@@ -51,14 +64,14 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      */
     public async getProjectById(id: string): Promise<ProjectEntity> {
         try {
-            const project = await this.repository
+            return await this.repository
                 .createQueryBuilder('projects')
                 .where({ id })
-                .innerJoinAndSelect('projects.user', 'users.id')
+                .innerJoinAndSelect('projects.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
-            const user = await this.userService.getMe(project.user)
-            project.user = user
-            return project
         } catch (error) {
             throw new NotFoundException(error)
         }
@@ -66,13 +79,16 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
 
     /**
      * Method that can get all projects using the user id
-     * @param id stores the user id
+     * @param userId stores the user id
      */
     public async getProjects(
-        id: string
+        userId: string
     ): Promise<UserWithArrayProxy<UserEntity, ProjectEntity>> {
         try {
-            const user = await this.userService.getUserById(id)
+            const user = await this.userService.getUserById(
+                userId,
+                AccountType.PERSONAL
+            )
             const projects = await this.repository.find({ where: { user } })
             return {
                 user,

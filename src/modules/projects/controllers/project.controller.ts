@@ -5,7 +5,6 @@ import { AccountType } from 'src/models/enums/account.types'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
 import { ProjectProxy } from '../models/project.proxy'
-import { ArrayProxy } from 'src/common/array-proxy'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
