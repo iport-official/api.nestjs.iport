@@ -5,7 +5,7 @@ import { AppController } from './app.controller'
 
 import { AppService } from './app.service'
 
-import { AchievementModule } from './modules/achievemens/achievement.module'
+import { AchievementModule } from './modules/achievements/achievement.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
 import { CompetenceModule } from './modules/competences/competence.module'

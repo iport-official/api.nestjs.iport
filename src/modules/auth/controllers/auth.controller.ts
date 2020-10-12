@@ -2,7 +2,7 @@ import { Controller, Post, Body, UseGuards, HttpCode } from '@nestjs/common'
 
 import { RegisterUserPayload } from '../../user/models/register-user.payload'
 import { LoginProxy } from '../models/login.proxy'
-import { CompleteUserProxy } from 'src/modules/user/models/complete-user.proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { AuthService } from '../services/auth.service'
 
@@ -23,7 +23,7 @@ export class AuthController {
     @Post()
     public async register(
         @Body() registerUserPayload: RegisterUserPayload
-    ): Promise<CompleteUserProxy> {
+    ): Promise<UserProxy> {
         return await this.authService.register(registerUserPayload)
     }
 
