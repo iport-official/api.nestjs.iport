@@ -1,5 +1,7 @@
 import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 
+import { UserProxy } from 'src/modules/user/models/user.proxy'
+
 export class ProjectProxy {
     id: string
     image: string
@@ -7,6 +9,7 @@ export class ProjectProxy {
     startDate: Date
     endDate: Date
     description: string
+    user: UserProxy
 
     public constructor(entity: ProjectEntity) {
         this.id = entity.id
@@ -15,5 +18,6 @@ export class ProjectProxy {
         this.endDate = entity.endDate
         this.description = entity.description
         this.image = entity.image
+        this.user = new UserProxy(entity.user)
     }
 }

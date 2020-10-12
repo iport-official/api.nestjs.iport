@@ -2,7 +2,6 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 
 import { AccountType } from 'src/models/enums/account.types'
 
-import { CompleteProjectProxy } from '../models/complete-project.proxy'
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
 import { ProjectProxy } from '../models/project.proxy'
