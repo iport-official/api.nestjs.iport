@@ -57,7 +57,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             const post = await this.repository
                 .createQueryBuilder('posts')
                 .where({ id })
-                .leftJoinAndSelect('posts.user', 'user')
+                .leftJoinAndSelect('posts.user', 'users')
+                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
             return post
         } catch (error) {
@@ -79,7 +82,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             const array = await queryBuilder
                 .offset(page * contentInPage)
-                .leftJoinAndSelect('posts.user', 'user')
+                .leftJoinAndSelect('posts.user', 'users')
+                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
 
@@ -114,7 +120,10 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
 
             const array = await queryBuilder
                 .offset(page * contentInPage)
-                .leftJoinAndSelect('posts.user', 'user')
+                .leftJoinAndSelect('posts.user', 'users')
+                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
                 .limit(page * contentInPage + contentInPage)
                 .getMany()
 
@@ -132,18 +141,19 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      */
     public async getMainPost(): Promise<PostEntity> {
         try {
-            const post = await this.repository
+            return await this.repository
                 .createQueryBuilder('posts')
-                .select()
                 .addSelect(
                     'MAX(posts.recommendations * 0.7 * posts.likes * 0.3)',
                     'MAX'
                 )
-                .leftJoinAndSelect('posts.user', 'user')
+                .leftJoinAndSelect('posts.user', 'users')
+                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+                .innerJoinAndSelect('users.telephones', 'telephones.user')
+                .innerJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
-
-            return post
         } catch (error) {
+            console.log(error)
             throw new HttpException(
                 'Internal Server Error',
                 HttpStatus.INTERNAL_SERVER_ERROR
