@@ -31,20 +31,5 @@ export class UserProxy {
             entity.accountType === AccountType.PERSONAL
                 ? new PersonalUserProxy(entity.personalUser)
                 : new CompanyUserProxy(entity.companyUser)
-
-        this.telephones = entity.telephones
-            ? {
-                  length: entity.telephones.length,
-                  array: entity.telephones.map(
-                      telephoneEntity => telephoneEntity.telephone
-                  )
-              }
-            : null
-        this.emails = entity.emails
-            ? {
-                  length: entity.emails.length,
-                  array: entity.emails.map(emailEntity => emailEntity.email)
-              }
-            : null
     }
 }
