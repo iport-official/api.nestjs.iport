@@ -44,6 +44,14 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
         }
     }
 
+    public async updateTelephones(
+        telephones: string[],
+        user: UserEntity
+    ): Promise<void> {
+        await this.deleteAllTelephonesByUser(user)
+        await this.registerTelephones(telephones, user)
+    }
+
     public async getTelephonesFromUser(
         user: UserEntity
     ): Promise<TelephoneEntity[]> {

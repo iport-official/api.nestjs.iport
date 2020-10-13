@@ -42,6 +42,14 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
         }
     }
 
+    public async updateEmails(
+        emails: string[],
+        user: UserEntity
+    ): Promise<void> {
+        await this.deleteAllEmailsUsingByUser(user)
+        await this.registerEmails(emails, user)
+    }
+
     /**
      * Method that can get the user's emails array
      * @param user stores the entity that will be used to find the user's emails array
