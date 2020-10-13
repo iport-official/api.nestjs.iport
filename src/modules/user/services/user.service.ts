@@ -14,6 +14,8 @@ import { UserEntity } from '../../../typeorm/entities/user.entity'
 import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
 import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload'
 import { RegisterUserPayload } from '../models/register-user.payload'
+import { UpdateCompanyUserPayload } from '../models/update-company-user.payload'
+import { UpdatePersonalUserPayload } from '../models/update-personal-user.payload'
 import { UpdateUserPayload } from '../models/update-user.payload'
 
 import { CompanyUserService } from './company-user.service'
@@ -112,42 +114,35 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
     /**
      * Method that can update the user data
-     * @param id indicates the which user will be updated
+     * @param userId indicates the which user will be updated
      * @param updateUserPayload indicates the new user's data
      */
     public async updateProfile(
-        id: string,
+        userId: string,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserEntity> {
-        const {
-            profileImage,
-            email,
-            username,
-            accountType,
-            telephones,
-            emails
-        } = updateUserPayload
+        const { content, accountType, telephones, emails } = updateUserPayload
 
-        const user = await this.getUserById(id)
+        const user = await this.getUserById(userId)
 
         if (!user) throw new NotFoundException('User not found')
 
-        await this.telephoneService.deleteAllTelephonesByUser(user)
-        await this.emailService.deleteAllEmailsUsingByUser(user)
+        await this.telephoneService.updateTelephones(telephones, user)
+        await this.emailService.updateEmails(emails, user)
 
-        await this.telephoneService.registerTelephones(telephones, user)
-        await this.emailService.registerEmails(emails, user)
+        if (accountType === AccountType.PERSONAL)
+            this.personalUserService.updatePersonalUser(user.personalUser.id, {
+                ...content
+            } as UpdatePersonalUserPayload)
+        else
+            this.companyUserService.updateCompanyUser(user.companyUser.id, {
+                ...content
+            } as UpdateCompanyUserPayload)
 
         try {
-            await this.userRepository
-                .createQueryBuilder('users')
-                .where({ id })
-                .update({
-                    profileImage,
-                    email,
-                    username,
-                    accountType
-                })
+            await this.userRepository.update(userId, {
+                ...updateUserPayload
+            })
 
             return user
         } catch (error) {
