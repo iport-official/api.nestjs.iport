@@ -4,7 +4,6 @@ import { AccountType } from 'src/models/enums/account.types'
 
 import { CompetenceProxy } from '../models/competence.proxy'
 import { CreateCompetencePayload } from '../models/create-competence.payload'
-import { ArrayProxy } from 'src/common/array-proxy'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 

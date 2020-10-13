@@ -13,13 +13,9 @@ import { PersonalUserService } from './services/personal-user.service'
 import { UserService } from './services/user.service'
 
 import { AuthModule } from '../auth/auth.module'
-import { EmailModule } from '../email/email.module'
-import { TelephoneModule } from '../telephone/telephone.module'
 
 @Module({
     imports: [
-        EmailModule,
-        TelephoneModule,
         forwardRef(() => AuthModule),
         TypeOrmModule.forFeature([
             UserEntity,

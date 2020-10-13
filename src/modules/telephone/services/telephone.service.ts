@@ -1,20 +1,18 @@
-import {
-    Injectable,
-    InternalServerErrorException,
-    NotFoundException
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { TelephoneEntity } from 'src/typeorm/entities/telephone.entity'
-import { UserEntity } from 'src/typeorm/entities/user.entity'
+
+import { UserService } from 'src/modules/user/services/user.service'
 
 @Injectable()
 export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     public constructor(
         @InjectRepository(TelephoneEntity)
-        private readonly repository: Repository<TelephoneEntity>
+        private readonly repository: Repository<TelephoneEntity>,
+        private readonly userService: UserService
     ) {
         super(repository)
     }
@@ -22,65 +20,57 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     /**
      * Method that allows creating telephones and the associating them to users
      * @param telephones stores an array with all the user telephones
-     * @param user stores the user entity
+     * @param userId stores the user id
      */
     public async registerTelephones(
         telephones: string[],
-        user: UserEntity
+        userId: string
     ): Promise<TelephoneEntity[]> {
-        try {
-            if (!telephones || telephones.length === 0 || user === null)
-                return null
-            return await this.repository.save(
-                telephones.map(telephone => {
-                    return {
-                        telephone,
-                        user
-                    }
-                })
-            )
-        } catch (error) {
-            throw new InternalServerErrorException(error)
-        }
+        const user = await this.userService.getUserById(userId)
+        if (!user) throw new NotFoundException('User not found')
+        return await this.repository.save(
+            telephones.map(telephone => {
+                return {
+                    telephone,
+                    user
+                }
+            })
+        )
     }
 
+    /**
+     * Method that can update all the user telephones
+     * @param telephones stores an array of strings representing the telephones
+     * @param userId stores the user id
+     */
     public async updateTelephones(
         telephones: string[],
-        user: UserEntity
-    ): Promise<void> {
-        await this.deleteAllTelephonesByUser(user)
-        await this.registerTelephones(telephones, user)
+        userId: string
+    ): Promise<TelephoneEntity[]> {
+        const user = await this.userService.getUserById(userId)
+        if (!user) throw new NotFoundException('User not found')
+        await this.repository.delete({ user })
+        return await this.repository.save(
+            telephones.map(telephone => {
+                return {
+                    telephone,
+                    user
+                }
+            })
+        )
     }
 
+    /**
+     * Method that can return all the telephones of a user
+     * @param userId stores the user id
+     */
     public async getTelephonesFromUser(
-        user: UserEntity
+        userId: string
     ): Promise<TelephoneEntity[]> {
+        const user = await this.userService.getUserById(userId)
+        if (!user) throw new NotFoundException('User not found')
         const telephones = await this.repository.find({ user })
         if (!telephones) throw new NotFoundException('Telephones not found')
         return telephones
-    }
-
-    /**
-     * Method that can delete a specific telephone
-     * @param id indicates the unique id that this telephone has
-     */
-    public async deleteTelephone(id: string): Promise<void> {
-        try {
-            await this.repository.delete({ id })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
-    }
-
-    /**
-     * Method that can delete all the user's telephones
-     * @param user indicates the user that will have all the telephones deleted
-     */
-    public async deleteAllTelephonesByUser(user: UserEntity): Promise<void> {
-        try {
-            await this.repository.delete({ user })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
     }
 }
