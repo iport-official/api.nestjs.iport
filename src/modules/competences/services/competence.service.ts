@@ -36,11 +36,12 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         userId: string,
         createCompetencePayload: CreateCompetencePayload
     ): Promise<CompetenceEntity> {
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        if (!user) throw new NotFoundException('User not found')
         try {
-            const user = await this.userService.getUserById(
-                userId,
-                AccountType.PERSONAL
-            )
             const { id } = await this.repository.save({
                 ...createCompetencePayload,
                 user
@@ -63,18 +64,16 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
      * @param id stores the competence id
      */
     public async getCompetencesById(id: string): Promise<CompetenceEntity> {
-        try {
-            return await this.repository
-                .createQueryBuilder('competences')
-                .where({ id })
-                .innerJoinAndSelect('competences.user', 'users')
-                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
-                .getOne()
-        } catch (error) {
-            throw new InternalServerErrorException(error)
-        }
+        const competences = await this.repository
+            .createQueryBuilder('competences')
+            .where({ id })
+            .innerJoinAndSelect('competences.user', 'users')
+            .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+            .leftJoinAndSelect('users.telephones', 'telephones.user')
+            .leftJoinAndSelect('users.emails', 'emails.user')
+            .getOne()
+        if (!competences) throw new NotFoundException('Competences not found')
+        return competences
     }
 
     /**
@@ -84,12 +83,14 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
     public async getCompetences(
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, CompetenceEntity>> {
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        if (!user) throw new NotFoundException('User not found')
+        const competences = await this.repository.find({ where: { user } })
+        if (!competences) throw new NotFoundException('Competences not found')
         try {
-            const user = await this.userService.getUserById(
-                userId,
-                AccountType.PERSONAL
-            )
-            const competences = await this.repository.find({ where: { user } })
             return {
                 user,
                 arrayProxy: {

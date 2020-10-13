@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -36,18 +40,25 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
             userId,
             AccountType.PERSONAL
         )
-        const { id } = await this.repository.save({
-            ...createAchievementPayload,
-            user
-        })
-        return await this.repository
-            .createQueryBuilder('achievements')
-            .where({ id })
-            .innerJoinAndSelect('achievements.user', 'users')
-            .innerJoinAndSelect('users.personalUser', 'personalusers.user')
-            .leftJoinAndSelect('users.telephones', 'telephones.user')
-            .leftJoinAndSelect('users.emails', 'emails.user')
-            .getOne()
+
+        if (!user) throw new NotFoundException('User not found')
+
+        try {
+            const { id } = await this.repository.save({
+                ...createAchievementPayload,
+                user
+            })
+            return await this.repository
+                .createQueryBuilder('achievements')
+                .where({ id })
+                .innerJoinAndSelect('achievements.user', 'users')
+                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+                .leftJoinAndSelect('users.telephones', 'telephones.user')
+                .leftJoinAndSelect('users.emails', 'emails.user')
+                .getOne()
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     /**
@@ -65,7 +76,7 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
                 .leftJoinAndSelect('users.emails', 'emails.user')
                 .getOne()
         } catch (error) {
-            throw new NotFoundException(error)
+            throw new InternalServerErrorException(error)
         }
     }
 
@@ -80,13 +91,20 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
             userId,
             AccountType.PERSONAL
         )
-        const achievements = await this.repository.find({ where: { user } })
-        return {
-            user,
-            arrayProxy: {
-                length: achievements.length,
-                array: achievements
+
+        if (!user) throw new NotFoundException('User not found')
+
+        try {
+            const achievements = await this.repository.find({ where: { user } })
+            return {
+                user,
+                arrayProxy: {
+                    length: achievements.length,
+                    array: achievements
+                }
             }
+        } catch (error) {
+            throw new InternalServerErrorException(error)
         }
     }
 }

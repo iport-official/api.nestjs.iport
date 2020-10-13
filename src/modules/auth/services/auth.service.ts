@@ -3,7 +3,8 @@ import {
     Inject,
     forwardRef,
     InternalServerErrorException,
-    UnauthorizedException
+    UnauthorizedException,
+    NotFoundException
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
@@ -38,24 +39,26 @@ export class AuthService {
     public async register(
         registerUserPayload: RegisterUserPayload
     ): Promise<UserProxy> {
-        const hashedPassword = await hash(registerUserPayload.password, 10)
+        let hashedPassword: string
         try {
-            const user = await this.userService.createUser({
-                ...registerUserPayload,
-                password: hashedPassword
-            })
-            user.telephones = await this.telephoneService.registerTelephones(
-                registerUserPayload.telephones,
-                user
-            )
-            user.emails = await this.emailService.registerEmails(
-                registerUserPayload.emails,
-                user
-            )
-            return new UserProxy(user)
+            hashedPassword = await hash(registerUserPayload.password, 10)
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
+        const user = await this.userService.createUser({
+            ...registerUserPayload,
+            password: hashedPassword
+        })
+        if (!user) throw new NotFoundException('User not found')
+        user.telephones = await this.telephoneService.registerTelephones(
+            registerUserPayload.telephones,
+            user
+        )
+        user.emails = await this.emailService.registerEmails(
+            registerUserPayload.emails,
+            user
+        )
+        return new UserProxy(user)
     }
 
     /**
@@ -88,15 +91,15 @@ export class AuthService {
         username: string,
         password: string
     ): Promise<RequestUserProperties> {
+        const user = await this.userService.findOne({ email: username })
+        if (!user) throw new NotFoundException('User not found')
         try {
-            const {
-                password: userPassword,
-                id,
-                email,
-                accountType
-            } = await this.userService.findOne({ email: username })
-            await this.verifyPassword(password, userPassword)
-            return { id, email, accountType }
+            await this.verifyPassword(password, user.password)
+            return {
+                id: user.id,
+                email: user.email,
+                accountType: user.accountType
+            }
         } catch (error) {
             throw new UnauthorizedException('Wrong credentials provided')
         }

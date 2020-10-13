@@ -47,11 +47,9 @@ export class EmailService extends TypeOrmCrudService<EmailEntity> {
      * @param user stores the entity that will be used to find the user's emails array
      */
     public async getEmailsFromUser(user: UserEntity): Promise<EmailEntity[]> {
-        try {
-            return await this.repository.find({ user })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const emails = await this.repository.find({ user })
+        if (!emails) throw new NotFoundException('Emails not found')
+        return emails
     }
 
     /**

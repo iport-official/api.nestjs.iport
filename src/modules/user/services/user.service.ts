@@ -56,14 +56,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
             const personalUser =
                 accountType === AccountType.PERSONAL
-                    ? await this.personalUserService.registerPersonalAccount(
+                    ? await this.personalUserService.createPersonalAccount(
                           registerUserPayload.content as RegisterPersonalUserPayload
                       )
                     : null
 
             const companyUser =
                 accountType === AccountType.COMPANY
-                    ? await this.companyUserService.registerCompanyAccount(
+                    ? await this.companyUserService.createCompanyAccount(
                           registerUserPayload.content as RegisterCompanyUserPayload
                       )
                     : null
@@ -102,14 +102,12 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     public async getMe(
         validationProperties: RequestUserProperties
     ): Promise<UserEntity> {
-        try {
-            return await this.getUserById(
-                validationProperties.id,
-                validationProperties.accountType
-            )
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const me = await this.getUserById(
+            validationProperties.id,
+            validationProperties.accountType
+        )
+        if (!me) throw new NotFoundException('User not found')
+        return me
     }
 
     /**
@@ -121,24 +119,26 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         id: string,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserEntity> {
+        const {
+            profileImage,
+            email,
+            username,
+            accountType,
+            telephones,
+            emails
+        } = updateUserPayload
+
+        const user = await this.getUserById(id)
+
+        if (!user) throw new NotFoundException('User not found')
+
+        await this.telephoneService.deleteAllTelephonesByUser(user)
+        await this.emailService.deleteAllEmailsUsingByUser(user)
+
+        await this.telephoneService.registerTelephones(telephones, user)
+        await this.emailService.registerEmails(emails, user)
+
         try {
-            const {
-                profileImage,
-                email,
-                username,
-                accountType,
-                telephones,
-                emails
-            } = updateUserPayload
-
-            const user = await this.getUserById(id)
-
-            await this.telephoneService.deleteAllTelephonesByUser(user)
-            await this.emailService.deleteAllEmailsUsingByUser(user)
-
-            await this.telephoneService.registerTelephones(telephones, user)
-            await this.emailService.registerEmails(emails, user)
-
             await this.userRepository
                 .createQueryBuilder('users')
                 .where({ id })

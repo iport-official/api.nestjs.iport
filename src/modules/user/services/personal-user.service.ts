@@ -57,10 +57,8 @@ export class PersonalUserService extends TypeOrmCrudService<
      * @param id stores the personal user id
      */
     public async getPersonalAccount(id: string): Promise<PersonalUserEntity> {
-        try {
-            return await this.repository.findOne({ where: { id } })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const personal = await this.repository.findOne({ where: { id } })
+        if (!personal) throw new NotFoundException('Personal account not found')
+        return personal
     }
 }

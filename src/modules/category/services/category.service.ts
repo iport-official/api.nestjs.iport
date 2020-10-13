@@ -45,11 +45,9 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
      * @param id indicates which category must be returned
      */
     public async getUniqueCategory(id: string): Promise<CategoryProxy> {
-        try {
-            return await this.repository.findOne({ where: { id } })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const category = await this.repository.findOne({ where: { id } })
+        if (!category) throw new NotFoundException('Category not found')
+        return category
     }
 
     /**

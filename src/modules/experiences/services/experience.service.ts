@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Repository } from 'typeorm'
+import { Not, Repository } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
@@ -36,11 +36,12 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         userId: string,
         createExperiencePayload: CreateExperiencePayload
     ): Promise<ExperienceEntity> {
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        if (!user) throw new NotFoundException('User not found')
         try {
-            const user = await this.userService.getUserById(
-                userId,
-                AccountType.PERSONAL
-            )
             const { id } = await this.repository.save({
                 ...createExperiencePayload,
                 user
@@ -63,18 +64,16 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
      * @param id stores the experience id
      */
     public async getExperienceById(id: string): Promise<ExperienceEntity> {
-        try {
-            return await this.repository
-                .createQueryBuilder('experiences')
-                .where({ id })
-                .innerJoinAndSelect('experiences.user', 'users')
-                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
-                .getOne()
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const experiences = await this.repository
+            .createQueryBuilder('experiences')
+            .where({ id })
+            .innerJoinAndSelect('experiences.user', 'users')
+            .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+            .leftJoinAndSelect('users.telephones', 'telephones.user')
+            .leftJoinAndSelect('users.emails', 'emails.user')
+            .getOne()
+        if (!experiences) throw new NotFoundException('Experiences not found')
+        return experiences
     }
 
     /**
@@ -84,12 +83,14 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
     public async getExperiences(
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, ExperienceEntity>> {
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        if (!user) throw new NotFoundException('User not found')
+        const experiences = await this.repository.find({ where: { user } })
+        if (!experiences) throw new NotFoundException('Experiences not found')
         try {
-            const user = await this.userService.getUserById(
-                userId,
-                AccountType.PERSONAL
-            )
-            const experiences = await this.repository.find({ where: { user } })
             return {
                 user,
                 arrayProxy: {

@@ -40,7 +40,6 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
                 })
             )
         } catch (error) {
-            console.log(error)
             throw new InternalServerErrorException(error)
         }
     }
@@ -48,11 +47,9 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     public async getTelephonesFromUser(
         user: UserEntity
     ): Promise<TelephoneEntity[]> {
-        try {
-            return await this.repository.find({ user })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const telephones = await this.repository.find({ user })
+        if (!telephones) throw new NotFoundException('Telephones not found')
+        return telephones
     }
 
     /**
