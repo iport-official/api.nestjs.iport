@@ -1,7 +1,7 @@
 import { AccountType } from 'src/models/enums/account.types'
 
-import { RegisterCompanyUserPayload } from './register-company-user.payload'
-import { RegisterPersonalUserPayload } from './register-personal-user.payload'
+import { UpdateCompanyUserPayload } from './update-company-user.payload'
+import { UpdatePersonalUserPayload } from './update-personal-user.payload'
 
 export class UpdateUserPayload {
     profileImage?: string
@@ -11,7 +11,7 @@ export class UpdateUserPayload {
     city?: string
     state?: string
     accountType?: AccountType
-    content?: RegisterPersonalUserPayload | RegisterCompanyUserPayload
+    content?: UpdatePersonalUserPayload | UpdateCompanyUserPayload
     telephones?: string[]
     emails?: string[]
 }
