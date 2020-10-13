@@ -13,8 +13,6 @@ import { LoginProxy } from '../models/login.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { UserService } from '../../user/services/user.service'
-import { EmailService } from 'src/modules/email/services/email.service'
-import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 
 import { hash, compare } from 'bcrypt'
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
@@ -24,8 +22,6 @@ export class AuthService {
     public constructor(
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
-        private readonly telephoneService: TelephoneService,
-        private readonly emailService: EmailService,
         private readonly jwtService: JwtService
     ) {}
 
@@ -50,14 +46,6 @@ export class AuthService {
             password: hashedPassword
         })
         if (!user) throw new NotFoundException('User not found')
-        user.telephones = await this.telephoneService.registerTelephones(
-            registerUserPayload.telephones,
-            user
-        )
-        user.emails = await this.emailService.registerEmails(
-            registerUserPayload.emails,
-            user
-        )
         return new UserProxy(user)
     }
 

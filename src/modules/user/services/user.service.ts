@@ -20,8 +20,6 @@ import { UpdateUserPayload } from '../models/update-user.payload'
 
 import { CompanyUserService } from './company-user.service'
 import { PersonalUserService } from './personal-user.service'
-import { EmailService } from 'src/modules/email/services/email.service'
-import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
@@ -31,9 +29,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly personalUserService: PersonalUserService,
-        private readonly companyUserService: CompanyUserService,
-        private readonly telephoneService: TelephoneService,
-        private readonly emailService: EmailService
+        private readonly companyUserService: CompanyUserService
     ) {
         super(userRepository)
     }
@@ -127,8 +123,8 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
         if (!user) throw new NotFoundException('User not found')
 
-        await this.telephoneService.updateTelephones(telephones, user)
-        await this.emailService.updateEmails(emails, user)
+        // await this.telephoneService.updateTelephones(telephones, user)
+        // await this.emailService.updateEmails(emails, user)
 
         if (accountType === AccountType.PERSONAL)
             this.personalUserService.updatePersonalUser(user.personalUser.id, {
@@ -140,9 +136,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             } as UpdateCompanyUserPayload)
 
         try {
-            await this.userRepository.update(userId, {
-                ...updateUserPayload
-            })
+            // await this.userRepository.update(userId, {
+            //     ...updateUserPayload
+            // })
 
             return user
         } catch (error) {
