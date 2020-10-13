@@ -26,7 +26,7 @@ export class PersonalUserService extends TypeOrmCrudService<
      * Method that can create a new personal user in the database
      * @param registerPersonalAccountPayload stores the new personal user data
      */
-    public async registerPersonalAccount(
+    public async createPersonalAccount(
         registerPersonalAccountPayload: RegisterPersonalUserPayload
     ): Promise<PersonalUserEntity> {
         try {

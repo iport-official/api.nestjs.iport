@@ -24,7 +24,7 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
      * Method that can register some company account data in database
      * @param registerCompanyAccountPayload stores the requestd ata
      */
-    public async registerCompanyAccount(
+    public async createCompanyAccount(
         registerCompanyAccountPayload: RegisterCompanyUserPayload
     ): Promise<CompanyUserEntity> {
         try {
