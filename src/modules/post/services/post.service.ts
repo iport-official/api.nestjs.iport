@@ -37,13 +37,13 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         requestUser: RequestUserProperties,
         createPostPayload: CreatePostPayload
     ): Promise<PostEntity> {
+        const user = await this.userService.getMe(requestUser)
+        if (!user) throw new NotFoundException('User not found')
         try {
-            const user = await this.userService.getMe(requestUser)
-            const post = await this.repository.save({
+            return await this.repository.save({
                 ...createPostPayload,
                 user
             })
-            return post
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
@@ -54,19 +54,16 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * @param id indicates which post the users wants to get
      */
     public async getUniquePost(id: string): Promise<PostEntity> {
-        try {
-            const post = await this.repository
-                .createQueryBuilder('posts')
-                .where({ id })
-                .leftJoinAndSelect('posts.user', 'users')
-                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
-                .getOne()
-            return post
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const post = await this.repository
+            .createQueryBuilder('posts')
+            .where({ id })
+            .leftJoinAndSelect('posts.user', 'users')
+            .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+            .leftJoinAndSelect('users.telephones', 'telephones.user')
+            .leftJoinAndSelect('users.emails', 'emails.user')
+            .getOne()
+        if (!post) throw new NotFoundException('Post not found')
+        return post
     }
 
     /**
@@ -138,22 +135,19 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that can get the main post
      */
     public async getMainPost(): Promise<PostEntity> {
-        try {
-            return await this.repository
-                .createQueryBuilder('posts')
-                .addSelect(
-                    'MAX(posts.recommendations * 0.7 * posts.likes * 0.3)',
-                    'MAX'
-                )
-                .leftJoinAndSelect('posts.user', 'users')
-                .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
-                .getOne()
-        } catch (error) {
-            console.log(error)
-            throw new InternalServerErrorException(error)
-        }
+        const main = await this.repository
+            .createQueryBuilder('posts')
+            .addSelect(
+                'MAX(posts.recommendations * 0.7 * posts.likes * 0.3)',
+                'MAX'
+            )
+            .leftJoinAndSelect('posts.user', 'users')
+            .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+            .leftJoinAndSelect('users.telephones', 'telephones.user')
+            .leftJoinAndSelect('users.emails', 'emails.user')
+            .getOne()
+        if (!main) throw new NotFoundException('Post not found')
+        return main
     }
 
     /**

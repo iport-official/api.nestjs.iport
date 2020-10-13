@@ -24,7 +24,7 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
      * Method that can register some company account data in database
      * @param registerCompanyAccountPayload stores the requestd ata
      */
-    public async registerCompanyAccount(
+    public async createCompanyAccount(
         registerCompanyAccountPayload: RegisterCompanyUserPayload
     ): Promise<CompanyUserEntity> {
         try {
@@ -55,10 +55,8 @@ export class CompanyUserService extends TypeOrmCrudService<CompanyUserEntity> {
      * @param id stores the project id that will be searched
      */
     public async getCompanyAccount(id: string): Promise<CompanyUserEntity> {
-        try {
-            return await this.repository.findOne({ where: { id } })
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const company = await this.repository.findOne({ where: { id } })
+        if (!company) throw new NotFoundException('Company account not found')
+        return company
     }
 }

@@ -36,11 +36,12 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         userId: string,
         createProjectPayload: CreateProjectPayload
     ): Promise<ProjectEntity> {
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        if (!user) throw new NotFoundException('User not found')
         try {
-            const user = await this.userService.getUserById(
-                userId,
-                AccountType.PERSONAL
-            )
             const { id } = await this.repository.save({
                 ...createProjectPayload,
                 user
@@ -63,18 +64,16 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
      * @param id stores the project id
      */
     public async getProjectById(id: string): Promise<ProjectEntity> {
-        try {
-            return await this.repository
-                .createQueryBuilder('projects')
-                .where({ id })
-                .innerJoinAndSelect('projects.user', 'users')
-                .innerJoinAndSelect('users.personalUser', 'personalusers.user')
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
-                .getOne()
-        } catch (error) {
-            throw new NotFoundException(error)
-        }
+        const projects = await this.repository
+            .createQueryBuilder('projects')
+            .where({ id })
+            .innerJoinAndSelect('projects.user', 'users')
+            .innerJoinAndSelect('users.personalUser', 'personalusers.user')
+            .leftJoinAndSelect('users.telephones', 'telephones.user')
+            .leftJoinAndSelect('users.emails', 'emails.user')
+            .getOne()
+        if (!projects) throw new NotFoundException('Projects not found')
+        return projects
     }
 
     /**
@@ -84,12 +83,14 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
     public async getProjects(
         userId: string
     ): Promise<UserWithArrayProxy<UserEntity, ProjectEntity>> {
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.PERSONAL
+        )
+        if (!user) throw new NotFoundException('User not found')
+        const projects = await this.repository.find({ where: { user } })
+        if (!projects) throw new NotFoundException('Projects not found')
         try {
-            const user = await this.userService.getUserById(
-                userId,
-                AccountType.PERSONAL
-            )
-            const projects = await this.repository.find({ where: { user } })
             return {
                 user,
                 arrayProxy: {
