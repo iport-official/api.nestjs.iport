@@ -54,19 +54,19 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 state
             } = registerUserPayload
 
-            const personalUser =
-                accountType === AccountType.PERSONAL
-                    ? await this.personalUserService.createPersonalAccount(
-                          registerUserPayload.content as RegisterPersonalUserPayload
-                      )
-                    : null
+            const isPersonalUser = accountType === AccountType.PERSONAL
 
-            const companyUser =
-                accountType === AccountType.COMPANY
-                    ? await this.companyUserService.createCompanyAccount(
-                          registerUserPayload.content as RegisterCompanyUserPayload
-                      )
-                    : null
+            const personalUser = isPersonalUser
+                ? await this.personalUserService.createPersonalAccount(
+                      registerUserPayload.content as RegisterPersonalUserPayload
+                  )
+                : null
+
+            const companyUser = !isPersonalUser
+                ? await this.companyUserService.createCompanyAccount(
+                      registerUserPayload.content as RegisterCompanyUserPayload
+                  )
+                : null
 
             const user = await this.userRepository.save({
                 profileImage,
@@ -84,10 +84,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 this.companyUserService.updateCompanyUser(companyUser.id, {
                     user
                 })
-            if (personalUser)
-                this.personalUserService.updatePersonalUser(personalUser.id, {
-                    user
-                })
+            else personalUser
+            this.personalUserService.updatePersonalUser(personalUser.id, {
+                user
+            })
 
             return user
         } catch (error) {
@@ -148,7 +148,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                     username,
                     accountType
                 })
-                .execute()
 
             return user
         } catch (error) {
