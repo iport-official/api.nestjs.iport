@@ -39,7 +39,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     }
 
     /**
-     * Method that can update all the user telephones
+     * Method that can update all the user's telephones
      * @param telephones stores an array of strings representing the telephones
      * @param userId stores the user id
      */
@@ -61,7 +61,7 @@ export class TelephoneService extends TypeOrmCrudService<TelephoneEntity> {
     }
 
     /**
-     * Method that can return all the telephones of a user
+     * Method that can get the user's telephones array
      * @param userId stores the user id
      */
     public async getTelephonesFromUser(

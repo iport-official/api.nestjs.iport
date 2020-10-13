@@ -40,7 +40,7 @@ export class TelephoneController {
     }
 
     /**
-     * Method that can update all the user telephones
+     * Method that can update all the user's telephones
      * @param telephones stores an array of strings representing the telephones
      * @param userId stores the user id
      */
