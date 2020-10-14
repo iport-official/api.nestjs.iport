@@ -8,6 +8,7 @@ import { UserPostController } from './controllers/user-post.controller'
 
 import { AuthService } from '../auth/services/auth.service'
 import { PostService } from './services/post.service'
+import { UserPostService } from './services/user-post.service'
 
 import { AuthModule } from '../auth/auth.module'
 import { EmailModule } from '../email/email.module'
@@ -22,8 +23,8 @@ import { UserModule } from '../user/user.module'
         EmailModule,
         TypeOrmModule.forFeature([PostEntity])
     ],
-    providers: [PostService, AuthService],
+    providers: [PostService, UserPostService, AuthService],
     exports: [PostService],
-    controllers: [PostController, UserPostController]
+    controllers: [PostController, UserPostController, UserPostController]
 })
 export class PostModule {}

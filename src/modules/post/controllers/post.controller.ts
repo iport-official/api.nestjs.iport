@@ -1,52 +1,15 @@
-import {
-    Controller,
-    Body,
-    Post,
-    UseGuards,
-    Get,
-    Query,
-    Param,
-    Patch,
-    Delete
-} from '@nestjs/common'
+import { Controller, UseGuards, Get, Query, Param } from '@nestjs/common'
 
-import { AccountType } from 'src/models/enums/account.types'
-
-import { CreatePostPayload } from '../models/create-post.payload'
 import { PostProxy } from '../models/post.proxy'
-import { UpdatePostPayload } from '../models/update-post.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
 
 import { PostService } from '../services/post.service'
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
-import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { Roles } from 'src/decorators/roles/roles.decorator'
-import { User } from 'src/decorators/user/user.decorator'
-import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('posts')
 export class PostController {
     public constructor(private readonly postService: PostService) {}
-
-    /**
-     * Method that can create posts
-     * @param createPostPayload stores the post data before creating it
-     */
-    @Roles(AccountType.COMPANY)
-    @UseGuards(RolesGuard)
-    @UseGuards(JwtAuthGuard)
-    @Post()
-    public async createPost(
-        @User() requestUser: RequestUserProperties,
-        @Body() createPostPayload: CreatePostPayload
-    ): Promise<PostProxy> {
-        const post = await this.postService.createPost(
-            requestUser,
-            createPostPayload
-        )
-        return new PostProxy(post)
-    }
 
     /**
      * Method that can return an unique post
@@ -101,33 +64,5 @@ export class PostController {
     public async getMainPost(): Promise<PostProxy> {
         const post = await this.postService.getMainPost()
         return new PostProxy(post)
-    }
-
-    /**
-     * Method that can update some post
-     * @param id stores the post id
-     * @param updatePostPayload stores the new post data
-     */
-    @UseGuards(JwtAuthGuard)
-    @Patch(':id')
-    public async updatePostById(
-        @Body() updatePostPayload: UpdatePostPayload,
-        @Param('id') id: string
-    ): Promise<PostProxy> {
-        const post = await this.postService.updatePostById(
-            id,
-            updatePostPayload
-        )
-        return new PostProxy(post)
-    }
-
-    /**
-     * Method that can delete a specific post
-     * @param id stores the postid
-     */
-    @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    public async deletePostById(@Param('id') id: string): Promise<void> {
-        await this.postService.deletePostById(id)
     }
 }
