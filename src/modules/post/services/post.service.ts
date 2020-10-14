@@ -5,12 +5,11 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { DeleteResult, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
 import { PostEntity } from 'src/typeorm/entities/post.entity'
-import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreatePostPayload } from '../models/create-post.payload'
 import { UpdatePostPayload } from '../models/update-post.payload'
