@@ -15,7 +15,7 @@ import { UserProxy } from '../models/user.proxy'
 import { UserService } from '../services/user.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
 @Controller('users')
@@ -29,7 +29,7 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @Get('me')
     public async getMe(
-        @RequestUser() requestUser: RequestUserProperties
+        @User() requestUser: RequestUserProperties
     ): Promise<UserProxy> {
         const user = await this.userService.getMe(requestUser)
         return new UserProxy(user)
@@ -43,11 +43,11 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @Patch()
     public async updateProfile(
-        @RequestUser() requestUser: RequestUserProperties,
+        @User() requestUser: RequestUserProperties,
         @Body() updateUserPayload: UpdateUserPayload
     ): Promise<UserProxy> {
         const user = await this.userService.updateProfile(
-            requestUser.id,
+            requestUser,
             updateUserPayload
         )
         return new UserProxy(user)
@@ -60,8 +60,9 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     public async deleteUserById(
+        @User() requestUser: RequestUserProperties,
         @Param('id') id: string
     ): Promise<DeleteResult> {
-        return await this.userService.deleteUserById(id)
+        return await this.userService.deleteUserById(requestUser, id)
     }
 }

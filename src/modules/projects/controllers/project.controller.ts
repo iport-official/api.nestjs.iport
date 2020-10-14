@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    UseGuards
+} from '@nestjs/common'
+import { DeleteResult } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
@@ -12,7 +21,7 @@ import { ProjectService } from '../services/project.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { Roles } from 'src/decorators/roles/roles.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { RolesGuard } from 'src/guards/roles/roles.guard'
 
@@ -30,7 +39,7 @@ export class ProjectController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createProject(
-        @RequestUser() requestUser: RequestUserProperties,
+        @User() requestUser: RequestUserProperties,
         @Body() createProjectPayload: CreateProjectPayload
     ): Promise<CreateProjectProxy> {
         const project = await this.projectService.createProject(
@@ -74,5 +83,17 @@ export class ProjectController {
                 )
             }
         }
+    }
+
+    /**
+     * Method that can delete some project
+     * @param id stores the project id
+     */
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    public async deleteProjectById(
+        @Param('id') id: string
+    ): Promise<DeleteResult> {
+        return await this.projectService.deleteProjectById(id)
     }
 }

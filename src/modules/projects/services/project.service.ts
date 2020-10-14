@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Repository } from 'typeorm'
+import { DeleteResult, Repository } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
@@ -100,6 +100,18 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
             }
         } catch (error) {
             throw new NotFoundException(error)
+        }
+    }
+
+    /**
+     * Method that can delete some project
+     * @param id stores the project id
+     */
+    public async deleteProjectById(id: string): Promise<DeleteResult> {
+        try {
+            return await this.repository.delete({ id })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
         }
     }
 }

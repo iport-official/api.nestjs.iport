@@ -11,7 +11,7 @@ import { AchievementService } from '../services/achievement.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { Roles } from 'src/decorators/roles/roles.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { RolesGuard } from 'src/guards/roles/roles.guard'
 
@@ -31,7 +31,7 @@ export class AchievementController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createAchievement(
-        @RequestUser() requestUser: RequestUserProperties,
+        @User() requestUser: RequestUserProperties,
         @Body() createAchievementPayload: CreateAchievementPayload
     ): Promise<AchievementProxy> {
         const achievement = await this.achievementService.createAchievement(

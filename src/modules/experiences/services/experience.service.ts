@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Not, Repository } from 'typeorm'
+import { DeleteResult, Not, Repository } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
@@ -100,6 +100,18 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
             }
         } catch (error) {
             throw new NotFoundException(error)
+        }
+    }
+
+    /**
+     * Method that can delete some experience
+     * @param id stores the experience id
+     */
+    public async deleteExperienceById(id: string): Promise<DeleteResult> {
+        try {
+            return await this.repository.delete(id)
+        } catch (error) {
+            throw new InternalServerErrorException(error)
         }
     }
 }

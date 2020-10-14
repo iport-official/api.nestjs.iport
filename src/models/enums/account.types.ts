@@ -1,4 +1,5 @@
 export enum AccountType {
     PERSONAL = 'PERSONAL',
-    COMPANY = 'COMPANY'
+    COMPANY = 'COMPANY',
+    ADMIN = 'ADMIN'
 }

@@ -1,4 +1,5 @@
 import {
+    ForbiddenException,
     Injectable,
     InternalServerErrorException,
     NotFoundException
@@ -94,12 +95,17 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * @param updateUserPayload stores the new user's data
      */
     public async updateProfile(
-        userId: string,
+        requestUser: RequestUserProperties,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserEntity> {
-        const { content, ...rest } = updateUserPayload
+        const user = await this.getUserById(requestUser.id)
 
-        const user = await this.getUserById(userId)
+        if (!UserService.hasPermissionToUpdate(requestUser, user.id))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+
+        const { content, ...rest } = updateUserPayload
 
         if (!user) throw new NotFoundException('User not found')
 
@@ -107,7 +113,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             const { personalUserId } = await this.userRepository
                 .createQueryBuilder('users')
                 .select('personalUserId')
-                .where({ id: userId })
+                .where({ id: requestUser.id })
                 .getRawOne<{ personalUserId: string }>()
 
             if (!personalUserId)
@@ -120,7 +126,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             const { companyUserId } = await this.userRepository
                 .createQueryBuilder('users')
                 .select('companyUserId')
-                .where({ id: userId })
+                .where({ id: requestUser.id })
                 .getRawOne<{ companyUserId: string }>()
 
             if (!companyUserId)
@@ -131,8 +137,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
             } as UpdateCompanyUserPayload)
         }
         try {
-            await this.userRepository.update({ id: userId }, { ...rest })
-            return await this.getUserById(userId, user.accountType)
+            await this.userRepository.update(
+                { id: requestUser.id },
+                { ...rest }
+            )
+            return await this.getUserById(requestUser.id, user.accountType)
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
@@ -142,7 +151,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that can delete some user
      * @param id stores the user id
      */
-    public async deleteUserById(id: string): Promise<DeleteResult> {
+    public async deleteUserById(
+        requestUser: RequestUserProperties,
+        id: string
+    ): Promise<DeleteResult> {
+        if (!UserService.hasPermissionToUpdate(requestUser, id))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
         try {
             return await this.userRepository.delete({ id })
         } catch (error) {
@@ -188,6 +204,21 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         } catch (error) {
             throw new NotFoundException(error)
         }
+    }
+
+    /**
+     * Method that can check if the user that is trying to access some specific route do have permission for doing it
+     * @param requestUser stores the user data
+     * @param id stores the target user id
+     */
+    private static hasPermissionToUpdate(
+        requestUser: RequestUserProperties,
+        id: string
+    ): boolean {
+        return (
+            requestUser.id === id ||
+            requestUser.accountType === AccountType.ADMIN
+        )
     }
 
     //#endregion
