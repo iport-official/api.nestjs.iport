@@ -22,7 +22,7 @@ import { PostService } from '../services/post.service'
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { Roles } from 'src/decorators/roles/roles.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('posts')
@@ -38,7 +38,7 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createPost(
-        @RequestUser() requestUser: RequestUserProperties,
+        @User() requestUser: RequestUserProperties,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
         const post = await this.postService.createPost(

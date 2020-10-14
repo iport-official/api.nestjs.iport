@@ -11,7 +11,7 @@ import { CompetenceService } from '../services/competence.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { Roles } from 'src/decorators/roles/roles.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { RolesGuard } from 'src/guards/roles/roles.guard'
 
@@ -29,7 +29,7 @@ export class CompetenceController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createCompetence(
-        @RequestUser() requestUser: RequestUserProperties,
+        @User() requestUser: RequestUserProperties,
         @Body() createCompetencePayload: CreateCompetencePayload
     ): Promise<CompetenceProxy> {
         const competence = await this.competenceSercice.createCompetence(

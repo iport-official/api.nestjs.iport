@@ -1,11 +1,19 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    UseGuards
+} from '@nestjs/common'
+import { DeleteResult } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
 import { CreateExperiencePayload } from '../models/create-experience.payload'
 import { CreateExperienceProxy } from '../models/create-experience.proxy'
 import { ExperienceProxy } from '../models/experience.proxy'
-import { ArrayProxy } from 'src/common/array-proxy'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
@@ -13,7 +21,7 @@ import { ExperienceService } from '../services/experience.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { Roles } from 'src/decorators/roles/roles.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 import { RolesGuard } from 'src/guards/roles/roles.guard'
 
@@ -31,7 +39,7 @@ export class ExperienceController {
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createExperience(
-        @RequestUser() requestUser: RequestUserProperties,
+        @User() requestUser: RequestUserProperties,
         @Body() createExperiencePayload: CreateExperiencePayload
     ): Promise<CreateExperienceProxy> {
         const experience = await this.experienceService.createExperience(
@@ -76,5 +84,17 @@ export class ExperienceController {
                 )
             }
         }
+    }
+
+    /**
+     * Method that can delete some experience
+     * @param id stores the experience id
+     */
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    public async deleteExperienceById(
+        @Param('id') id: string
+    ): Promise<DeleteResult> {
+        return await this.experienceService.deleteExperienceById(id)
     }
 }

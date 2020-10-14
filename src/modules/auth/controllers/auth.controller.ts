@@ -8,7 +8,7 @@ import { AuthService } from '../services/auth.service'
 
 import { LocalAuthGuard } from '../../../guards/local/local-auth.guard'
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 
 @Controller('users')
 export class AuthController {
@@ -35,7 +35,7 @@ export class AuthController {
     @Post('/login')
     @HttpCode(200)
     public async login(
-        @RequestUser() user: RequestUserProperties
+        @User() user: RequestUserProperties
     ): Promise<LoginProxy> {
         return this.authService.login(user)
     }
