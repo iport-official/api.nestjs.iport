@@ -7,9 +7,13 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { AccountType } from 'src/models/enums/account.types'
+
 import { PostEntity } from 'src/typeorm/entities/post.entity'
+import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreatePostPayload } from '../models/create-post.payload'
+import { UpdatePostPayload } from '../models/update-post.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
@@ -178,5 +182,33 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
         } catch (error) {
             throw new NotFoundException(error)
         }
+    }
+
+    /**
+     * Method that can update some post
+     * @param id stores the post id
+     * @param updatePostPayload stores the new post data
+     */
+    public async updatePostById(
+        id: string,
+        updatePostPayload: UpdatePostPayload
+    ): Promise<PostEntity> {
+        const { userId } = await this.repository
+            .createQueryBuilder('posts')
+            .select('userId')
+            .where({ id })
+            .getRawOne<{ userId: string }>()
+
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.COMPANY
+        )
+
+        const post = await this.repository.save({
+            id,
+            user,
+            ...updatePostPayload
+        })
+        return post
     }
 }

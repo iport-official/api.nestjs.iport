@@ -1,9 +1,19 @@
-import { Controller, Body, Post, UseGuards, Get, Query } from '@nestjs/common'
+import {
+    Controller,
+    Body,
+    Post,
+    UseGuards,
+    Get,
+    Query,
+    Param,
+    Patch
+} from '@nestjs/common'
 
 import { AccountType } from 'src/models/enums/account.types'
 
 import { CreatePostPayload } from '../models/create-post.payload'
 import { PostProxy } from '../models/post.proxy'
+import { UpdatePostPayload } from '../models/update-post.payload'
 import { ArrayProxy } from 'src/common/array-proxy'
 
 import { PostService } from '../services/post.service'
@@ -26,7 +36,7 @@ export class PostController {
     @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Post()
-    public async create(
+    public async createPost(
         @RequestUser() requestUser: RequestUserProperties,
         @Body() createPostPayload: CreatePostPayload
     ): Promise<PostProxy> {
@@ -43,7 +53,7 @@ export class PostController {
      */
     @UseGuards(JwtAuthGuard)
     @Get()
-    public async getUniquePost(@Query('id') id: string): Promise<PostProxy> {
+    public async getUniquePost(@Param('id') id: string): Promise<PostProxy> {
         const post = await this.postService.getUniquePost(id)
         return new PostProxy(post)
     }
@@ -89,6 +99,24 @@ export class PostController {
     @Get('main')
     public async getMainPost(): Promise<PostProxy> {
         const post = await this.postService.getMainPost()
+        return new PostProxy(post)
+    }
+
+    /**
+     * Method that can update some post
+     * @param id stores the post id
+     * @param updatePostPayload stores the new post data
+     */
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    public async updatePostById(
+        @Body() updatePostPayload: UpdatePostPayload,
+        @Param('id') id: string
+    ): Promise<PostProxy> {
+        const post = await this.postService.updatePostById(
+            id,
+            updatePostPayload
+        )
         return new PostProxy(post)
     }
 }
