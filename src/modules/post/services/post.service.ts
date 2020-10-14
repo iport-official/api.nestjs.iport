@@ -1,4 +1,5 @@
 import {
+    ForbiddenException,
     Injectable,
     InternalServerErrorException,
     NotFoundException
@@ -217,11 +218,32 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
      * Method that can delete a specific post
      * @param id stores the postid
      */
-    public async deletePostById(id: string): Promise<void> {
+    public async deletePostById(
+        requestUser: RequestUserProperties,
+        id: string
+    ): Promise<void> {
+        if (!PostService.hasPermissionToUpdate(requestUser, id))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this post"
+            )
         try {
             await this.repository.delete({ id })
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
     }
+
+    //#region Utils
+
+    private static hasPermissionToUpdate(
+        requestUser: RequestUserProperties,
+        id: string
+    ): boolean {
+        return (
+            requestUser.id === id ||
+            requestUser.accountType === AccountType.ADMIN
+        )
+    }
+
+    //#endregion
 }
