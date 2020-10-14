@@ -32,8 +32,9 @@ export class UserPostService extends TypeOrmCrudService<PostEntity> {
 
     /**
      * Method that adds a new post in the database
-     * @param createPostPayload stores the post data that will be used to
-     *  create a new post in the database
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data
+     * @param createPostPayload stores the post data
      */
     public async createPost(
         userId: string,
@@ -89,38 +90,22 @@ export class UserPostService extends TypeOrmCrudService<PostEntity> {
     }
 
     /**
-     * Method that can delete a specific post
-     * @param id stores the postid
-     */
-    public async deletePostById(
-        requestUser: RequestUserProperties,
-        id: string
-    ): Promise<void> {
-        // if (!PostService.hasPermissionToUpdate(requestUser, id))
-        //     throw new ForbiddenException(
-        //         "You don't have permission to update the informations of this post"
-        //     )
-        try {
-            await this.repository.delete({ id })
-        } catch (error) {
-            throw new InternalServerErrorException(error)
-        }
-    }
-
-    /**
      * Method that can update some post
      * @param id stores the post id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data
      * @param updatePostPayload stores the new post data
      */
     public async updatePostById(
         id: string,
+        userId: string,
+        requestUser: RequestUserProperties,
         updatePostPayload: UpdatePostPayload
     ): Promise<PostEntity> {
-        const { userId } = await this.repository
-            .createQueryBuilder('posts')
-            .select('userId')
-            .where({ id })
-            .getRawOne<{ userId: string }>()
+        if (!UserPostService.hasPermissionToUpdate(userId, requestUser))
+            throw new ForbiddenException(
+                "You don't have permission to create posts"
+            )
         const user = await this.userService.getUserById(
             userId,
             AccountType.COMPANY
@@ -137,14 +122,46 @@ export class UserPostService extends TypeOrmCrudService<PostEntity> {
         }
     }
 
+    /**
+     * Method that can delete a specific post
+     * @param id stores the post id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data
+     */
+    public async deletePostById(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties
+    ): Promise<void> {
+        if (!UserPostService.hasPermissionToUpdate(userId, requestUser))
+            throw new ForbiddenException(
+                "You don't have permission to create posts"
+            )
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.COMPANY
+        )
+        if (!user) throw new NotFoundException('User not found')
+        try {
+            await this.repository.delete({ id })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
+    }
+
     //#region Utils
 
+    /**
+     * Static method that can check if the user has the permission to call some method
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data
+     */
     private static hasPermissionToUpdate(
-        id: string,
+        userId: string,
         requestUser: RequestUserProperties
     ): boolean {
         return (
-            requestUser.id === id ||
+            requestUser.id === userId ||
             requestUser.accountType === AccountType.ADMIN
         )
     }

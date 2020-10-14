@@ -22,9 +22,14 @@ import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard'
 
 @Controller('users/:userId/posts')
 export class UserPostController {
-    postService: any
     public constructor(private readonly userPostService: UserPostService) {}
 
+    /**
+     * Method that can register a post in the database
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data
+     * @param createPostPayload stores the post data
+     */
     @UseGuards(JwtAuthGuard)
     @Post()
     public async createPost(
@@ -50,9 +55,6 @@ export class UserPostController {
         @Param('userId') userId: string
     ): Promise<ArrayProxy<PostProxy>> {
         const posts = await this.userPostService.getPostsByUserId(userId)
-
-        // console.log(posts.length)
-
         return {
             length: posts.length,
             array: posts.array.map(post => new PostProxy(post))
@@ -62,16 +64,22 @@ export class UserPostController {
     /**
      * Method that can update some post
      * @param id stores the post id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data
      * @param updatePostPayload stores the new post data
      */
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     public async updatePostById(
-        @Body() updatePostPayload: UpdatePostPayload,
-        @Param('id') id: string
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties,
+        @Body() updatePostPayload: UpdatePostPayload
     ): Promise<PostProxy> {
-        const post = await this.postService.updatePostById(
+        const post = await this.userPostService.updatePostById(
             id,
+            userId,
+            requestUser,
             updatePostPayload
         )
         return new PostProxy(post)
@@ -79,11 +87,17 @@ export class UserPostController {
 
     /**
      * Method that can delete a specific post
-     * @param id stores the postid
+     * @param id stores the post id
+     * @param userId stores the user id
+     * @param requestUser stores the basic user data
      */
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    public async deletePostById(@Param('id') id: string): Promise<void> {
-        await this.postService.deletePostById(id)
+    public async deletePostById(
+        @Param('id') id: string,
+        @Param(':userId') userId: string,
+        @User() requestUser: RequestUserProperties
+    ): Promise<void> {
+        await this.userPostService.deletePostById(id, userId, requestUser)
     }
 }
