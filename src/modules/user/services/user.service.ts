@@ -152,6 +152,8 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         }
     }
 
+    //#region Utils
+
     /**
      * Method that can return an UserEntity
      * @param id stores the user id
@@ -188,5 +190,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         } catch (error) {
             throw new NotFoundException(error)
         }
+
+        //#endregion
     }
 }
