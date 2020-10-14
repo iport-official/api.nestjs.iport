@@ -6,9 +6,9 @@ export class CreatePostPayload {
     recomendation: number
     contact: string
     salary: number
-    post: string
+    role: string
     local: string
     requirements: string
     experienceLevel: string
-    vacancyDescription: string
+    jobDescription: string
 }

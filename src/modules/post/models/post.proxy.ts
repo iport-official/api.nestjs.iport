@@ -12,11 +12,11 @@ export class PostProxy {
     recommendations: number
     likes: number
     salary: number
-    post: string
+    role: string
     local: string
     requirements: string
     experienceLevel: string
-    vacancyDescription: string
+    jobDescription: string
     createAt: Date
     updateAt: Date
     user: UserProxy
@@ -30,11 +30,11 @@ export class PostProxy {
         this.recommendations = entity.recommendations
         this.likes = entity.likes
         this.salary = entity.salary
-        this.post = entity.post
+        this.role = entity.role
         this.local = entity.local
         this.requirements = entity.requirements
         this.experienceLevel = entity.experienceLevel
-        this.vacancyDescription = entity.vacancyDescription
+        this.jobDescription = entity.jobDescription
         this.createAt = entity.createAt
         this.updateAt = entity.updateAt
         this.image = entity.image

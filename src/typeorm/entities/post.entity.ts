@@ -60,7 +60,7 @@ export class PostEntity extends BaseEntity {
         length: 50,
         nullable: false
     })
-    post: string
+    role: string
 
     @Column({
         type: 'varchar',
@@ -86,7 +86,7 @@ export class PostEntity extends BaseEntity {
         type: 'text',
         nullable: false
     })
-    vacancyDescription: string
+    jobDescription: string
 
     @ManyToOne(
         type => UserEntity,
