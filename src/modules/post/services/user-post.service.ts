@@ -46,7 +46,10 @@ export class UserPostService extends TypeOrmCrudService<PostEntity> {
                 "You don't have permission to create posts"
             )
 
-        const user = await this.userService.getUserById(userId)
+        const user = await this.userService.getUserById(
+            userId,
+            AccountType.COMPANY
+        )
         if (!user) throw new NotFoundException('User not found')
 
         try {
@@ -57,6 +60,17 @@ export class UserPostService extends TypeOrmCrudService<PostEntity> {
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
+    }
+
+    public async getPostById(id: string): Promise<PostEntity> {
+        const post = await this.repository
+            .createQueryBuilder('posts')
+            .where({ id })
+            .innerJoinAndSelect('posts.user', 'users')
+            .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+            .getOne()
+        if (!post) throw new NotFoundException('Post not found')
+        return post
     }
 
     /**
@@ -76,8 +90,6 @@ export class UserPostService extends TypeOrmCrudService<PostEntity> {
             const array = await query
                 .innerJoinAndSelect('posts.user', 'users')
                 .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-                .leftJoinAndSelect('users.telephones', 'telephones.user')
-                .leftJoinAndSelect('users.emails', 'emails.user')
                 .getMany()
 
             return {

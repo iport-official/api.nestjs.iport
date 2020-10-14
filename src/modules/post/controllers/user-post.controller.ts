@@ -27,7 +27,7 @@ export class UserPostController {
     /**
      * Method that can register a post in the database
      * @param userId stores the user id
-     * @param requestUser stores the user basic data
+     * @param requestUser stores the basic user data
      * @param createPostPayload stores the post data
      */
     @UseGuards(JwtAuthGuard)
@@ -42,6 +42,17 @@ export class UserPostController {
             requestUser,
             createPostPayload
         )
+        return new PostProxy(post)
+    }
+
+    /**
+     * Method that can return an unique post
+     * @param id stores the post id
+     */
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    public async getPostById(@Param('id') id: string): Promise<PostProxy> {
+        const post = await this.userPostService.getPostById(id)
         return new PostProxy(post)
     }
 
