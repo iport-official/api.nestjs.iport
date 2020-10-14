@@ -110,37 +110,49 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
     /**
      * Method that can update the user data
-     * @param userId indicates the which user will be updated
-     * @param updateUserPayload indicates the new user's data
+     * @param userId stores the user id
+     * @param updateUserPayload stores the new user's data
      */
     public async updateProfile(
         userId: string,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserEntity> {
-        const { content, accountType, telephones, emails } = updateUserPayload
+        const { content, ...rest } = updateUserPayload
 
         const user = await this.getUserById(userId)
 
         if (!user) throw new NotFoundException('User not found')
 
-        // await this.telephoneService.updateTelephones(telephones, user)
-        // await this.emailService.updateEmails(emails, user)
+        if (user.accountType === AccountType.PERSONAL) {
+            const { personalUserId } = await this.userRepository
+                .createQueryBuilder('users')
+                .select('personalUserId')
+                .where({ id: userId })
+                .getRawOne<{ personalUserId: string }>()
 
-        if (accountType === AccountType.PERSONAL)
-            this.personalUserService.updatePersonalUser(user.personalUser.id, {
+            if (!personalUserId)
+                throw new NotFoundException('Personal user account not found')
+
+            this.personalUserService.updatePersonalUser(personalUserId, {
                 ...content
             } as UpdatePersonalUserPayload)
-        else
-            this.companyUserService.updateCompanyUser(user.companyUser.id, {
+        } else {
+            const { companyUserId } = await this.userRepository
+                .createQueryBuilder('users')
+                .select('companyUserId')
+                .where({ id: userId })
+                .getRawOne<{ companyUserId: string }>()
+
+            if (!companyUserId)
+                throw new NotFoundException('Company user account not found')
+
+            this.companyUserService.updateCompanyUser(companyUserId, {
                 ...content
             } as UpdateCompanyUserPayload)
-
+        }
         try {
-            // await this.userRepository.update(userId, {
-            //     ...updateUserPayload
-            // })
-
-            return user
+            await this.userRepository.update({ id: userId }, { ...rest })
+            return await this.getUserById(userId, user.accountType)
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
