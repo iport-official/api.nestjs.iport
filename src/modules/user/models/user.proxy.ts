@@ -10,6 +10,8 @@ export class UserProxy {
     id: string
     email: string
     username: string
+    city: string
+    state: string
     accountType: AccountType
     createAt: Date
     updateAt: Date
@@ -22,6 +24,8 @@ export class UserProxy {
         this.id = entity.id
         this.email = entity.email
         this.username = entity.username
+        this.city = entity.city
+        this.state = entity.state
         this.accountType = entity.accountType
         this.createAt = entity.createAt
         this.updateAt = entity.updateAt
