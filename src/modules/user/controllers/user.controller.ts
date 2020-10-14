@@ -1,4 +1,13 @@
-import { Controller, UseGuards, Get, Patch, Body } from '@nestjs/common'
+import {
+    Controller,
+    UseGuards,
+    Get,
+    Patch,
+    Body,
+    Param,
+    Delete
+} from '@nestjs/common'
+import { DeleteResult } from 'typeorm'
 
 import { UpdateUserPayload } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
@@ -42,5 +51,17 @@ export class UserController {
             updateUserPayload
         )
         return new UserProxy(user)
+    }
+
+    /**
+     * Method that can delete some user
+     * @param id stores the user id
+     */
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    public async deleteUserById(
+        @Param('id') id: string
+    ): Promise<DeleteResult> {
+        return await this.userService.deleteUserById(id)
     }
 }

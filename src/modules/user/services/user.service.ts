@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Repository } from 'typeorm'
+import { DeleteResult, Repository } from 'typeorm'
 
 import { AccountType } from '../../../models/enums/account.types'
 
@@ -42,34 +42,20 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         registerUserPayload: RegisterUserPayload
     ): Promise<UserEntity> {
         try {
-            const {
-                profileImage,
-                email,
-                password,
-                accountType,
-                username,
-                city,
-                state
-            } = registerUserPayload
-            const isPersonalUser = accountType === AccountType.PERSONAL
+            const { content, ...rest } = registerUserPayload
+            const isPersonalUser = rest.accountType === AccountType.PERSONAL
             const personalUser = isPersonalUser
                 ? await this.personalUserService.createPersonalAccount(
-                      registerUserPayload.content as RegisterPersonalUserPayload
+                      content as RegisterPersonalUserPayload
                   )
                 : null
             const companyUser = !isPersonalUser
                 ? await this.companyUserService.createCompanyAccount(
-                      registerUserPayload.content as RegisterCompanyUserPayload
+                      content as RegisterCompanyUserPayload
                   )
                 : null
             const user = await this.userRepository.save({
-                profileImage,
-                email,
-                password,
-                accountType,
-                username,
-                city,
-                state,
+                ...rest,
                 personalUser,
                 companyUser
             })
@@ -152,6 +138,18 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         }
     }
 
+    /**
+     * Method that can delete some user
+     * @param id stores the user id
+     */
+    public async deleteUserById(id: string): Promise<DeleteResult> {
+        try {
+            return await this.userRepository.delete({ id })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
+    }
+
     //#region Utils
 
     /**
@@ -190,7 +188,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         } catch (error) {
             throw new NotFoundException(error)
         }
-
-        //#endregion
     }
+
+    //#endregion
 }
