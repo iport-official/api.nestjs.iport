@@ -12,17 +12,6 @@ export class PostController {
     public constructor(private readonly postService: PostService) {}
 
     /**
-     * Method that can return an unique post
-     * @param id indicates which post the users wants to get
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get(':id')
-    public async getUniquePost(@Param('id') id: string): Promise<PostProxy> {
-        const post = await this.postService.getUniquePost(id)
-        return new PostProxy(post)
-    }
-
-    /**
      * Method that returns the most recommended posts in the appk
      * @param page indicates which page the user want to laod
      */
@@ -62,6 +51,7 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     @Get('main')
     public async getMainPost(): Promise<PostProxy> {
+        console.log('main post')
         const post = await this.postService.getMainPost()
         return new PostProxy(post)
     }

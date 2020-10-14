@@ -114,10 +114,8 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 'MAX(posts.recommendations * 0.7 * posts.likes * 0.3)',
                 'MAX'
             )
-            .leftJoinAndSelect('posts.user', 'users')
+            .innerJoinAndSelect('posts.user', 'users')
             .innerJoinAndSelect('users.companyUser', 'companyusers.user')
-            .leftJoinAndSelect('users.telephones', 'telephones.user')
-            .leftJoinAndSelect('users.emails', 'emails.user')
             .getOne()
         if (!main) throw new NotFoundException('Post not found')
         return main
