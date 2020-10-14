@@ -43,6 +43,13 @@ export class PostEntity extends BaseEntity {
     category: string
 
     @Column({
+        type: 'varchar',
+        length: '20',
+        nullable: false
+    })
+    contact: string
+
+    @Column({
         type: 'decimal',
         default: 0
     })
