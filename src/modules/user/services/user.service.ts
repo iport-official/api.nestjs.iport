@@ -51,21 +51,17 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 city,
                 state
             } = registerUserPayload
-
             const isPersonalUser = accountType === AccountType.PERSONAL
-
             const personalUser = isPersonalUser
                 ? await this.personalUserService.createPersonalAccount(
                       registerUserPayload.content as RegisterPersonalUserPayload
                   )
                 : null
-
             const companyUser = !isPersonalUser
                 ? await this.companyUserService.createCompanyAccount(
                       registerUserPayload.content as RegisterCompanyUserPayload
                   )
                 : null
-
             const user = await this.userRepository.save({
                 profileImage,
                 email,
@@ -77,16 +73,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
                 personalUser,
                 companyUser
             })
-
             if (companyUser)
                 this.companyUserService.updateCompanyUser(companyUser.id, {
                     user
                 })
-            else personalUser
-            this.personalUserService.updatePersonalUser(personalUser.id, {
-                user
-            })
-
+            else
+                this.personalUserService.updatePersonalUser(personalUser.id, {
+                    user
+                })
             return user
         } catch (error) {
             throw new InternalServerErrorException(error)
