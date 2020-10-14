@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Repository } from 'typeorm'
+import { DeleteResult, Repository } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
@@ -198,17 +198,31 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             .select('userId')
             .where({ id })
             .getRawOne<{ userId: string }>()
-
         const user = await this.userService.getUserById(
             userId,
             AccountType.COMPANY
         )
+        if (!user) throw new NotFoundException('User not found')
+        try {
+            return await this.repository.save({
+                id,
+                user,
+                ...updatePostPayload
+            })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
+    }
 
-        const post = await this.repository.save({
-            id,
-            user,
-            ...updatePostPayload
-        })
-        return post
+    /**
+     * Method that can delete a specific post
+     * @param id stores the postid
+     */
+    public async deletePostById(id: string): Promise<void> {
+        try {
+            await this.repository.delete({ id })
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 }

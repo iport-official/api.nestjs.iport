@@ -6,7 +6,8 @@ import {
     Get,
     Query,
     Param,
-    Patch
+    Patch,
+    Delete
 } from '@nestjs/common'
 
 import { AccountType } from 'src/models/enums/account.types'
@@ -52,7 +53,7 @@ export class PostController {
      * @param id indicates which post the users wants to get
      */
     @UseGuards(JwtAuthGuard)
-    @Get()
+    @Get(':id')
     public async getUniquePost(@Param('id') id: string): Promise<PostProxy> {
         const post = await this.postService.getUniquePost(id)
         return new PostProxy(post)
@@ -118,5 +119,15 @@ export class PostController {
             updatePostPayload
         )
         return new PostProxy(post)
+    }
+
+    /**
+     * Method that can delete a specific post
+     * @param id stores the postid
+     */
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    public async deletePostById(@Param('id') id: string): Promise<void> {
+        await this.postService.deletePostById(id)
     }
 }
