@@ -39,9 +39,16 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * Method that create new users
      * @param registerUserPayload stores the new user data
      */
-    public async createUser(
-        registerUserPayload: RegisterUserPayload
-    ): Promise<UserEntity> {
+    public async createUser(registerUserPayload: {
+        profileImage: string
+        email: string
+        password: string
+        username: string
+        city: string
+        state: string
+        accountType: AccountType
+        content: RegisterPersonalUserPayload | RegisterCompanyUserPayload
+    }): Promise<UserEntity> {
         try {
             const { content, ...rest } = registerUserPayload
             const isPersonalUser = rest.accountType === AccountType.PERSONAL

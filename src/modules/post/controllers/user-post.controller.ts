@@ -106,7 +106,7 @@ export class UserPostController {
     @Delete(':id')
     public async deletePostById(
         @Param('id') id: string,
-        @Param(':userId') userId: string,
+        @Param('userId') userId: string,
         @User() requestUser: RequestUserProperties
     ): Promise<void> {
         await this.userPostService.deletePostById(id, userId, requestUser)

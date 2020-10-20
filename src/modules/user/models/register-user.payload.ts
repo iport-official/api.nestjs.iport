@@ -12,4 +12,6 @@ export class RegisterUserPayload {
     state: string
     accountType: AccountType
     content: RegisterPersonalUserPayload | RegisterCompanyUserPayload
+    telephones: string[]
+    emails: string[]
 }

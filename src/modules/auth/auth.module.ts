@@ -6,6 +6,8 @@ import { AuthController } from './controllers/auth.controller'
 
 import { AuthService } from './services/auth.service'
 
+import { EmailModule } from '../email/email.module'
+import { TelephoneModule } from '../telephone/telephone.module'
 import { UserModule } from '../user/user.module'
 import { jwtConstants } from './constants'
 import { JwtStrategy } from './strategy/jwt.strategy'
@@ -15,6 +17,8 @@ import { LocalStrategy } from './strategy/local.strategy'
     imports: [
         forwardRef(() => UserModule),
         PassportModule,
+        forwardRef(() => TelephoneModule),
+        EmailModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '1h' }

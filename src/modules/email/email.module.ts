@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { EmailEntity } from 'src/typeorm/entities/email.entity'
@@ -10,7 +10,10 @@ import { EmailService } from './services/email.service'
 import { UserModule } from '../user/user.module'
 
 @Module({
-    imports: [UserModule, TypeOrmModule.forFeature([EmailEntity])],
+    imports: [
+        forwardRef(() => UserModule),
+        TypeOrmModule.forFeature([EmailEntity])
+    ],
     providers: [EmailService],
     controllers: [EmailController],
     exports: [EmailService]

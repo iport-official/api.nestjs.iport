@@ -13,6 +13,8 @@ import { LoginProxy } from '../models/login.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { UserService } from '../../user/services/user.service'
+import { EmailService } from 'src/modules/email/services/email.service'
+import { TelephoneService } from 'src/modules/telephone/services/telephone.service'
 
 import { hash, compare } from 'bcrypt'
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
@@ -22,7 +24,9 @@ export class AuthService {
     public constructor(
         @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly telephonesService: TelephoneService,
+        private readonly emailService: EmailService
     ) {}
 
     /**
@@ -35,16 +39,20 @@ export class AuthService {
     public async register(
         registerUserPayload: RegisterUserPayload
     ): Promise<UserProxy> {
+        const { password, telephones, emails, ...rest } = registerUserPayload
+
         let hashedPassword: string
         try {
-            hashedPassword = await hash(registerUserPayload.password, 10)
+            hashedPassword = await hash(password, 10)
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
         const user = await this.userService.createUser({
-            ...registerUserPayload,
-            password: hashedPassword
+            password: hashedPassword,
+            ...rest
         })
+        await this.telephonesService.registerTelephones(telephones, user.id)
+        await this.emailService.registerEmails(emails, user.id)
         if (!user) throw new NotFoundException('User not found')
         return new UserProxy(user)
     }
