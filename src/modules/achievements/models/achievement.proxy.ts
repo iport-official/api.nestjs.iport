@@ -4,7 +4,7 @@ export class AchievementProxy {
     id: string
     image: string
     title: string
-    endDate: Date
+    endDate: Date | null
     description: string
 
     public constructor(entity: AchievementEntity) {

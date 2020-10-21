@@ -7,7 +7,7 @@ export class CreateExperienceProxy {
     image: string
     title: string
     startDate: Date
-    endDate: Date
+    endDate: Date | null
     description: string
     user: UserProxy
 

@@ -22,7 +22,8 @@ export class ExperienceEntity extends BaseEntity {
     startDate: Date
 
     @Column({
-        type: 'datetime'
+        type: 'datetime',
+        nullable: true
     })
     endDate: Date
 
