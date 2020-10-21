@@ -218,7 +218,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      * @param requestUser stores the user data
      * @param id stores the target user id
      */
-    private static hasPermissionToUpdate(
+    public static hasPermissionToUpdate(
         requestUser: RequestUserProperties,
         id: string
     ): boolean {
