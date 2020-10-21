@@ -14,7 +14,6 @@ import { UserEntity } from '../../../typeorm/entities/user.entity'
 
 import { RegisterCompanyUserPayload } from '../models/register-company-user.payload'
 import { RegisterPersonalUserPayload } from '../models/register-personal-user.payload'
-import { RegisterUserPayload } from '../models/register-user.payload'
 import { UpdateCompanyUserPayload } from '../models/update-company-user.payload'
 import { UpdatePersonalUserPayload } from '../models/update-personal-user.payload'
 import { UpdateUserPayload } from '../models/update-user.payload'
@@ -103,16 +102,17 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
      */
     public async updateProfile(
         requestUser: RequestUserProperties,
+        id: string,
         updateUserPayload: UpdateUserPayload
     ): Promise<UserEntity> {
-        const user = await this.getUserById(requestUser.id)
-
-        if (!UserService.hasPermissionToUpdate(requestUser, user.id))
+        if (!UserService.hasPermissionToUpdate(requestUser, id))
             throw new ForbiddenException(
                 "You don't have permission to update the informations of this user"
             )
 
         const { content, ...rest } = updateUserPayload
+
+        const user = await this.getUserById(requestUser.id)
 
         if (!user) throw new NotFoundException('User not found')
 

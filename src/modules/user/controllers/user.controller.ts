@@ -41,13 +41,15 @@ export class UserController {
      * @param updateUserPayload indicates the new data of the user
      */
     @UseGuards(JwtAuthGuard)
-    @Patch()
+    @Patch(':id')
     public async updateProfile(
         @User() requestUser: RequestUserProperties,
+        @Param('id') id: string,
         @Body() updateUserPayload: UpdateUserPayload
     ): Promise<UserProxy> {
         const user = await this.userService.updateProfile(
             requestUser,
+            id,
             updateUserPayload
         )
         return new UserProxy(user)
