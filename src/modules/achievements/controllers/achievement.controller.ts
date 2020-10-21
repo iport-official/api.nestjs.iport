@@ -1,13 +1,25 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UseGuards
+} from '@nestjs/common'
+import { DeleteResult, UpdateResult } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
 import { AchievementProxy } from '../models/achievement.proxy'
 import { CreateAchievementPayload } from '../models/create-achievement.payload'
+import { UpdateAchievementPayload } from '../models/update-achievement.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 import { AchievementService } from '../services/achievement.service'
+import { AuthService } from 'src/modules/auth/services/auth.service'
 
 import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 import { Roles } from 'src/decorators/roles/roles.decorator'
@@ -76,5 +88,36 @@ export class AchievementController {
                 )
             }
         }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    public async updateAchievement(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties,
+        @Body() updateAchievementPayload: UpdateAchievementPayload
+    ): Promise<AchievementProxy> {
+        const achievement = await this.achievementService.updateAchievement(
+            id,
+            userId,
+            requestUser,
+            updateAchievementPayload
+        )
+        return new AchievementProxy(achievement)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    public async deleteAchievement(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties
+    ): Promise<DeleteResult> {
+        return this.achievementService.deleteAchievement(
+            id,
+            userId,
+            requestUser
+        )
     }
 }

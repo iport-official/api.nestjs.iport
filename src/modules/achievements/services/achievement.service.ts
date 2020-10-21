@@ -1,11 +1,12 @@
 import {
+    ForbiddenException,
     Injectable,
     InternalServerErrorException,
     NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Repository } from 'typeorm'
+import { DeleteResult, Repository } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
@@ -13,9 +14,12 @@ import { AchievementEntity } from 'src/typeorm/entities/achievement.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateAchievementPayload } from '../models/create-achievement.payload'
+import { UpdateAchievementPayload } from '../models/update-achievement.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
+
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
@@ -106,5 +110,35 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
+    }
+
+    public async updateAchievement(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties,
+        updateAchievementPayload: UpdateAchievementPayload
+    ): Promise<AchievementEntity> {
+        if (!UserService.hasPermissionToUpdate(requestUser, userId))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+
+        return await this.repository.save({
+            id,
+            ...updateAchievementPayload
+        })
+    }
+
+    public async deleteAchievement(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties
+    ): Promise<DeleteResult> {
+        if (!UserService.hasPermissionToUpdate(requestUser, userId))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+
+        return this.repository.delete(id)
     }
 }
