@@ -139,6 +139,6 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
                 "You don't have permission to update the informations of this user"
             )
 
-        return this.repository.delete(id)
+        return await this.repository.delete(id)
     }
 }
