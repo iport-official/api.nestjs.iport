@@ -118,7 +118,7 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
                 "You don't have permission to update the informations of this user"
             )
 
-        return this.repository.save({
+        return await this.repository.save({
             id,
             ...updateCompetencePayload
         })
@@ -133,6 +133,6 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
             throw new ForbiddenException(
                 "You don't have permission to update the informations of this user"
             )
-        return this.repository.delete(id)
+        return await this.repository.delete(id)
     }
 }
