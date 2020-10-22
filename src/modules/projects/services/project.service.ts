@@ -120,6 +120,13 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         }
     }
 
+    /**
+     * Method that can change a project data in the database
+     * @param id stores the project id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateProjectPayload stores the new project data
+     */
     public async updateProject(
         id: string,
         userId: string,
@@ -137,6 +144,12 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         })
     }
 
+    /**
+     * Method that can remove a project from the database
+     * @param id stores the project id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     public async deleteProject(
         id: string,
         userId: string,
