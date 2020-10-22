@@ -4,6 +4,7 @@ import {
     Delete,
     Get,
     Param,
+    Patch,
     Post,
     UseGuards
 } from '@nestjs/common'
@@ -85,6 +86,8 @@ export class ProjectController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
     public async updateProject(
         @Param('id') id: string,
         @Param('userId') userId: string,
