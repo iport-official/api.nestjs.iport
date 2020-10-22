@@ -5,7 +5,7 @@ export class ProjectProxy {
     image: string
     title: string
     startDate: Date
-    endDate: Date
+    endDate: Date | null
     description: string
 
     public constructor(entity: ProjectEntity) {

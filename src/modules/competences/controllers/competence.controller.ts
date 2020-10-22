@@ -1,9 +1,20 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UseGuards
+} from '@nestjs/common'
+import { DeleteResult } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
 import { CompetenceProxy } from '../models/competence.proxy'
 import { CreateCompetencePayload } from '../models/create-competence.payload'
+import { UpdateCompetencePayload } from '../models/update-competence.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
@@ -17,7 +28,7 @@ import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 @Controller('users/:userId/competences')
 export class CompetenceController {
-    public constructor(private readonly competenceSercice: CompetenceService) {}
+    public constructor(private readonly competenceService: CompetenceService) {}
 
     /**
      * Method that can register a competence in the database
@@ -32,7 +43,7 @@ export class CompetenceController {
         @User() requestUser: RequestUserProperties,
         @Body() createCompetencePayload: CreateCompetencePayload
     ): Promise<CompetenceProxy> {
-        const competence = await this.competenceSercice.createCompetence(
+        const competence = await this.competenceService.createCompetence(
             requestUser.id,
             createCompetencePayload
         )
@@ -48,7 +59,7 @@ export class CompetenceController {
     public async getCompetenceById(
         @Param('id') id: string
     ): Promise<CompetenceProxy> {
-        const competence = await this.competenceSercice.getCompetencesById(id)
+        const competence = await this.competenceService.getCompetencesById(id)
         return new CompetenceProxy(competence)
     }
 
@@ -64,7 +75,7 @@ export class CompetenceController {
         const {
             user,
             arrayProxy
-        } = await this.competenceSercice.getCompetences(userId)
+        } = await this.competenceService.getCompetences(userId)
         return {
             user: new UserProxy(user),
             arrayProxy: {
@@ -74,5 +85,35 @@ export class CompetenceController {
                 )
             }
         }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    public async updateCompetence(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties,
+        @Body() updateCompetencePayload: UpdateCompetencePayload
+    ): Promise<CompetenceProxy> {
+        return await this.competenceService.updateCompetence(
+            id,
+            userId,
+            requestUser,
+            updateCompetencePayload
+        )
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    public async deleteCompetence(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties
+    ): Promise<DeleteResult> {
+        return await this.competenceService.deleteCompetence(
+            id,
+            userId,
+            requestUser
+        )
     }
 }

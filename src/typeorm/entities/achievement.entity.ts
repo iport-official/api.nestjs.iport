@@ -17,7 +17,8 @@ export class AchievementEntity extends BaseEntity {
     title: string
 
     @Column({
-        type: 'datetime'
+        type: 'datetime',
+        nullable: true
     })
     endDate: Date
 

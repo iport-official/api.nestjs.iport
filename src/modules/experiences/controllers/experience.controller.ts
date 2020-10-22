@@ -4,6 +4,7 @@ import {
     Delete,
     Get,
     Param,
+    Patch,
     Post,
     UseGuards
 } from '@nestjs/common'
@@ -12,8 +13,8 @@ import { DeleteResult } from 'typeorm'
 import { AccountType } from 'src/models/enums/account.types'
 
 import { CreateExperiencePayload } from '../models/create-experience.payload'
-import { CreateExperienceProxy } from '../models/create-experience.proxy'
 import { ExperienceProxy } from '../models/experience.proxy'
+import { UpdateExperiencePayload } from '../models/update-experience.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
@@ -41,12 +42,12 @@ export class ExperienceController {
     public async createExperience(
         @User() requestUser: RequestUserProperties,
         @Body() createExperiencePayload: CreateExperiencePayload
-    ): Promise<CreateExperienceProxy> {
+    ): Promise<ExperienceProxy> {
         const experience = await this.experienceService.createExperience(
             requestUser.id,
             createExperiencePayload
         )
-        return new CreateExperienceProxy(experience)
+        return new ExperienceProxy(experience)
     }
 
     /**
@@ -86,15 +87,34 @@ export class ExperienceController {
         }
     }
 
-    /**
-     * Method that can delete some experience
-     * @param id stores the experience id
-     */
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    public async updateExperience(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties,
+        @Body() updateExperiencePayload: UpdateExperiencePayload
+    ): Promise<ExperienceProxy> {
+        const experience = await this.experienceService.updateExperience(
+            id,
+            userId,
+            requestUser,
+            updateExperiencePayload
+        )
+        return new ExperienceProxy(experience)
+    }
+
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    public async deleteExperienceById(
-        @Param('id') id: string
+    public async deleteExperience(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties
     ): Promise<DeleteResult> {
-        return await this.experienceService.deleteExperienceById(id)
+        return await this.experienceService.deleteExperience(
+            id,
+            userId,
+            requestUser
+        )
     }
 }
