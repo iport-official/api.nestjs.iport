@@ -76,7 +76,7 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
             .leftJoinAndSelect('users.telephones', 'telephones.user')
             .leftJoinAndSelect('users.emails', 'emails.user')
             .getOne()
-        if (!experiences) throw new NotFoundException('Experiences not found')
+        if (!experiences) throw new NotFoundException('Experience not found')
         return experiences
     }
 
@@ -93,7 +93,7 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         )
         if (!user) throw new NotFoundException('User not found')
         const experiences = await this.repository.find({ where: { user } })
-        if (!experiences) throw new NotFoundException('Experiences not found')
+        if (!experiences) throw new NotFoundException('Experience not found')
         try {
             return {
                 user,
