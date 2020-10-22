@@ -87,6 +87,13 @@ export class CompetenceController {
         }
     }
 
+    /**
+     * Method that can change the data of a competence in the database
+     * @param id stores the competence id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateCompetencePayload stores the new competence data
+     */
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     public async updateCompetence(
@@ -103,6 +110,12 @@ export class CompetenceController {
         )
     }
 
+    /**
+     * Method that can remove a competence from the database
+     * @param id stores the competence id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     public async deleteCompetence(

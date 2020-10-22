@@ -112,6 +112,13 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
         }
     }
 
+    /**
+     * Method that can change the achievement data
+     * @param id stores the achievement id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateAchievementPayload stores the new user data
+     */
     public async updateAchievement(
         id: string,
         userId: string,
@@ -129,6 +136,12 @@ export class AchievementService extends TypeOrmCrudService<AchievementEntity> {
         })
     }
 
+    /**
+     * Method that can remove a achievement from the database
+     * @param id stores the achievement id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     public async deleteAchievement(
         id: string,
         userId: string,
