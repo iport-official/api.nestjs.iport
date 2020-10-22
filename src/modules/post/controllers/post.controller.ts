@@ -51,7 +51,6 @@ export class PostController {
     @UseGuards(JwtAuthGuard)
     @Get('main')
     public async getMainPost(): Promise<PostProxy> {
-        console.log('main post')
         const post = await this.postService.getMainPost()
         return new PostProxy(post)
     }
