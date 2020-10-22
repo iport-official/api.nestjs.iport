@@ -90,6 +90,13 @@ export class AchievementController {
         }
     }
 
+    /**
+     * Method that can change the achievement data
+     * @param id stores the achievement id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateAchievementPayload stores the new user data
+     */
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     public async updateAchievement(
@@ -107,6 +114,12 @@ export class AchievementController {
         return new AchievementProxy(achievement)
     }
 
+    /**
+     * Method that can remove a achievement from the database
+     * @param id stores the achievement id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     public async deleteAchievement(
