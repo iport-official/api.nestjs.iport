@@ -11,10 +11,7 @@ import { DeleteResult } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
-import { ProjectEntity } from 'src/typeorm/entities/project.entity'
-
 import { CreateProjectPayload } from '../models/create-project.payload'
-import { CreateProjectProxy } from '../models/create-project.proxy'
 import { ProjectProxy } from '../models/project.proxy'
 import { UpdateProjectPayload } from '../models/update-project.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
@@ -44,12 +41,12 @@ export class ProjectController {
     public async createProject(
         @User() requestUser: RequestUserProperties,
         @Body() createProjectPayload: CreateProjectPayload
-    ): Promise<CreateProjectProxy> {
+    ): Promise<ProjectProxy> {
         const project = await this.projectService.createProject(
             requestUser.id,
             createProjectPayload
         )
-        return new CreateProjectProxy(project)
+        return new ProjectProxy(project)
     }
 
     /**
