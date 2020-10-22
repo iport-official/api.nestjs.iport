@@ -107,6 +107,13 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         }
     }
 
+    /**
+     * Method that can change an experience data in the database
+     * @param id stores the experience id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateExperiencePayload stores the new experience data
+     */
     public async updateExperience(
         id: string,
         userId: string,
@@ -124,6 +131,12 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         })
     }
 
+    /**
+     * Method that can remove some experience from the database
+     * @param id stores the experience id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     public async deleteExperience(
         id: string,
         userId: string,

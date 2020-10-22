@@ -87,6 +87,13 @@ export class ExperienceController {
         }
     }
 
+    /**
+     * Method that can change an experience data in the database
+     * @param id stores the experience id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateExperiencePayload stores the new experience data
+     */
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     public async updateExperience(
@@ -104,6 +111,12 @@ export class ExperienceController {
         return new ExperienceProxy(experience)
     }
 
+    /**
+     * Method that can remove some experience from the database
+     * @param id stores the experience id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     public async deleteExperience(
