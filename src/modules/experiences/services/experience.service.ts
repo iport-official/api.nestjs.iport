@@ -1,4 +1,5 @@
 import {
+    ForbiddenException,
     Injectable,
     InternalServerErrorException,
     NotFoundException
@@ -13,9 +14,12 @@ import { ExperienceEntity } from 'src/typeorm/entities/experience.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateExperiencePayload } from '../models/create-experience.payload'
+import { UpdateExperiencePayload } from '../models/update-experience.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
+
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
 
 @Injectable()
 export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
@@ -103,15 +107,33 @@ export class ExperienceService extends TypeOrmCrudService<ExperienceEntity> {
         }
     }
 
-    /**
-     * Method that can delete some experience
-     * @param id stores the experience id
-     */
-    public async deleteExperienceById(id: string): Promise<DeleteResult> {
-        try {
-            return await this.repository.delete(id)
-        } catch (error) {
-            throw new InternalServerErrorException(error)
-        }
+    public async updateExperience(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties,
+        updateExperiencePayload: UpdateExperiencePayload
+    ): Promise<ExperienceEntity> {
+        if (!UserService.hasPermissionToUpdate(requestUser, userId))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+
+        return await this.repository.save({
+            id,
+            ...updateExperiencePayload
+        })
+    }
+
+    public async deleteExperience(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties
+    ): Promise<DeleteResult> {
+        if (!UserService.hasPermissionToUpdate(requestUser, userId))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+
+        return await this.repository.delete(id)
     }
 }
