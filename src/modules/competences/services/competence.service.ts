@@ -107,6 +107,13 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         }
     }
 
+    /**
+     * Method that can change the data of a competence in the database
+     * @param id stores the competence id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     * @param updateCompetencePayload stores the new competence data
+     */
     public async updateCompetence(
         id: string,
         userId: string,
@@ -124,6 +131,12 @@ export class CompetenceService extends TypeOrmCrudService<CompetenceEntity> {
         })
     }
 
+    /**
+     * Method that can remove a competence from the database
+     * @param id stores the competence id
+     * @param userId stores the user id
+     * @param requestUser stores the user basic data (from token)
+     */
     public async deleteCompetence(
         id: string,
         userId: string,
