@@ -114,7 +114,7 @@ export class AchievementController {
         @Param('userId') userId: string,
         @User() requestUser: RequestUserProperties
     ): Promise<DeleteResult> {
-        return this.achievementService.deleteAchievement(
+        return await this.achievementService.deleteAchievement(
             id,
             userId,
             requestUser
