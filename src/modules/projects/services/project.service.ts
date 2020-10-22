@@ -1,4 +1,5 @@
 import {
+    ForbiddenException,
     Injectable,
     InternalServerErrorException,
     NotFoundException
@@ -13,9 +14,13 @@ import { ProjectEntity } from 'src/typeorm/entities/project.entity'
 import { UserEntity } from 'src/typeorm/entities/user.entity'
 
 import { CreateProjectPayload } from '../models/create-project.payload'
+import { UpdateProjectPayload } from '../models/update-project.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 
 import { UserService } from 'src/modules/user/services/user.service'
+
+import { RequestUserProperties } from 'src/common/jwt-validation-properties'
+import { Request } from 'supertest'
 
 @Injectable()
 export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
@@ -113,5 +118,34 @@ export class ProjectService extends TypeOrmCrudService<ProjectEntity> {
         } catch (error) {
             throw new InternalServerErrorException(error)
         }
+    }
+
+    public async updateProject(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties,
+        updateProjectPayload: UpdateProjectPayload
+    ): Promise<ProjectEntity> {
+        if (!UserService.hasPermissionToUpdate(requestUser, userId))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+
+        return await this.repository.save({
+            id,
+            ...updateProjectPayload
+        })
+    }
+
+    public async deleteProject(
+        id: string,
+        userId: string,
+        requestUser: RequestUserProperties
+    ): Promise<DeleteResult> {
+        if (!UserService.hasPermissionToUpdate(requestUser, userId))
+            throw new ForbiddenException(
+                "You don't have permission to update the informations of this user"
+            )
+        return await this.repository.delete(id)
     }
 }

@@ -11,9 +11,12 @@ import { DeleteResult } from 'typeorm'
 
 import { AccountType } from 'src/models/enums/account.types'
 
+import { ProjectEntity } from 'src/typeorm/entities/project.entity'
+
 import { CreateProjectPayload } from '../models/create-project.payload'
 import { CreateProjectProxy } from '../models/create-project.proxy'
 import { ProjectProxy } from '../models/project.proxy'
+import { UpdateProjectPayload } from '../models/update-project.payload'
 import { UserWithArrayProxy } from 'src/common/user-with-array-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
@@ -85,6 +88,21 @@ export class ProjectController {
         }
     }
 
+    public async updateProject(
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties,
+        @Body() updateProjectPayload: UpdateProjectPayload
+    ): Promise<ProjectProxy> {
+        const project = await this.projectService.updateProject(
+            id,
+            userId,
+            requestUser,
+            updateProjectPayload
+        )
+        return new ProjectProxy(project)
+    }
+
     /**
      * Method that can delete some project
      * @param id stores the project id
@@ -92,8 +110,10 @@ export class ProjectController {
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     public async deleteProjectById(
-        @Param('id') id: string
+        @Param('id') id: string,
+        @Param('userId') userId: string,
+        @User() requestUser: RequestUserProperties
     ): Promise<DeleteResult> {
-        return await this.projectService.deleteProjectById(id)
+        return await this.projectService.deleteProject(id, userId, requestUser)
     }
 }
