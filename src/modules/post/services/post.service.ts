@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
-import { Repository } from 'typeorm'
+import { Like, Repository } from 'typeorm'
 
 import { PostEntity } from 'src/typeorm/entities/post.entity'
 
@@ -119,5 +119,32 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
             .getOne()
         if (!main) throw new NotFoundException('Post not found')
         return main
+    }
+
+    public async getPostsByQuery(
+        search: string
+    ): Promise<ArrayProxy<PostEntity>> {
+        const posts = await this.repository
+            .createQueryBuilder('posts')
+            .innerJoinAndSelect('posts.user', 'users')
+            .innerJoinAndSelect('users.companyUser', 'companyusers.user')
+            .where([
+                {
+                    title: Like(`%${search}%`)
+                },
+                {
+                    role: Like(`%${search}%`)
+                },
+                {
+                    user: {
+                        username: Like(`%${search}%`)
+                    }
+                }
+            ])
+            .getMany()
+        return {
+            length: posts.length,
+            array: posts
+        }
     }
 }

@@ -6,6 +6,7 @@ import { ArrayProxy } from 'src/common/array-proxy'
 import { PostService } from '../services/post.service'
 
 import { JwtAuthGuard } from '../../../guards/jwt/jwt-auth.guard'
+import { convertQuery } from 'src/utils/query-converter'
 
 @Controller('posts')
 export class PostController {
@@ -53,5 +54,19 @@ export class PostController {
     public async getMainPost(): Promise<PostProxy> {
         const post = await this.postService.getMainPost()
         return new PostProxy(post)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get()
+    public async getPostsByQuery(
+        @Query('search') search: string
+    ): Promise<ArrayProxy<PostProxy>> {
+        const result = await this.postService.getPostsByQuery(
+            convertQuery(search)
+        )
+        return {
+            length: result.length,
+            array: result.array.map(post => new PostProxy(post))
+        }
     }
 }
