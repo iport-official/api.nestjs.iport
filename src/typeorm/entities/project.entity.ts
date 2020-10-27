@@ -25,7 +25,7 @@ export class ProjectEntity extends BaseEntity {
         type: 'datetime',
         nullable: true
     })
-    endDate: Date
+    endDate?: Date | null
 
     @Column({
         type: 'text'
