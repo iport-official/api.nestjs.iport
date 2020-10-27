@@ -134,13 +134,9 @@ export class PostService extends TypeOrmCrudService<PostEntity> {
                 },
                 {
                     role: Like(`%${search}%`)
-                },
-                {
-                    user: {
-                        username: Like(`%${search}%`)
-                    }
                 }
             ])
+            .orWhere('users.username = :search', { search })
             .getMany()
         return {
             length: posts.length,

@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query, Param } from '@nestjs/common'
+import { Controller, UseGuards, Get, Query } from '@nestjs/common'
 
 import { PostProxy } from '../models/post.proxy'
 import { ArrayProxy } from 'src/common/array-proxy'

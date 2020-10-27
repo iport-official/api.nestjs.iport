@@ -1,6 +1,5 @@
 # compiled output
 /dist
-/.vscode
 /node_modules
 
 # Logs
