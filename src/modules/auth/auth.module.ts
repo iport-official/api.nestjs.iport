@@ -19,7 +19,7 @@ import { LocalStrategy } from './strategy/local.strategy'
         forwardRef(() => TelephoneModule),
         EmailModule,
         JwtModule.register({
-            secret: process.env.JWT_SECRET,
+            secret: 'secret',
             signOptions: { expiresIn: '1h' }
         })
     ],
